@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Linux系统安全与分析 期末考试</title>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\(', '\)']],
+    displayMath: [['$$', '$$'], ['\[', '\]']]
+  }
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"></script>
+<style>
+/* === ExamPass Shared Styles === */
+/* Paper-like warm background, clean typography, responsive */
+
+:root {
+  --paper: #fdf6e3;
+  --paper-dark: #f5ecd7;
+  --ink: #2c2c2c;
+  --ink-light: #555;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --divider: #d6c8a8;
+  --card-bg: #fef9ef;
+  --card-border: #e8dcc8;
+  --correct: #22c55e;
+  --correct-bg: #f0fdf4;
+  --wrong: #ef4444;
+  --wrong-bg: #fef2f2;
+  --tag-bg: #fef3c7;
+  --tag-text: #92400e;
+  --radius: 6px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: "Microsoft YaHei", "Noto Sans SC", "SimSun", sans-serif;
+  font-size: 12pt; line-height: 1.75; color: var(--ink);
+  max-width: 860px; margin: auto; padding: 24px 20px 60px;
+  background: var(--paper);
+}
+
+@media print {
+  body { font-size: 10.5pt; background: #fff; }
+  .no-print { display: none !important; }
+  h1, h2, h3 { page-break-after: avoid; }
+}
+
+/* ── Header ── */
+#exampass-header {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 6px 0; margin-bottom: 0;
+}
+.header-brand { font-size: 1.2em; font-weight: 700; color: #1a1a2e; letter-spacing: 0.3px; }
+.header-url  { font-size: 0.78em; color: #999; }
+.header-divider { border: none; border-top: 2px solid var(--divider); margin: 4px 0 20px 0; }
+
+/* ── Typography ── */
+h1 { font-size: 1.55em; text-align: center; border-bottom: 2px solid var(--divider); padding-bottom: 8px; margin-top: 0; }
+h2 { font-size: 1.25em; border-bottom: 1px solid var(--divider); padding-bottom: 4px; margin-top: 28px; }
+h3 { font-size: 1.08em; margin-top: 20px; color: var(--ink); }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── Tables ── */
+table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 0.95em; }
+td, th { border: 1px solid var(--card-border); padding: 5px 9px; text-align: left; }
+th { background: var(--paper-dark); font-weight: 700; }
+
+/* ── Knowledge point vs explanation ── */
+.kp { font-weight: 700; color: var(--ink); }           /* key point: bold dark */
+.exp { font-weight: 400; color: var(--ink-light); }    /* explanation: lighter */
+.exp em, .exp strong { color: var(--ink); }             /* emphasis inside explanation */
+
+/* ── Block elements ── */
+blockquote {
+  border-left: 3px solid #c0392b; background: #fef9ef;
+  padding: 6px 14px; margin: 10px 0; font-size: 0.95em;
+}
+/* Modern monospace stack — avoids the ugly Courier New fallback on Windows. */
+:root {
+  --mono: "Cascadia Code", "JetBrains Mono", "Fira Code", "Source Code Pro",
+          Consolas, "SF Mono", Menlo, "DejaVu Sans Mono", monospace;
+}
+code {
+  font-family: var(--mono);
+  background: #eee8d8; color: #8a4b1e;
+  padding: 1px 5px; border-radius: 4px; font-size: 0.9em;
+}
+pre {
+  font-family: var(--mono);
+  background: #2d2a26; color: #ece6da;
+  padding: 14px 16px; border-radius: var(--radius);
+  overflow-x: auto; line-height: 1.6; font-size: 0.9em;
+  border: 1px solid #3d3934; tab-size: 2;
+}
+pre code {
+  background: none; color: inherit; padding: 0; font-size: 1em; border-radius: 0;
+}
+/* kp/exp spans inside <pre> must inherit the light code color, not their own dark color */
+pre .kp, pre .exp { color: inherit; }
+
+/* ── Long display formulas: scroll inside their column, never overflow ── */
+mjx-container[display="true"] {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* ── TOC ── */
+div.toc {
+  background: var(--card-bg); padding: 14px 18px;
+  border: 1px solid var(--card-border); border-radius: var(--radius); margin-bottom: 22px;
+}
+div.toc ul { padding-left: 18px; }
+div.toc li { margin: 3px 0; font-size: 0.95em; }
+
+/* ── Priority tags ── */
+.tag-must   { background: #fee2e2; color: #991b1b; padding: 1px 6px; border-radius: 3px; font-size: 0.82em; font-weight: 600; }
+.tag-key    { background: #fef3c7; color: #92400e; padding: 1px 6px; border-radius: 3px; font-size: 0.82em; font-weight: 600; }
+.tag-freq   { background: #dbeafe; color: #1e40af; padding: 1px 6px; border-radius: 3px; font-size: 0.82em; font-weight: 600; }
+.tag-info   { background: #f0fdf4; color: #166534; padding: 1px 6px; border-radius: 3px; font-size: 0.82em; font-weight: 600; }
+
+/* ── Checkpoint self-test ── */
+.checkpoint {
+  background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--radius);
+  padding: 10px 16px; margin: 18px 0;
+  font-size: 0.95em;
+}
+.checkpoint::before {
+  content: '🧠 自测：';
+  font-weight: 700; color: #1e40af;
+}
+.checkpoint .cp-answer { margin-top: 10px; border-top: 1px dashed #bfdbfe; padding-top: 8px; }
+.checkpoint .cp-answer summary {
+  cursor: pointer; color: #1e40af; font-weight: 600; user-select: none;
+  list-style: none;
+}
+.checkpoint .cp-answer summary::before { content: '💡 '; }
+.checkpoint .cp-answer summary::-webkit-details-marker { display: none; }
+.checkpoint .cp-answer[open] summary { margin-bottom: 6px; }
+.checkpoint .cp-answer ol, .checkpoint .cp-answer p { font-weight: 400; color: var(--ink); }
+
+/* ── TL;DR summary ── */
+.tldr {
+  background: #fefce8; border-left: 3px solid #eab308;
+  padding: 8px 14px; margin: 10px 0;
+  font-weight: 600; font-size: 0.95em;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  body { max-width: 100%; padding: 12px 10px 40px; font-size: 11pt; }
+  h1 { font-size: 1.3em; }
+  h2 { font-size: 1.12em; }
+  table { font-size: 0.85em; }
+  td, th { padding: 4px 6px; }
+  pre { font-size: 0.85em; padding: 6px; }
+}
+@media (max-width: 400px) {
+  body { padding: 8px 6px 32px; font-size: 10.5pt; }
+}
+
+/* === Interactive Test Styles === */
+
+/* ── Score box ── */
+#score-box {
+  display: none; background: var(--paper-dark); color: var(--ink);
+  padding: 16px 20px; border-radius: var(--radius); margin: 14px 0;
+  text-align: center; border: 1px solid var(--card-border);
+}
+#score-box .score-num { font-size: 2.2em; font-weight: 700; }
+#score-box .score-label { font-size: 0.85em; color: var(--ink-light); }
+
+/* ── Question card ── */
+.q-card {
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: var(--radius); padding: 12px 14px; margin: 10px 0;
+  transition: all 0.15s;
+}
+.q-card.correct { border-left: 3px solid var(--correct); background: #f7fdf4; }
+.q-card.wrong   { border-left: 3px solid var(--wrong); background: #fef9f9; }
+
+.q-num  { font-weight: 700; font-size: 0.98em; margin-bottom: 4px; }
+.q-text { margin-bottom: 8px; font-size: 0.98em; }
+
+/* ── Options (compact) ── */
+.option {
+  display: block; padding: 4px 10px; margin: 3px 0;
+  border: 1px solid var(--card-border); border-radius: 4px;
+  cursor: pointer; transition: all 0.12s; font-size: 0.93em;
+  background: #fefcf5;
+}
+.option:hover            { background: #f0ede0; }
+.option input            { margin-right: 6px; }
+.option.selected         { border-color: var(--accent); background: #eff6ff; }
+.option.correct-answer   { border-color: var(--correct); background: var(--correct-bg); }
+.option.wrong-answer     { border-color: var(--wrong); background: var(--wrong-bg); }
+
+/* ── Textareas (compact) ── */
+.q-textarea {
+  width: 100%; min-height: 56px; border: 1px solid var(--card-border);
+  border-radius: 4px; padding: 6px 10px; font-family: inherit;
+  font-size: 0.93em; background: #fefcf5; resize: vertical;
+}
+.q-textarea:focus { outline: none; border-color: var(--accent); }
+.q-code {
+  font-family: "Consolas", "Monaco", "Courier New", monospace;
+  font-size: 0.88em; line-height: 1.5; background: #1e1e2e; color: #e0e0e0;
+  tab-size: 4; white-space: pre;
+}
+.q-code:focus { border-color: var(--accent); }
+
+/* ── Partial-credit badge ── */
+.badge-partial { background: #fef3c7; color: #92400e; }
+.q-card.partial { border-color: #f59e0b; }
+
+/* ── Result after grading ── */
+.result {
+  display: none; margin-top: 8px; padding: 8px 12px;
+  background: #fefcf5; border: 1px solid var(--card-border);
+  border-radius: 4px; font-size: 0.9em; line-height: 1.6;
+}
+.result .badge {
+  display: inline-block; padding: 1px 9px; border-radius: 3px;
+  font-weight: 700; font-size: 0.82em; margin-right: 6px;
+}
+.badge-ok  { background: var(--correct-bg); color: #166534; }
+.badge-no  { background: var(--wrong-bg); color: #991b1b; }
+.badge-ref { background: #dbeafe; color: #1e40af; }
+
+.result .explanation { margin-top: 4px; color: var(--ink); }
+.result .pitfall { color: #b45309; margin-top: 3px; font-size: 0.9em; }
+
+/* ── Grading button ── */
+.grading-bar { text-align: center; margin: 20px 0; }
+.grading-bar button {
+  font-size: 1em; padding: 8px 32px; background: var(--accent);
+  color: #fff; border: none; border-radius: var(--radius);
+  cursor: pointer; font-weight: 600; letter-spacing: 0.3px;
+}
+.grading-bar button:hover     { background: var(--accent-hover); }
+.grading-bar button:disabled  { background: #bbb; cursor: not-allowed; }
+
+/* ── Fill-in-blank inputs ── */
+.fill-input {
+  border: 1px solid var(--card-border); border-radius: 3px;
+  padding: 2px 8px; font-family: inherit; font-size: 0.95em;
+  background: #fefcf5; width: 140px; vertical-align: middle;
+  transition: border-color .12s;
+}
+.fill-input:focus { outline: none; border-color: var(--accent); }
+.fill-input.fill-ok { border-color: var(--correct); background: var(--correct-bg); }
+.fill-input.fill-no { border-color: var(--wrong); background: var(--wrong-bg); }
+/* stacked blanks (fill questions whose blank markers aren't in the text) */
+.fill-blank-row { display: flex; align-items: center; gap: 8px; margin: 6px 0; }
+.fill-blank-row .fill-input { flex: 1; min-width: 0; width: auto; }
+.fill-tag { font-weight: 600; font-size: 0.9em; color: var(--ink-light); white-space: nowrap; }
+
+/* ── Pasted image preview ── */
+.paste-img-wrap {
+  margin-top: 6px; position: relative; display: inline-block; max-width: 100%;
+}
+.paste-img-wrap img {
+  max-width: 100%; max-height: 240px; border-radius: 4px;
+  border: 1px solid var(--divider); display: block;
+}
+.paste-img-remove {
+  position: absolute; top: 3px; right: 3px; width: 20px; height: 20px;
+  background: rgba(0,0,0,0.55); color: #fff; border: none; border-radius: 50%;
+  cursor: pointer; font-size: 12px; line-height: 20px; text-align: center; padding: 0;
+}
+
+/* ── AI批改 save-for-grading button ── */
+.save-bar { text-align: center; margin: 10px 0 4px; }
+.save-bar button {
+  font-size: 0.95em; padding: 7px 22px; background: #7c5ccc;
+  color: #fff; border: none; border-radius: var(--radius);
+  cursor: pointer; font-weight: 600;
+}
+.save-bar button:hover { background: #6748b4; }
+
+/* ── Grade export modal ── */
+#epa-grade-modal {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.62);
+  z-index: 9998; align-items: center; justify-content: center;
+}
+#epa-grade-modal.open { display: flex; }
+.epa-grade-dialog {
+  background: #fff; border-radius: 10px; padding: 24px 28px; max-width: 560px;
+  width: 90vw; box-shadow: 0 8px 32px rgba(0,0,0,0.22);
+}
+.epa-grade-dialog h3 { margin: 0 0 10px; font-size: 1.1em; }
+.epa-grade-dialog p {
+  color: var(--ink-light); font-size: 0.93em; margin: 0 0 12px; line-height: 1.6;
+}
+.epa-grade-cmd {
+  background: #1e1e2e; color: #e0e0e0; border-radius: 6px; padding: 10px 14px;
+  font-family: "Consolas","Monaco","Courier New",monospace; font-size: 0.88em;
+  word-break: break-all; margin-bottom: 12px; user-select: all; white-space: pre-wrap;
+}
+.epa-grade-dialog-btns { display: flex; gap: 10px; justify-content: flex-end; }
+.epa-grade-dialog-btns button {
+  padding: 7px 18px; border-radius: 6px; border: none; cursor: pointer;
+  font-size: 0.93em; font-weight: 600;
+}
+.btn-copy { background: var(--accent); color: #fff; }
+.btn-copy:hover { background: var(--accent-hover); }
+.btn-close-modal { background: #e5e5e5; color: var(--ink); }
+.btn-close-modal:hover { background: #d5d5d5; }
+
+</style>
+</head>
+<body>
+
+<header id="exampass-header">
+  <div class="header-left"><span class="header-brand">ExamPass Assistant</span></div>
+  <div class="header-right"><span class="header-url">github.com/WUBING2023/ExamPass-Assistant</span></div>
+</header>
+<hr class="header-divider">
+
+<h1>Linux系统安全与分析 期末考试</h1>
+<h2 style="text-align:center">章节测试</h2>
+<p style="text-align:center;color:var(--ink-light);font-size:0.95em">闭卷 · 120 分钟 · 满分 100 分 · 共 32 题</p>
+
+<div id="score-box"><div class="score-num" id="score-num">0</div><div class="score-label">总分</div></div>
+<div id="questions-container"></div>
+<div class="grading-bar no-print"><button onclick="gradeAll()" id="grade-btn">提交批改</button></div>
+<div class="save-bar no-print"><button onclick="saveForGrading()">🤖 AI一键批改</button></div>
+<div id="epa-grade-modal"><div class="epa-grade-dialog"><h3>📋 AI批改任务已生成</h3><p>答案已下载为 JSON 文件（通常在<strong>下载</strong>文件夹）。将以下命令发送给 Claude Code EPA skill，AI 会自动批改并生成报告：</p><div class="epa-grade-cmd" id="epa-grade-cmd-text">/exampass grade "&lt;路径&gt;"</div><p style="font-size:0.85em;color:#999;margin:0 0 14px">将 &lt;路径&gt; 替换为刚下载的 JSON 文件的完整路径。</p><div class="epa-grade-dialog-btns"><button class="btn-copy" id="epa-grade-copy-btn" onclick="__epaCopyGradeCmd()">复制命令</button><button class="btn-close-modal" onclick="__epaCloseGradeModal()">关闭</button></div></div></div>
+
+<script>
+var Q = [{"type": "choice", "points": 3, "kc_id": "kc1.5", "cognitive_level": "understand", "difficulty": "basic", "question": "在 32 位 x86 架构中，下列寄存器与其典型用途的对应关系，正确的是：", "options": ["EBP 存放当前栈顶地址，随 push/pop 操作自动变化", "EAX 存放段基址，参与线性地址的计算", "ESP 存放函数返回地址，由 call 指令自动写入", "EIP 存放当前将要执行指令的地址，每执行一条指令后自动递增"], "answer": 3, "explanation": "EIP 是指令指针寄存器，保存下一条将要执行指令的地址，每条指令执行后自动递增（PPT 第1讲明确：EIP is incremented after each instruction，并被 CALL、RET、JMP 及条件跳转修改）。认为 ESP 存返回地址的学生混淆了「栈指针」与「栈中内容」——返回地址是被 call 压入栈中的数据，ESP 本身只指向栈顶；认为 EBP 存栈顶的学生把 EBP（栈基址，用于稳定访问参数和局部变量）与 ESP 搞反了；认为 EAX 存段基址的学生混淆了通用寄存器与段寄存器（CS/DS/ES/SS 才存段选择子）。", "pitfall": "ESP 指栈顶、EBP 指栈基；EIP 是指令地址不是栈地址。三者别混。"}, {"type": "choice", "points": 3, "kc_id": "kc1.6", "cognitive_level": "understand", "difficulty": "basic", "question": "AT&amp;T 格式汇编指令 movl %esp, %ebp 中的后缀 l 表示：", "options": ["该指令是 load 类型，把内存中的值载入寄存器", "操作数宽度为 32 位（long word），即一次处理 4 个字节", "该指令只作用于函数的局部变量（local variable）", "操作数宽度为 8 位（letter），即一次处理 1 个字节"], "answer": 1, "explanation": "AT&amp;T 汇编用后缀表示操作数宽度：b 表示 8 位、w 表示 16 位、l 表示 32 位、q 表示 64 位（PPT 第1讲：b、w、l、q 分别代表 8 位、16 位、32 位、64 位）。把 l 理解为 load 的学生把操作数宽度后缀误当成了指令助记符的一部分；把 l 理解为 local 的学生完全虚构了含义；把 l 理解为 8 位的学搞混了 l 与 b。", "pitfall": "b=8位、w=16位、l=32位、q=64位。l 是 long word 不是 load。"}, {"type": "choice", "points": 2, "kc_id": "kc6.6", "cognitive_level": "apply", "difficulty": "medium", "question": "把 hello.c 编译为可执行文件需经过预处理、编译、汇编、链接四个阶段，下列命令与产物的对应关系，正确的是：", "options": ["gcc -E hello.c -o hello.s，产物是汇编语言源文件", "gcc -S hello.i -o hello.o，产物是可重定位目标文件", "gcc -c hello.s -o hello.o，产物是 ELF 格式的可重定位目标文件", "gcc hello.o -o hello，产物是共享目标文件"], "answer": 2, "explanation": "gcc -c 把汇编源文件汇编成机器指令，产物 .o 已经是 ELF 格式的可重定位目标文件（PPT 第6讲：汇编后形成的 .o 格式的文件已经是 ELF 格式文件了）。认为 -E 产物是 .s 的学生把预处理与编译搞混了——-E 的产物是 .i 预处理文件，.s 是 -S 的产物；认为 -S 产物是 .o 的学生把编译与汇编搞混了；认为链接产物是共享目标文件的学生混淆了可执行文件与动态链接库（.so）。", "pitfall": "-E→.i、-S→.s、-c→.o、链接→可执行文件。四步命令与产物必须一一对应。"}, {"type": "choice", "points": 2, "kc_id": "kc6.12", "cognitive_level": "understand", "difficulty": "medium", "question": "关于 fork() 系统调用的返回值，下列叙述正确的是：", "options": ["父进程中返回 1，子进程中返回 0，创建失败返回 0", "父进程中返回子进程的 PID，子进程中返回 0，创建失败返回 -1", "父进程中返回 0，子进程中返回父进程的 PID，创建失败返回 -1", "父进程和子进程中都返回子进程的 PID，创建失败返回 NULL"], "answer": 1, "explanation": "fork() 调用一次返回两次：在父进程中返回新创建子进程的 PID（大于 0），在子进程中返回 0，出错时返回 -1（PPT 第6讲简化 Shell 程序正是用 pid &lt; 0 判错、pid == 0 走子进程分支、pid &gt; 0 走父进程分支）。认为父进程返回 0 的学生把父子分支的判断条件完全颠倒，会导致父子进程行为互换；认为两者都返回子 PID 的学生忽略了子进程无法靠返回值区分自己与父进程；认为父进程返回 1 的学生把返回值当成了布尔标志。", "pitfall": "父得子PID（>0）、子得0、错得-1。判断分支千万别写反。"}, {"type": "choice", "points": 2, "kc_id": "kc7.6", "cognitive_level": "understand", "difficulty": "medium", "question": "iptables 四表中，用于实现源地址与目的地址转换（NAT）的是：", "options": ["nat 表，可作用于 PREROUTING、INPUT、OUTPUT、POSTROUTING 四条链", "mangle 表，可作用于全部五条链", "raw 表，可作用于 PREROUTING、OUTPUT 两条链", "filter 表，可作用于 INPUT、FORWARD、OUTPUT 三条链"], "answer": 0, "explanation": "nat 表负责地址转换，可作用于 PREROUTING、INPUT、OUTPUT、POSTROUTING 四条链（PPT 第7讲原文）。认为 filter 表做地址转换的学生混淆了「过滤」与「转换」——filter 才是过滤功能，作用于 INPUT、FORWARD、OUTPUT 三条链；mangle 表虽可作用于五条链，但它的职责是修改数据包内容（如 TTL、TOS）；raw 表用于在连接跟踪之前处理报文，不是做 NAT。", "pitfall": "filter 管过滤（3 链）、nat 管地址转换（4 链）、mangle 管改包内容（5 链）、raw 管连接跟踪前（2 链）。"}, {"type": "choice", "points": 3, "kc_id": "kc8.4", "cognitive_level": "understand", "difficulty": "basic", "question": "/etc/passwd 文件中一行内容为 root:x:0:0:root:/root:/bin/bash，其中第三个字段 0 表示：", "options": ["用户所属主组的 GID", "密码占位符所在的字段序号", "用户主目录所占用的 inode 编号", "用户的 UID，其中 0 专指超级用户 root"], "answer": 3, "explanation": "/etc/passwd 每行七个字段依次为：用户名、密码占位符、UID、GID、描述信息、主目录、登录 Shell。第三个字段是 UID，0 是超级用户 root 的专属 UID。认为第三个字段是 inode 号的学生把文件系统概念错误地套用到用户数据库上；认为第三个字段是 GID 的学生数错了字段位置（GID 是第四个字段）；认为它表示密码占位符序号的学生混淆了第二字段（x）与第三字段。", "pitfall": "passwd 七字段顺序：用户名:密码占位:UID:GID:描述:主目录:Shell。第三个是 UID。"}, {"type": "choice", "points": 2, "kc_id": "kc9.2", "cognitive_level": "analyze", "difficulty": "hard", "question": "关于 Linux 文件的 inode 与文件名，下列说法正确的是：", "options": ["inode 记录文件的权限、属主、大小和 block 位置，但不记录文件名", "一个 inode 只能对应一个文件名，创建硬链接会复制出一个新 inode", "删除文件时 inode 会立即被回收，其 block 中的数据被清零", "文件名保存在 inode 中，因此重命名文件会改变其 inode 号"], "answer": 0, "explanation": "inode 记录文件的全部属性（权限、属主、时间戳、大小、block 号码等），唯独不记录文件名——文件名保存在目录项中，目录项负责把「名字」映射到「inode 号」（PPT 第9讲明确这一分工）。认为文件名存在 inode 中的学生把目录项的职责错给了 inode，所以误以为改名会改 inode（实际改名只改目录项）；认为硬链接会复制 inode 的学生正好说反了——硬链接就是多个目录项指向同一个 inode，链接数加一；认为删除时 inode 立即回收且数据清零的学生忽略了 extundelete 能恢复文件这一事实（PPT 第9讲：删除只是标记，数据仍留在 block 中）。", "pitfall": "inode 不存文件名，文件名在目录项；硬链接共享同一 inode；删除后数据仍可被 extundelete 恢复。"}, {"type": "choice", "points": 2, "kc_id": "kc10.6", "cognitive_level": "understand", "difficulty": "medium", "question": "下列关于安全扫描工具用途与特点的描述，正确的是：", "options": ["nmap 只能做端口扫描，不具备主机发现能力", "masscan 采用异步无状态扫描机制，适合大网段高速端口扫描", "nikto 是主机发现工具，用于判断目标主机是否在线", "OpenVAS 只能扫描 Web 应用层漏洞，不能发现系统层漏洞"], "answer": 1, "explanation": "masscan 采用异步无状态扫描，先发出大量探测包再统一收包，速度远高于 nmap，适合大网段快速端口扫描（PPT 第10讲）。认为 nmap 不能做主机发现的学生忽略了 nmap 的 -sn 等主机发现选项；认为 nikto 是主机发现工具的学生混淆了用途——nikto 是 Web 服务器扫描器，检查 Web 配置与已知漏洞；认为 OpenVAS 只能扫 Web 漏洞的学生低估了它——OpenVAS 是完整的漏洞扫描系统，覆盖系统与服务层漏洞。", "pitfall": "nmap 两者都能做；masscan 快在大网段；nikto 专扫 Web；OpenVAS 是综合漏洞扫描。"}, {"type": "choice", "points": 3, "kc_id": "kc11.2", "cognitive_level": "understand", "difficulty": "basic", "question": "按部署位置划分，入侵检测系统可分为 NIDS 与 HIDS，下列对应关系正确的是：", "options": ["NIDS 部署在网络关键节点分析流量，HIDS 部署在单台主机上监控主机行为", "NIDS 与 HIDS 的唯一区别在于是否具备主动阻断攻击的能力", "NIDS 部署在单台主机上，主要监控该主机的文件完整性与系统调用", "HIDS 部署在网络关键节点上，主要分析整个网段的通信流量"], "answer": 0, "explanation": "NIDS（网络型入侵检测系统）部署在网络关键节点，通过抓包分析网段流量发现攻击特征；HIDS（主机型入侵检测系统）安装在单台主机上，监控文件完整性、日志、进程与系统调用（PPT 第11讲）。认为 NIDS 装在单机上的学生把两者的 N（Network）与 H（Host）含义搞反；认为 HIDS 装在网络节点上的学生同样颠倒了部署位置；认为区别在于是否具备阻断能力的学生混淆了 IDS 与 IPS——IDS 只检测告警，IPS 才具备阻断能力，这是另一组对比。", "pitfall": "NIDS=网络节点看流量，HIDS=单机看主机行为；有没有阻断能力是 IDS 与 IPS 的区别。"}, {"type": "choice", "points": 2, "kc_id": "kc6.7", "cognitive_level": "analyze", "difficulty": "hard", "question": "C 程序运行后，进程内存布局中各区域与其存放内容的对应关系，正确的是：", "options": [".bss 节存放已初始化的全局变量，因此需要在可执行文件中占据实际空间", ".text 节存放未初始化的全局变量，运行时由系统用 0 填充", "栈存放函数的局部变量和返回地址，由系统自动分配与释放，向低地址方向增长", "堆存放全局变量和静态变量，由编译器在编译期一次性分配好空间"], "answer": 2, "explanation": "栈用于存放函数调用过程中的局部变量、参数和返回地址，由系统自动分配释放，且栈向低地址方向增长（PPT 第1讲：Stack grows down）。认为堆存放全局变量的学生混淆了堆与数据段——全局变量和静态变量在 .data/.bss，堆是 malloc 动态分配的；认为 .bss 存放已初始化变量的学生把 .bss 与 .data 搞反，且 .bss 恰恰不占文件空间；认为 .text 存放未初始化全局变量的学生把代码段与数据段搞反，.text 存的是机器指令。", "pitfall": "栈=局部变量+返回地址（向下长）；堆=malloc 动态分配；.data=已初始化全局；.bss=未初始化全局（不占文件）；.text=机器指令。"}, {"type": "fill", "points": 3, "kc_id": "kc1.5", "cognitive_level": "remember", "difficulty": "basic", "question": "在 32 位 x86 中，专门用于指向当前栈顶的寄存器是 ____（填写寄存器缩写，全大写）。", "answer": ["ESP", "esp", "%esp"], "explanation": "ESP（Extended Stack Pointer）始终指向当前栈顶。push 操作先把 ESP 减 4 再写入数据，pop 操作先读出数据再把 ESP 加 4。与之配合的 EBP 指向栈基址，用于在函数内部稳定地访问参数和局部变量。", "pitfall": "ESP 指栈顶（动态变化），EBP 指栈基（函数内固定），两者别混。"}, {"type": "fill", "points": 3, "kc_id": "kc1.5", "cognitive_level": "remember", "difficulty": "basic", "question": "x86 中 CS、DS、ES、SS 这一组寄存器统称为 ____ 寄存器（填两个汉字）。", "answer": ["段", "段寄存器", "段址"], "explanation": "CS（Code Segment）代码段寄存器、DS（Data Segment）数据段寄存器、ES（Extra Segment）附加段寄存器、SS（Stack Segment）堆栈段寄存器，合称段寄存器，存放各段的段选择子（段基址的高位部分），与偏移量组合形成线性地址。", "pitfall": "段寄存器存的是段选择子，不是线性地址本身。"}, {"type": "fill", "points": 2, "kc_id": "kc5.3", "cognitive_level": "understand", "difficulty": "medium", "question": "内嵌汇编语句 asm volatile(\"movq %%rax,%0\" : \"=m\"(val3) : \"g\"(val1)) 中，约束符 \"=m\" 表示该操作数是一个输出操作数，且存放在 ____ 中（填「内存」或「寄存器」）。", "answer": ["内存", "存储器", "memory"], "explanation": "内嵌汇编的约束符中，m 表示内存操作数（memory），r 表示通用寄存器，g 表示由编译器自由选择寄存器或内存，= 表示该操作数是只写的输出，+ 表示既读又写。所以 \"=m\"(val3) 的含义是：val3 作为输出，编译器直接把内存地址交给汇编代码去写，不经过寄存器中转。", "pitfall": "m=内存、r=寄存器、g=任意、=只写、+读写。"}, {"type": "fill", "points": 2, "kc_id": "kc6.4", "cognitive_level": "apply", "difficulty": "medium", "question": "要查看一个 ELF 文件的节头表（Section Header Table）信息，应使用 readelf 的 ____ 选项（写选项，如 -h）。", "answer": ["-S", "-S ", "—S"], "explanation": "readelf -S 显示节头信息。对照记忆：-h 显示 ELF 文件头、-l 显示程序头表（段表）、-s 显示符号表、-r 显示重定位信息、-a 等价于全选。注意 -S 为大写，与 -s（符号表）含义完全不同。", "pitfall": "-S 看节头、-s 看符号表、-l 看段表，大小写与字母都要分清。"}, {"type": "fill", "points": 2, "kc_id": "kc6.7", "cognitive_level": "understand", "difficulty": "medium", "question": "C 程序中未初始化的全局变量存放在 ____ 节，该节在可执行文件中不占实际空间，程序运行时由系统用 0 初始化（填写节名，带点号）。", "answer": [".bss", "bss", ".BSS"], "explanation": ".bss（Block Started by Symbol）存放未初始化的全局变量和静态变量，属于静态内存分配。因为运行时初值恒为 0，没必要在文件里存一堆零字节，只记录需要多大空间即可，其 section type 为 SHT_NOBITS，所以在 readelf -S 的输出里看不到它的实际数据。", "pitfall": ".bss 不占文件空间但占内存空间；.data 才是已初始化变量。"}, {"type": "fill", "points": 3, "kc_id": "kc7.7", "cognitive_level": "apply", "difficulty": "basic", "question": "要禁止源地址为 192.168.100.20 的数据包进入本机，应执行的命令是：iptables -A INPUT -s 192.168.100.20 -j ____（填写动作名）。", "answer": ["DROP", "drop", "REJECT", "reject"], "explanation": "iptables -A INPUT -s 192.168.100.20 -j DROP 表示在 INPUT 链末尾追加一条规则，匹配源地址 192.168.100.20 的数据包并直接丢弃。也可用 REJECT，区别在于 REJECT 会向源端返回一个不可达的响应报文，而 DROP 静默丢弃、源端只能等到超时。从安全角度 DROP 更好，因为 REJECT 的响应报文会向攻击者泄漏「这里有主机」的信息。", "pitfall": "DROP 静默丢弃、REJECT 返回响应；安全场景优先 DROP 以免暴露主机存在。"}, {"type": "fill", "points": 2, "kc_id": "kc7.7", "cognitive_level": "apply", "difficulty": "hard", "question": "若 INPUT 链中已存在一条禁止 192.168.20.0/24 网段的 DROP 规则，现在要单独放行该网段内的 192.168.20.115，必须把新规则插入到该 DROP 规则之前，应使用 ____ 选项（填写选项，如 -A）。", "answer": ["-I", "-I ", "-i"], "explanation": "iptables 规则按顺序逐条匹配，一旦命中就执行动作并停止后续匹配。若用 -A 追加，放行规则会排在 DROP 之后，永远轮不到执行，192.168.20.115 依然被丢弃。必须用 -I INPUT 把规则插入到链首（或 -I INPUT 2 插到指定位置），使其先于 DROP 规则被匹配。这是 iptables 配置最典型的顺序陷阱。", "pitfall": "规则顺序决定结果：放行规则必须排在 DROP 之前，否则永远不生效。用 -I 不用 -A。"}, {"type": "fill", "points": 4, "kc_id": "kc8.4", "cognitive_level": "remember", "difficulty": "basic", "question": "/etc/passwd 文件中每一行由 ____ 个字段组成，字段之间用冒号分隔（填写阿拉伯数字）。", "answer": ["7", "七"], "explanation": "/etc/passwd 每行七个字段，依次是：用户名、密码占位符（通常为 x，真实密码在 /etc/shadow）、UID、GID、用户描述信息、用户主目录、登录 Shell。例如 root:x:0:0:root:/root:/bin/bash 中，各字段分别为 root / x / 0 / 0 / root / /root / /bin/bash。", "pitfall": "passwd 是 7 字段，shadow 是 9 字段，别记混。"}, {"type": "fill", "points": 2, "kc_id": "kc8.5", "cognitive_level": "understand", "difficulty": "medium", "question": "/etc/shadow 文件中密码字段若以 $6$ 开头，表示该密码使用 ____ 算法进行加密（填写算法名称或编号说明）。", "answer": ["SHA-512", "sha512", "SHA512", "sha-512"], "explanation": "/etc/shadow 密码字段的 $id$ 部分标识哈希算法：$1$ 表示 MD5、$5$ 表示 SHA-256、$6$ 表示 SHA-512。$6$ 之后到下一个 $ 之间是盐值（salt），再往后是密码哈希值。SHA-512 输出 512 位摘要，抗暴力破解能力远强于 MD5。", "pitfall": "$1$=MD5、$5$=SHA-256、$6$=SHA-512，编号越大越安全。"}, {"type": "fill", "points": 2, "kc_id": "kc10.4", "cognitive_level": "apply", "difficulty": "medium", "question": "使用 nmap 对 192.168.1.0/24 网段只做主机发现、不做端口扫描，应使用的选项是 ____（写选项，如 -sV）。", "answer": ["-sn", "-sn ", "-sP"], "explanation": "nmap -sn 192.168.1.0/24 表示只进行主机发现（ping 扫描），通过 ICMP echo、TCP SYN 到 443、TCP ACK 到 80、ARP 等多种探测手段判断主机是否在线，不进行端口扫描。旧版本中该选项写作 -sP。若要同时识别服务版本则用 -sV，全端口扫描用 -p-。", "pitfall": "-sn 只探活、-sV 探服务版本、-sS 是 SYN 半开扫描，三者用途不同。"}, {"type": "short", "points": 5, "kc_id": "kc5.7", "cognitive_level": "understand", "difficulty": "medium", "question": "简述 Linux 系统调用的三层结构（xyz / system_call / sys_xyz），并说明库函数 API 与系统调用之间的关系。", "answer": -1, "explanation": "<strong>参考答案</strong>：<br>① <strong>API 层（xyz）</strong>：用户程序调用的库函数，如 glibc 提供的 time()、fork()、open() 等。它们是系统调用的封装，负责把参数按约定放入寄存器、执行陷入指令、取回返回值。<br>② <strong>系统调用入口层（system_call）</strong>：由陷入指令（int 0x80 / sysenter / syscall）进入内核后执行的统一入口，负责保存现场（保存用户态寄存器）、根据系统调用号在系统调用表中查找对应的服务例程、传递参数，处理完成后恢复现场并返回用户态。<br>③ <strong>服务例程层（sys_xyz）</strong>：具体实现某功能的内核函数，如 sys_time、sys_fork、__x64_sys_execve。它完成实际的内核工作。<br><strong>关系</strong>：库函数 API 是系统调用的「外壳」，一个 API 可能对应一个系统调用（如 fork），也可能完全不涉及系统调用（如纯计算的 strlen），还可能是多个系统调用的组合。用户程序并不直接调用 sys_xyz，只能通过 API 触发陷入，由内核代为执行。<br><strong>评分要点</strong>：三层各 1 分，API 与系统调用的关系（封装、非一一对应）1 分。", "pitfall": "不要把「库函数」与「系统调用」等同。strlen 是库函数但不是系统调用；一个 API 可能封装多个系统调用。"}, {"type": "short", "points": 5, "kc_id": "kc2.4", "cognitive_level": "understand", "difficulty": "medium", "question": "简述函数调用时堆栈框架的建立与拆除过程，并说明 EBP 与 ESP 在其中的作用。", "answer": -1, "explanation": "<strong>参考答案</strong>：<br><strong>建立（进入被调函数时）</strong>：<br>① <code>pushl %ebp</code>：把调用者的 EBP 压栈保存（ESP 减 4）。<br>② <code>movl %esp, %ebp</code>：把当前 ESP 赋给 EBP，EBP 从此固定指向本函数栈框架的基址，之后 ESP 无论怎么变，都能靠 EBP 加固定偏移访问参数和局部变量。<br>③ <code>subl $N, %esp</code>：抬高栈顶，为局部变量预留 N 字节空间。<br><strong>拆除（返回前）</strong>：<br>④ <code>movl %ebp, %esp</code>：把 ESP 恢复到 EBP 位置，一次性丢弃所有局部变量空间。<br>⑤ <code>popl %ebp</code>：弹出并恢复调用者的 EBP。<br>⑥ <code>ret</code>：弹出返回地址并跳转回调用点。<br><strong>作用</strong>：EBP 是「锚点」，提供稳定的参数/局部变量寻址基准（参数在 EBP+8 起、局部变量在 EBP-4 起）；ESP 是「游标」，始终指向栈顶，随 push/pop 动态变化。二者配合使函数调用可以任意嵌套。<br><strong>评分要点</strong>：建立三步 2 分，拆除三步 1 分，EBP/ESP 分工 1 分。", "pitfall": "顺序不能乱：先 push ebp 再 mov esp,ebp；拆除时先 mov ebp,esp 再 pop ebp。漏掉 movl %ebp,%esp 会导致栈失衡。"}, {"type": "short", "points": 4, "kc_id": "kc4.7", "cognitive_level": "understand", "difficulty": "hard", "question": "用户态程序通过系统调用进入内核态，请说明这一切换过程中内核完成了哪些关键动作（至少写出四点）。", "answer": -1, "explanation": "<strong>参考答案</strong>：<br>① <strong>触发陷入</strong>：用户态执行 int 0x80 / sysenter / syscall 指令，CPU 根据中断描述符表（IDT）或 MSR 寄存器跳转到内核预设的系统调用入口。<br>② <strong>权限级切换</strong>：CPU 从 Ring 3（用户态）切换到 Ring 0（内核态），同时切换栈指针——从用户栈切换到该进程的内核栈（由 TSS 提供内核栈地址）。<br>③ <strong>保存现场</strong>：把用户态的寄存器（通用寄存器、EFLAGS、CS、EIP、ESP、SS 等）压入内核栈保存，以便返回时恢复。<br>④ <strong>参数传递与分发</strong>：按约定从寄存器取出系统调用号和参数（32 位下系统调用号放 eax，参数依次放 ebx、ecx、edx、esi、edi、ebp），查系统调用表找到对应的服务例程 sys_xyz 并调用。<br>⑤ <strong>执行内核服务</strong>：sys_xyz 在内核态完成实际工作，期间可能访问用户态地址空间（需用 copy_from_user / copy_to_user 校验）。<br>⑥ <strong>恢复现场并返回</strong>：把返回值放入 eax，恢复之前保存的寄存器，执行 iret / sysret 从 Ring 0 切回 Ring 3，返回到用户态下一条指令继续执行。<br><strong>评分要点</strong>：答出四点即可满分（每点 1 分），其中「切换内核栈」和「保存/恢复现场」是必须提到的关键点。", "pitfall": "容易漏掉「切换到内核栈」这一步。用户态和内核态用的是两个不同的栈，这是态切换的核心动作之一。"}, {"type": "short", "points": 5, "kc_id": "kc6.6", "cognitive_level": "understand", "difficulty": "medium", "question": "写出 C 代码编译为可执行文件的四个阶段及每个阶段对应的 gcc 命令，并说明进程运行后栈、堆、.bss 三部分各存放什么内容。", "answer": -1, "explanation": "<strong>参考答案</strong>：<br><strong>四个阶段</strong>：<br>① 预处理 <code>gcc -E hello.c -o hello.i</code>：删除注释、展开宏、插入 #include 内容、添加行号标识，产物 .i。<br>② 编译 <code>gcc -S hello.i -o hello.s</code>：检查语法、把代码翻译成汇编语言，产物 .s。<br>③ 汇编 <code>gcc -c hello.s -o hello.o</code>：把汇编翻译成机器指令，产物 .o（已是 ELF 格式的可重定位目标文件）。<br>④ 链接 <code>gcc hello.o -o hello</code>：符号解析与重定位，把 .o 与库拼接，产物可执行文件。<br><strong>内存布局三部分</strong>：<br>· <strong>栈</strong>：存放函数调用过程中的局部变量、函数参数和返回地址，由系统自动分配与释放，向低地址方向增长。<br>· <strong>堆</strong>：存放程序运行期间通过 malloc/new 动态申请的内存，由程序员手动申请与释放（或由 GC 回收），向高地址方向增长。<br>· <strong>.bss</strong>：存放未初始化的全局变量和静态变量，属于静态内存分配，在可执行文件中不占实际空间（SHT_NOBITS），程序启动时由系统用 0 填充。<br><strong>评分要点</strong>：四阶段命令各 0.5 分（2 分），栈/堆/.bss 各 0.5 分并说明存放内容（1.5 分），增长方向或清零特性额外 0.5 分。", "pitfall": "「栈存局部变量、堆存动态申请、.bss 存未初始化全局」三者别混。栈向下长、堆向上长。"}, {"type": "short", "points": 5, "kc_id": "kc7.6", "cognitive_level": "understand", "difficulty": "medium", "question": "写出 iptables 的四表五链名称，并说明 filter 表中 INPUT、FORWARD、OUTPUT 三条链各自处理什么流量。", "answer": -1, "explanation": "<strong>参考答案</strong>：<br><strong>四表</strong>：filter（过滤）、nat（地址转换）、mangle（修改数据包内容）、raw（连接跟踪前处理）。<br><strong>五链</strong>：PREROUTING（路由前）、INPUT（入站）、FORWARD（转发）、OUTPUT（出站）、POSTROUTING（路由后）。<br><strong>filter 表三条链的职责</strong>：<br>· <strong>INPUT 链</strong>：处理目的地是本机的数据包。数据包经 PREROUTING 和路由判断后确认要送给本机进程，就进入 INPUT 链接受过滤。<br>· <strong>FORWARD 链</strong>：处理需要转发给其他主机的数据包。数据包目的地不是本机，经路由判断需要从另一块网卡送出，就进入 FORWARD 链。<br>· <strong>OUTPUT 链</strong>：处理本机进程发出的数据包。本机产生的数据包在离开主机前经过 OUTPUT 链过滤。<br><strong>评分要点</strong>：四表 1 分、五链 1 分、三条链职责各 0.67 分（合计 2 分）。", "pitfall": "PREROUTING/POSTROUTING 是路由前后，INPUT/FORWARD/OUTPUT 是「给本机/转发/本机发出」。三者区分点是数据包的去向。"}, {"type": "calc", "points": 7, "kc_id": "kc9.3", "cognitive_level": "apply", "difficulty": "medium", "question": "在 Linux 中执行 ls -l /usr/local/bin/tool，显示结果如下：<br><pre><code>-rwsr-xr-- 1 alice dev 1024 Nov 19 10:00 /usr/local/bin/tool</code></pre>（1）写出该文件的数字权限表示（用四位八进制数，如 0644）。（4 分）<br>（2）说明权限串中 s 位的名称、含义，以及它可能带来的安全风险。（4 分）", "answer": -1, "explanation": "<strong>（1）数字权限表示：4755</strong><br>逐段拆解：<br>· 特殊位段：该文件属主位出现 <code>s</code> 而非 <code>x</code>，说明 SUID 位被置 1，特殊位值 = 4。<br>· 属主段 <code>rws</code>：r=4、w=2、s 占据 x 位置且 SUID=1，故该段为 4+2+1=7。<br>· 组段 <code>r-x</code>：r=4、-=0、x=1，故为 4+0+1=5。<br>· 其他段 <code>r--</code>：r=4、-=0、-=0，故为 4。<br>合并：特殊位 4 + 属主 7 + 组 5 + 其他 4 = <strong>4755</strong>。<br>（若特殊位无设置则写作 0755，本题因有 s 位故为 4755。）<br><br><strong>（2）s 位的名称、含义与风险</strong><br>· <strong>名称</strong>：SUID（Set User ID，设置用户 ID 位）。出现在属主执行位时为小写 s（表示 SUID 置位且执行位也置位），若为大写 S 则表示 SUID 置位但执行位未置位。<br>· <strong>含义</strong>：普通用户执行该文件时，进程的有效用户 ID（EUID）会临时变为文件属主（此例为 alice）的 UID，而不是执行者自己的 UID。程序运行结束后 EUID 恢复。<br>· <strong>安全风险</strong>：若文件属主是 root（如 /usr/bin/passwd），则任何用户执行它都能获得 root 权限运行其中的代码。一旦该程序存在缓冲区溢出、命令注入等漏洞，攻击者就能借它提权到 root。因此生产环境应定期用 <code>find / -perm -4000 -type f</code> 审计所有 SUID 文件，删除不必要的 SUID 位（chmod u-s）。<br><strong>评分要点</strong>：（1）特殊位 4 得 2 分、三段各 0.5 分、最终 4755 得 1 分；（2）SUID 名称 1 分、EUID 变为属主 2 分、风险说明 1 分。", "pitfall": "常见错误：把 rws 算成 7 却忘了额外加特殊位 4，写成 0755。s 位在 x 位置时该段仍算 1 分（因为执行位有效）。"}, {"type": "comprehensive", "points": 3, "kc_id": "kc5.4", "cognitive_level": "analyze", "difficulty": "hard", "question": "如下所示为 Linux 下运行的某个内嵌汇编代码，请回答后面的问题：<br><pre><code>int main() {\n    unsigned long val1 = 1;\n    unsigned long val2 = 2;\n    unsigned long val3 = 0;\n    printf(\"val1:%ld,val2:%ld,val3:%ld\\n\", val1, val2, val3);\n    asm volatile(\n        \"movq $0,%%rax\\n\\t\"\n        \"addq %1,%%rax\\n\\t\"\n        \"addq %2,%%rax\\n\\t\"\n        \"movq %%rax,%0\\n\\t\"\n        : \"=m\"(val3)\n        : \"g\"(val1), \"g\"(val2));\n    printf(\"val1:%ld+val2:%ld=val3:%ld\\n\", val1, val2, val3);\n    return 0;\n}</code></pre>（1）请写出蓝色部分（即四条汇编指令）每一行代码的作用。（4 分）<br>（2）请给出该段程序最后在控制台打印的内容。（2 分）", "answer": -1, "explanation": "<strong>（1）四条汇编指令的作用</strong><br>· <code>movq $0,%%rax</code>：把立即数 0 送入 64 位寄存器 rax，即清零累加器。注意 <code>%%</code> 是内嵌汇编中的转义写法，编译后对应单个 <code>%rax</code>。<br>· <code>addq %1,%%rax</code>：把第 1 个输入操作数（即 val1，由编译器按 \"g\" 约束分配到某个寄存器或内存）加到 rax 中。此处 %1 指代输出操作数之后的第一个输入操作数。<br>· <code>addq %2,%%rax</code>：把第 2 个输入操作数（即 val2）继续累加到 rax。<br>· <code>movq %%rax,%0</code>：把 rax 中的累加结果写回第 0 个操作数，即输出操作数 val3（约束 \"=m\" 表示它是内存操作数且只写）。<br><br><strong>（2）控制台打印内容</strong><br>程序共两次 printf：<br>第一次（汇编执行前）：<code>val1:1,val2:2,val3:0</code><br>第二次（汇编执行后）：<code>val1:1+val2:2=val3:3</code><br>因为 val3 = 0 + val1 + val2 = 0 + 1 + 2 = 3，而 val1、val2 未被修改。<br><strong>评分要点</strong>：（1）每行 1 分（共 4 分），需说明「清零累加器」「累加 val1」「累加 val2」「写回 val3」四个动作，仅写指令字面翻译不给分；（2）两行打印内容各 1 分，数值必须正确（val3 应为 3）。", "pitfall": "常见错误：把 %%rax 当成两个寄存器；漏看 movq $0 的清零作用而以为 val3 会累加原值；把 %0/%1/%2 的操作数序号数错（%0 是输出，%1 起才是输入）。"}, {"type": "comprehensive", "points": 3, "kc_id": "kc1.8", "cognitive_level": "analyze", "difficulty": "hard", "question": "如下所示为某段汇编代码，请在右侧写出其对应的 C 语言代码（变量名自行命名，函数名保持 g、f、main）：<br><pre><code>g:\n    pushl %ebp\n    movl  %esp, %ebp\n    movl  8(%ebp), %eax\n    addl  $3, %eax\n    popl  %ebp\n    ret\n\nf:\n    pushl %ebp\n    movl  %esp, %ebp\n    subl  $4, %esp\n    movl  8(%ebp), %eax\n    movl  %eax, (%esp)\n    call  g\n    movl  %ebp, %esp\n    popl  %ebp\n    ret\n\nmain:\n    pushl %ebp\n    movl  %esp, %ebp\n    subl  $4, %esp\n    movl  $8, (%esp)\n    call  f\n    addl  $1, %eax\n    movl  %ebp, %esp\n    popl  %ebp\n    ret</code></pre>", "answer": -1, "explanation": "<strong>参考答案</strong>：<br><pre><code>int g(int x) {\n    return x + 3;\n}\n\nint f(int x) {\n    return g(x);\n}\n\nint main(void) {\n    return f(8) + 1;\n}</code></pre><strong>逐函数推导</strong>：<br>· <strong>g</strong>：<code>movl 8(%ebp), %eax</code> 取第一个参数（EBP+8 是参数位置，因为 EBP+4 是返回地址），<code>addl $3, %eax</code> 加 3，<code>ret</code> 返回 eax。故 <code>int g(int x) { return x + 3; }</code>。<br>· <strong>f</strong>：<code>subl $4, %esp</code> 预留 4 字节局部空间（存放传给 g 的实参），<code>movl 8(%ebp), %eax</code> 取自己的参数，<code>movl %eax, (%esp)</code> 把它放到栈顶作为 g 的实参，<code>call g</code> 调用，返回值在 eax 中直接作为 f 的返回值。故 <code>int f(int x) { return g(x); }</code>。<br>· <strong>main</strong>：<code>movl $8, (%esp)</code> 把立即数 8 压到栈顶作为 f 的实参，<code>call f</code> 后 eax 得 f(8) 的返回值，<code>addl $1, %eax</code> 再加 1。故 <code>return f(8) + 1;</code>。<br><strong>关键识别点</strong>：EBP+8 取第一个参数、EAX 传返回值、(%%esp) 传实参、call 后紧跟 addl 说明返回值被继续运算。<br><strong>评分要点</strong>：g 正确 1.5 分、f 正确 1.5 分、main 正确 2 分（含 f(8)+1 的运算顺序）。", "pitfall": "常见错误：把 EBP+8 写成 EBP+4（忘记返回地址占 4 字节）；漏掉 main 里的 addl $1 而写成 return f(8)；把 f 里的 subl $4 误认为是局部变量而多写一个变量声明。"}, {"type": "comprehensive", "points": 3, "kc_id": "kc1.7", "cognitive_level": "analyze", "difficulty": "hard", "question": "如下所示为某段 32 位汇编代码，设初始时 ESP = 0x1000，栈向低地址方向增长，每次 push/pop 操作 4 字节：<br><pre><code>pushl  $8\nmovl   %esp, %ebp\npushl  %ebp\npushl  $8\naddl   $4, %esp\npopl   %ebp</code></pre>（1）请画出执行完毕后的当前堆栈状态（标明每个单元的地�址与内容）。（3 分）<br>（2）标明当前栈顶和栈基的地址位置。（2 分）", "answer": -1, "explanation": "<strong>逐条推演</strong>：<br>· 初始：ESP = 0x1000，EBP 未定。<br>· <code>pushl $8</code>：ESP 先减 4 得 0x0FFC，再把 8 写入 [0x0FFC]。<br>· <code>movl %esp, %ebp</code>：EBP = ESP = 0x0FFC。<br>· <code>pushl %ebp</code>：ESP 减 4 得 0x0FF8，把 EBP 的值 0x0FFC 写入 [0x0FF8]。<br>· <code>pushl $8</code>：ESP 减 4 得 0x0FF4，把 8 写入 [0x0FF4]。<br>· <code>addl $4, %esp</code>：ESP 加 4 得 0x0FF8（栈顶回退一格，[0x0FF4] 的数据仍在内存中但已不属于栈的有效范围）。<br>· <code>popl %ebp</code>：先读出 [0x0FF8] 的值 0x0FFC 送入 EBP，再让 ESP 加 4 得 0x0FFC。<br><br><strong>（1）最终堆栈状态</strong>（栈向低地址增长，故地址小的在下方）：<br><pre><code>地址        内容          说明\n0x0FF4      8             已被 addl $4 弹出栈顶范围，数据仍残留\n0x0FF8      0x0FFC        已被 popl 弹出，数据仍残留\n0x0FFC      8             ← 当前栈顶（ESP 指向）\n</code></pre>有效栈范围是 [0x0FFC, 0x1000)。<br><br><strong>（2）栈顶与栈基位置</strong><br>· <strong>栈顶（ESP）= 0x0FFC</strong>，指向内容 8。<br>· <strong>栈基（EBP）= 0x0FFC</strong>（因最后一条 popl %ebp 把 0x0FFC 恢复进了 EBP）。<br>即最终 ESP 与 EBP 恰好都等于 0x0FFC，二者重合。<br><strong>评分要点</strong>：（1）三个单元地址与内容各 1 分（共 3 分），需正确体现 push 减 4、add 加 4 的效果；（2）ESP 值 1 分、EBP 值 1 分，须明确写出 0x0FFC。", "pitfall": "三个易错点：① push 是「先减后写」，pop 是「先读后加」，顺序写反会算错地址；② addl $4,%esp 只是抬高栈顶，不清除内存，所以 [0x0FF4] 的 8 仍然存在；③ 最后 popl %ebp 恢复的是最初 push 进去的 0x0FFC，不是 8。"}, {"type": "comprehensive", "points": 3, "kc_id": "kc6.12", "cognitive_level": "analyze", "difficulty": "hard", "question": "阅读下面的 C 代码并回答问题：<br><pre><code>int main(int argc, char const *argv[]) {\n    pid_t pid;\n    pid = fork();\n    if (pid == -1) {\n        perror(\"fork error\");\n        exit(1);\n    }\n    else if (pid &gt; 0) {\n        printf(\"father process:pid=%d\\n\", getpid());\n    }\n    else if ((pid = fork()) == 0) {\n        time_t timep;\n        time(&amp;timep);\n        printf(\"%s\\n\", ctime(&amp;timep));\n    }\n    else if ((pid = fork()) == 0) {\n        printf(\"brother process\\n\");\n    }\n    else if ((pid = fork()) &lt; 0) {\n        printf(\"我的学号是 9527\\n\");\n    }\n    else if ((pid = fork()) == 0) {\n        printf(\"我的姓名是 nicai\\n\");\n    }\n    return 0;\n}</code></pre>（1）写出把该 C 代码编译为可执行程序的命令。（2 分）<br>（2）运行该程序后，请写出终端可能打印出的全部内容（说明哪条打印会出现几次）。（2 分）<br>（3）请画出父子进程的关系图，并在图中标明不同子进程打印的内容。（2 分）", "answer": -1, "explanation": "<strong>（1）编译命令</strong><br><code>gcc -o fork_demo fork_demo.c</code>（若需链接数学库或时间函数，Linux 下 ctime 属于 libc 无需额外 -l；若文件名即 fork_demo.c 可简写为 <code>gcc fork_demo.c -o fork_demo</code>）。<br><br><strong>（2）终端打印内容</strong><br>关键：fork 之后父子进程都从 fork 的下一条语句继续执行，而 <code>else if</code> 链在某个分支命中后即结束。逐个进程分析：<br>· 进程 A（原始 main）：第一次 fork 返回 &gt;0，命中第二个分支，打印 <code>father process:pid=A的pid</code>，随后跳出整条 else-if 链，return。<br>· 进程 B（第一次 fork 的子，pid==0）：不满足 pid&gt;0，进入第三个分支执行 fork。B 作为该次 fork 的父进程（返回值 &gt;0），第三个分支不成立，继续判断第四个分支，再次 fork……如此在分支 3、4、5、6 处逐层分裂。<br>· 进程 C：第三次分支（<code>(pid=fork())==0</code>）的子进程，命中后打印时间字符串 <code>ctime(&amp;timep)</code> 的返回值（形如 <code>Wed Nov 19 13:20:00 2026</code>），随后 return。<br>· 进程 D：第四个分支（brother）的子进程，命中后打印 <code>brother process</code>，随后 return。<br>· 进程 E：第五个分支的条件是 <code>(pid=fork()) &lt; 0</code>，而 fork 成功时只会返回子 PID（&gt;0）或 0，永不小于 0（除非创建失败），因此 <strong>「我的学号是 9527」这条在正常情况下不会打印</strong>——这是本题设置的干扰项。<br>· 进程 G、H：第六个分支（<code>(pid=fork())==0</code>）的子进程。由于 B 与 E 都会走到这个分支并各自 fork 一次，因此该分支会产生 <strong>两个</strong>子进程，各打印一次 <code>我的姓名是 nicai</code>。<br><strong>结论</strong>：终端打印共 5 条，分别是：<br>① <code>father process:pid=&lt;A的pid&gt;</code> —— 1 次<br>② <code>Wed Nov 19 13:20:00 2026</code>（ctime 格式的时间字符串）—— 1 次<br>③ <code>brother process</code> —— 1 次<br>④ <code>我的姓名是 nicai</code> —— <strong>2 次</strong><br>（实际输出顺序不确定，取决于各进程被调度执行的先后。）<br><br><strong>（3）父子进程关系图</strong><br><pre><code>            A (main)\n            │ fork#1\n     ┌──────┴──────┐\n     A(父)          B(子,pid=0)\n  打印 father        │ fork#2\n                 ┌───┴────┐\n                 B(父)     C(子)\n                  │       打印 ctime\n              fork#3\n             ┌────┴────┐\n           B(父)      D(子)\n                    打印 brother\n              fork#4\n             ┌────┴─────┐\n           B(父)       E(子)\n          fork#5         │ fork#6\n        ┌───┴───┐    ┌───┴───┐\n      B(父)   G(子)  E(父)  H(子)\n            打印 nicai    打印 nicai\n</code></pre>说明：A 打印 father 后立即结束；B 一路作为父进程向下 fork 三次（fork#2/#3/#4/#5 中作为父）；C 打印时间、D 打印 brother、G 与 H 各打印一次 nicai；E 作为 fork#5 的子进程继续执行 fork#6 再产生 H。第五分支（学号）因条件恒不成立而不产生打印。<br><strong>评分要点</strong>：（1）命令正确 2 分（有 gcc、源文件、-o 输出三要素）；（2）每类打印 0.5 分，其中「nicai 出现 2 次」和「学号不打印」是关键判别点（共 2 分）；（3）关系图结构正确 1 分、标注各子进程打印内容 1 分。", "pitfall": "三个高频错误：① 以为 fork 后只有子进程继续执行，漏掉父进程也继续走 else-if 链，导致进程数算少；② 把第五分支的 <code>(pid=fork())&lt;0</code> 误认为会执行，多写一条「我的学号是 9527」；③ 忘记 else-if 链「命中即跳出」的特性，以为一个进程会打印多条。"}, {"type": "comprehensive", "points": 4, "kc_id": "kc7.8", "cognitive_level": "apply", "difficulty": "hard", "question": "小明大学毕业后进入某互联网公司担任网络管理员，负责维护管理公司基于 Linux 的 Web 服务器。为了提高服务器的安全防护水平，小明在服务器上配置了防火墙。请根据该场景回答如下问题：<br>（1）小明在终端输入了什么命令可以显示 INPUT 链下 policy 为 ACCEPT 的规则列表？（1 分）<br>（2）小明发现 IP 地址 192.168.100.20 向服务器进行了多次端口扫描，想禁止该 IP 对服务器的访问，应该如何处理？（1 分）<br>（3）经过一段时间，发现网段 192.168.20.0/24 内大量 IP 经常频繁对服务器进行 ping 操作，需要对该网段禁止，请问该如何处理？（1 分）<br>（4）公司的技术人员恰好在网段 192.168.20.0/24 内远程调试一个 Web 应用，需要允许访问服务器，该技术人员使用终端的 IP 地址为 192.168.20.115，请问该如何处理？（1 分）<br>（5）领导怀疑有网络测绘公司购买了服务器，频繁对服务器的 UDP 端口扫描，导致 Web 服务出口经常被测绘数据包挤占，请问该如何处理？（1 分）", "answer": -1, "explanation": "<strong>（1）显示 INPUT 链规则</strong><br><code>iptables -L INPUT -n --line-numbers</code> 或 <code>iptables -t filter -L INPUT</code>。<br>说明：-L 列出规则，-n 以数字形式显示地址与端口（不做反向域名解析，速度快），--line-numbers 显示规则序号（便于后续 -D 删除）。默认表即 filter，可省略 -t filter。<br><br><strong>（2）禁止单个 IP 访问</strong><br><code>iptables -A INPUT -s 192.168.100.20 -j DROP</code><br>说明：-A 在 INPUT 链末尾追加，-s 指定源地址，-j DROP 静默丢弃。从安全角度用 DROP 而非 REJECT，避免向扫描者返回响应报文而暴露主机存活。<br><br><strong>（3）禁止整个网段 ping</strong><br><code>iptables -A INPUT -s 192.168.20.0/24 -p icmp -j DROP</code><br>说明：-s 后跟网段（CIDR 写法），-p icmp 只匹配 ICMP 协议（ping 使用 ICMP echo request）。若不加 -p icmp 会连同该网段所有流量一起封掉，可能误伤正常业务。<br><br><strong>（4）放行网段内的单个 IP（关键：顺序陷阱）</strong><br><code>iptables -I INPUT -s 192.168.20.115 -j ACCEPT</code><br>说明：<strong>必须用 -I 而不是 -A</strong>。因为第（3）问已经用 -A 在链尾追加了禁止 192.168.20.0/24 的 DROP 规则，iptables 规则自上而下逐条匹配、命中即止，若用 -A 追加放行规则，它会排在 DROP 之后，永远匹配不到。用 -I INPUT 把 ACCEPT 规则插到链首，才能先于 DROP 生效。若需精确指定位置可用 <code>-I INPUT 1</code>。<br><br><strong>（5）限制 UDP 扫描流量</strong><br><code>iptables -A INPUT -p udp -m limit --limit 10/s --limit-burst 20 -j ACCEPT</code><br><code>iptables -A INPUT -p udp -j DROP</code><br>说明：用 limit 模块限速——第一条允许 UDP 流量以每秒 10 个包的速率通过（突发上限 20 个包），第二条把超出的 UDP 包全部丢弃。两条配合既保证正常 UDP 业务（如 DNS）可用，又压制扫描流量。也可针对具体端口限制，例如 <code>-m tcp -p tcp --dport 80 -m limit --limit 100/s</code>。<br><strong>评分要点</strong>：每题 1 分，命令中的选项（-A/-I/-s/-p/-j/-m limit）必须正确；第（4）问必须体现 -I 的插入顺序，写成 -A 不给分。", "pitfall": "第（4）问是本大题的核心陷阱：放行规则必须插在 DROP 之前，用 -I 不用 -A。第（3）问别漏 -p icmp，否则会封掉整个网段的所有流量。第（5）问必须两条规则配合（limit 放行 + 兜底 DROP）。"}, {"type": "comprehensive", "points": 4, "kc_id": "kc8.2", "cognitive_level": "apply", "difficulty": "hard", "question": "小明大学毕业后进入某互联网公司担任网络管理员，负责 Linux 服务器的用户与安全管理。请回答如下问题：<br>（1）单位需要增加一个给技术开发部的用户账号，名字为 Wendy，密码为 <code>$%^&amp;</code>，请问小明需要如何操作？（1 分）<br>（2）小明如果想查看 /etc/passwd 文件中关于 root 的记录，该如何操作？（1 分）<br>（3）小明看到 /etc/passwd 文件中显示如下内容，请问代表什么意思？（1 分）<br><pre><code>root:x:0:0:root:/root:/bin/bash\noperator:x:11:0:operator:/root:/sbin/nologin</code></pre>（4）小明突然发现 /etc/passwd 文件的权限和所属用户发生了变化，请问这意味着什么？（1 分）<br>（5）小明赶紧打开 /etc/shadow 文件进一步查看 root 记录，请问文件中显示的如下内容分别表示什么意思？（1 分）<br><pre><code>root:$6$zeXU7L71f1Zq7kkf$hIMuNOfqg8IVeF2BrV4T7UZhDXW4gCTLCJUQrqYNwg6EpFy4qc4ds1CJfw3ZKBfIwNWEjkmm5SrbZFzhts97Q1::0:99999:7:::</code></pre>", "answer": -1, "explanation": "<strong>（1）增加用户并设置密码</strong><br><code>useradd Wendy</code> 创建用户（默认同时创建同名主目录 /home/Wendy 与同名用户组）。<br><code>passwd Wendy</code> 然后按提示两次输入密码 <code>$%^&amp;</code>。<br>也可用一条命令非交互式设置：<code>echo '$%^&amp;' | passwd --stdin Wendy</code>（注意特殊字符在 shell 中需用单引号包裹，否则 $、%、&amp; 会被 shell 解释）。<br><br><strong>（2）查看 root 记录</strong><br><code>grep '^root:' /etc/passwd</code> 或 <code>cat /etc/passwd | grep root</code>。<br>用 <code>^root:</code> 锚定行首可避免匹配到 rootfs、rootkit 等包含 root 的其它用户名。<br><br><strong>（3）passwd 两行内容含义</strong><br>· <code>root:x:0:0:root:/root:/bin/bash</code>：用户名 root；密码占位符 x（真实密码哈希在 /etc/shadow）；UID = 0（超级用户）；GID = 0（root 组）；描述信息 root；主目录 /root；登录 Shell 为 /bin/bash（可正常登录）。<br>· <code>operator:x:11:0:operator:/root:/sbin/nologin</code>：用户名 operator；密码占位符 x；UID = 11（普通用户）；GID = 0（属于 root 组）；描述 operator；主目录 /root；登录 Shell 为 <code>/sbin/nologin</code>——<strong>表示该账号被禁止登录系统</strong>（通常用于运行系统服务的服务账号），即使密码正确也无法获得 Shell。<br><br><strong>（4）passwd 权限与属主变化意味着什么</strong><br>/etc/passwd 的<strong>正常状态</strong>是 <code>-rw-r--r-- 1 root root</code>（0644），即只有 root 可写、所有人可读。<br>若权限变为<strong>可被普通用户写入</strong>（如 0666、0664 且属主非 root），或属主被改为其他用户，意味着：<br>① 系统可能<strong>已被入侵或提权成功</strong>——攻击者获得了修改用户数据库的能力；<br>② 普通用户可自行添加 UID 为 0 的账号，从而获得 root 权限；<br>③ 也可能只是管理员误操作（如执行 chmod 777 时误伤）。<br>应立即用 <code>chown root:root /etc/passwd &amp;&amp; chmod 644 /etc/passwd</code> 恢复，并审计系统日志、检查是否有异常 UID 0 账号。<br><br><strong>（5）shadow 一行内容含义</strong><br>该行共 9 个字段（冒号分隔）：<br>① <strong>用户名</strong>：root<br>② <strong>加密密码</strong>：<code>$6$zeXU7L71f1Zq7kkf$hIMuNOfq...</code>。其中 <code>$6$</code> 表示使用 <strong>SHA-512</strong> 算法；<code>zeXU7L71f1Zq7kkf</code> 是<strong>盐值</strong>（salt，防止彩虹表攻击）；其后的长串是密码哈希值。<br>③ <strong>最后一次修改密码的日期</strong>：0，表示从 1970-01-01 起第 0 天（即该密码从未修改过）。<br>④ <strong>最小修改间隔</strong>：0，表示随时可以再次修改密码，无天数限制。<br>⑤ <strong>最大有效天数</strong>：99999，表示密码永不过期。<br>⑥ <strong>过期前警告天数</strong>：7，表示密码到期前 7 天开始提醒用户。<br>⑦ <strong>宽限天数</strong>：空，表示密码过期后不给予宽限期（立即失效）。<br>⑧ <strong>账号失效日期</strong>：空，表示账号永不失效。<br>⑨ <strong>保留字段</strong>：空，未使用。<br><strong>评分要点</strong>：每题 1 分。（1）需含 useradd 与 passwd 两步；（3）需说明 nologin 的禁止登录含义；（4）需指出提权风险；（5）至少正确解释密码字段的算法标识与盐值、以及最大有效天数 99999。", "pitfall": "（1）密码含 $ % ^ &amp; 等特殊字符，命令行中必须用单引号包裹，否则被 shell 展开。（3）容易漏掉 /sbin/nologin 的含义——这是服务账号禁止登录的标志。（4）不能只答「权限变了」，必须指出可被普通用户写入会导致提权。（5）shadow 是 9 个字段，容易与 passwd 的 7 个字段记混。"}];
+var LABELS = {"page_title": "章节测试", "section": {"choice": "一、选择题", "multi": "二、多选题", "tf": "三、判断题", "fill": "四、填空题", "short": "五、简答题", "calc": "六、计算题", "code": "七、代码题", "essay": "八、问答题", "comprehensive": "九、综合题"}, "section_order": ["choice", "multi", "tf", "fill", "short", "calc", "code", "essay", "comprehensive"], "points_suffix": "分", "true_label": "正确", "false_label": "错误", "placeholder": "在此作答...", "code_placeholder": "在此编写代码...", "pitfall_prefix": "易错提醒：", "correct_label": "正确", "wrong_label": "错误", "partial_label": "部分正确", "answer_prefix": "正确答案：", "reference_label": "参考答案", "graded_label": "已批改", "grade_button": "提交批改", "score_label": "总分", "duration_prefix": "满分 100 分 | 建议 ", "duration_suffix": " 分钟 | 选择答案后点击提交批改"};
+var __epaImages = {}; // { qid: [dataUrl, ...] } — pasted images per answer field
+
+// ─── Answer normalization (robust to how the JSON was authored) ──────
+// tf / choice answers may arrive as int index, boolean, letter ("A"),
+// or label string ("正确"/"错误"/"对"/"错"). All are coerced to an
+// option index so grading never silently fails on a type mismatch.
+
+function tfAnswerIndex(ans) {
+  // option 0 = true_label (正确), option 1 = false_label (错误)
+  // boolean: true → 正确(0), false → 错误(1)
+  if (typeof ans === 'boolean') return ans ? 0 : 1;
+  // number: treat as boolean (0=false→错误(1), non-zero=true→正确(0))
+  if (typeof ans === 'number') return ans ? 0 : 1;
+  var s = ('' + ans).trim().toLowerCase();
+  var truthy = ['t', 'true', '正确', '对', '是', 'yes', 'y', '√', '✓'];
+  var falsy  = ['f', 'false', '错误', '错', '否', 'no', 'n', '×', 'x'];
+  if (truthy.indexOf(s) !== -1) return 0;
+  if (falsy.indexOf(s) !== -1) return 1;
+  return ans ? 0 : 1;
+}
+
+function choiceAnswerIndex(ans, options) {
+  if (typeof ans === 'number') return ans;
+  var s = ('' + ans).trim();
+  if (/^[A-Za-z]$/.test(s)) return s.toUpperCase().charCodeAt(0) - 65;
+  if (/^\d+$/.test(s)) return parseInt(s, 10);
+  if (options) {
+    for (var i = 0; i < options.length; i++) {
+      if (('' + options[i]).trim() === s) return i;
+    }
+  }
+  return parseInt(s, 10);
+}
+
+function multiAnswerSet(ans, options) {
+  var arr = Array.isArray(ans) ? ans : [ans];
+  var set = {};
+  for (var i = 0; i < arr.length; i++) {
+    set[choiceAnswerIndex(arr[i], options)] = true;
+  }
+  return set;
+}
+
+// Normalize free text for fill-in-the-blank comparison: trim, lowercase,
+// drop surrounding whitespace and common punctuation, unify full/half width.
+function normText(s) {
+  s = ('' + s).trim().toLowerCase();
+  s = s.replace(/[\s　]+/g, '');
+  s = s.replace(/[.,;:!?。，、；：！？“”"'（）()【】\[\]<>《》]/g, '');
+  // full-width ASCII -> half-width
+  s = s.replace(/[！-～]/g, function (c) {
+    return String.fromCharCode(c.charCodeAt(0) - 0xfee0);
+  });
+  return s;
+}
+
+// How many blanks does a fill question have? Count underscore / ＿ runs.
+function fillBlankCount(question) {
+  var m = ('' + question).match(/(_{2,}|＿+)/g);
+  return m ? m.length : 0;
+}
+
+// Coerce a fill `answer` into an array (one entry per blank) of accepted
+// answer lists. Handles: string, [synonyms], [[blank1 syns],[blank2 syns]].
+function fillBlankAnswers(ans, nBlanks) {
+  if (nBlanks < 1) nBlanks = 1;
+  if (!Array.isArray(ans)) return padBlanks([[ans]], nBlanks);
+  if (ans.length && Array.isArray(ans[0])) return padBlanks(ans, nBlanks);
+  // flat array of strings
+  if (nBlanks === 1) return [ans];                 // synonyms for one blank
+  if (ans.length === nBlanks) {                    // one answer per blank
+    return ans.map(function (a) { return [a]; });
+  }
+  return padBlanks([ans], nBlanks);                // ambiguous -> all on blank 1
+}
+
+function padBlanks(arr, n) {
+  var out = arr.slice(0, n);
+  while (out.length < n) out.push(['']);
+  return out;
+}
+
+// ─── Build ───────────────────────────────────────────────────────────
+
+function build() {
+  var container = document.getElementById('questions-container');
+  if (!container) { console.error('ExamPass: questions-container not found'); return; }
+
+  // Stable-sort questions by section order so headings group correctly
+  // regardless of input order.
+  var order = LABELS.section_order || [];
+  Q.forEach(function (q, i) { q._i = i; });
+  Q.sort(function (a, b) {
+    var oa = order.indexOf(a.type); if (oa === -1) oa = 99;
+    var ob = order.indexOf(b.type); if (ob === -1) ob = 99;
+    return oa - ob || a._i - b._i;
+  });
+
+  var h = '';
+  var sec = '';
+  var titles = LABELS.section;
+
+  for (var i = 0; i < Q.length; i++) {
+    var q = Q[i];
+    if (q.type !== sec) {
+      sec = q.type;
+      if (titles[q.type]) h += '<h3>' + titles[q.type] + '</h3>';
+    }
+
+    var qid = 'q' + i;
+    h += '<div class="q-card" id="card-' + qid + '">';
+    h += '<div class="q-num">' + (i + 1) + '. (' + q.points + ' ' + LABELS.points_suffix + ')</div>';
+
+    if (q.type === 'fill') {
+      h += '<div class="q-text">' + renderFill(q, qid) + '</div>';
+    } else {
+      h += '<div class="q-text">' + q.question + '</div>';
+    }
+
+    if (q.type === 'choice') {
+      var opts = q.options || [];
+      for (var j = 0; j < opts.length; j++) {
+        h += '<label class="option" id="opt-' + qid + '-' + j + '" onclick="sel(\'' + qid + '\',' + j + ')">';
+        h += '<input type="radio" name="' + qid + '" value="' + j + '">' + String.fromCharCode(65 + j) + '. ' + opts[j] + '</label>';
+      }
+    } else if (q.type === 'multi') {
+      var mopts = q.options || [];
+      for (var k = 0; k < mopts.length; k++) {
+        h += '<label class="option" id="opt-' + qid + '-' + k + '" onclick="toggle(\'' + qid + '\',' + k + ')">';
+        h += '<input type="checkbox" name="' + qid + '" value="' + k + '">' + String.fromCharCode(65 + k) + '. ' + mopts[k] + '</label>';
+      }
+    } else if (q.type === 'tf') {
+      h += '<label class="option" id="opt-' + qid + '-0" onclick="sel(\'' + qid + '\',0)">';
+      h += '<input type="radio" name="' + qid + '" value="0">' + LABELS.true_label + '</label>';
+      h += '<label class="option" id="opt-' + qid + '-1" onclick="sel(\'' + qid + '\',1)">';
+      h += '<input type="radio" name="' + qid + '" value="1">' + LABELS.false_label + '</label>';
+    } else if (q.type === 'fill') {
+      // inputs already rendered inline inside q-text
+    } else if (q.type === 'code') {
+      h += '<textarea class="q-textarea q-code" id="text-' + qid + '" placeholder="' + (LABELS.code_placeholder || LABELS.placeholder) + '" rows="8" spellcheck="false"></textarea>';
+    } else {
+      h += '<textarea class="q-textarea" id="text-' + qid + '" placeholder="' + LABELS.placeholder + '" rows="3"></textarea>';
+    }
+
+    h += '<div class="result" id="result-' + qid + '">';
+    h += '<span class="badge" id="badge-' + qid + '"></span><span id="correct-' + qid + '"></span>';
+    h += '<div class="explanation">' + (q.explanation || '') + '</div>';
+    if (q.pitfall) {
+      h += '<div class="pitfall">' + LABELS.pitfall_prefix + q.pitfall + '</div>';
+    }
+    h += '</div></div>';
+  }
+
+  container.innerHTML = h;
+  __epaPasteListeners(container);
+
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise([container]).catch(function (err) {
+      console.error('MathJax typeset error:', err);
+    });
+  }
+}
+
+// Render fill question text with inline <input> boxes replacing blanks.
+function renderFill(q, qid) {
+  var nBlanks = fillBlankCount(q.question);
+  var k = 0;
+  var html = ('' + q.question).replace(/(_{2,}|＿+)/g, function () {
+    var inp = '<input type="text" class="fill-input" id="fill-' + qid + '-' + k + '" autocomplete="off" spellcheck="false">';
+    k++;
+    return inp;
+  });
+  if (k === 0) {
+    // No markers in text -> append boxes based on answer shape, one per line
+    var n = fillBlankAnswers(q.answer, 1).length;
+    var ans = q.answer;
+    if (Array.isArray(ans)) n = Array.isArray(ans[0]) ? ans.length : (ans.length || 1);
+    if (n < 1) n = 1;
+    html += '<div>';
+    for (var b = 0; b < n; b++) {
+      html += '<div class="fill-blank-row">';
+      if (n > 1) html += '<span class="fill-tag">' + (b + 1) + '.</span>';
+      html += '<input type="text" class="fill-input" id="fill-' + qid + '-' + b + '" autocomplete="off" spellcheck="false">';
+      html += '</div>';
+    }
+    html += '</div>';
+  }
+  return html;
+}
+
+document.addEventListener('DOMContentLoaded', build);
+if (document.readyState === 'interactive' || document.readyState === 'complete') {
+  build();
+}
+
+// ─── Selection handlers ──────────────────────────────────────────────
+
+function sel(qid, idx) {
+  var prefix = 'opt-' + qid + '-';
+  var all = document.querySelectorAll('[id^="' + prefix + '"]');
+  for (var i = 0; i < all.length; i++) all[i].classList.remove('selected');
+  var target = document.getElementById('opt-' + qid + '-' + idx);
+  if (target) target.classList.add('selected');
+  var radio = document.querySelector('input[name="' + qid + '"][value="' + idx + '"]');
+  if (radio) radio.checked = true;
+}
+
+function toggle(qid, idx) {
+  var box = document.querySelector('input[name="' + qid + '"][value="' + idx + '"]');
+  var label = document.getElementById('opt-' + qid + '-' + idx);
+  if (!box) return;
+  box.checked = !box.checked;
+  if (label) label.classList.toggle('selected', box.checked);
+}
+
+// ─── Grading ─────────────────────────────────────────────────────────
+
+function gradeAll() {
+  var score = 0;
+  for (var i = 0; i < Q.length; i++) {
+    var q = Q[i];
+    var qid = 'q' + i;
+    var card = document.getElementById('card-' + qid);
+    var result = document.getElementById('result-' + qid);
+    var badge = document.getElementById('badge-' + qid);
+    var correctEl = document.getElementById('correct-' + qid);
+    if (!card || !result) continue;
+
+    result.style.display = 'block';
+
+    if (q.type === 'choice' || q.type === 'tf') {
+      score += gradeSingle(q, qid, card, badge, correctEl);
+    } else if (q.type === 'multi') {
+      score += gradeMulti(q, qid, card, badge, correctEl);
+    } else if (q.type === 'fill') {
+      score += gradeFill(q, qid, card, badge, correctEl);
+    } else {
+      card.classList.add('correct');
+      badge.className = 'badge badge-ref';
+      badge.textContent = LABELS.reference_label;
+    }
+  }
+
+  var sb = document.getElementById('score-box');
+  if (sb) {
+    sb.style.display = 'block';
+    document.getElementById('score-num').textContent = roundScore(score);
+    sb.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  var opts = document.querySelectorAll('.option');
+  for (var a = 0; a < opts.length; a++) opts[a].style.pointerEvents = 'none';
+  var tas = document.querySelectorAll('.q-textarea');
+  for (var b = 0; b < tas.length; b++) tas[b].disabled = true;
+  var fis = document.querySelectorAll('.fill-input');
+  for (var c = 0; c < fis.length; c++) fis[c].disabled = true;
+
+  var btn = document.getElementById('grade-btn');
+  if (btn) { btn.disabled = true; btn.textContent = LABELS.graded_label; }
+
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise().catch(function (err) {
+      console.error('MathJax typeset error:', err);
+    });
+  }
+}
+
+function roundScore(s) {
+  return Math.round(s * 10) / 10;
+}
+
+function gradeSingle(q, qid, card, badge, correctEl) {
+  var ansIdx = q.type === 'tf' ? tfAnswerIndex(q.answer) : choiceAnswerIndex(q.answer, q.options);
+  var radio = document.querySelector('input[name="' + qid + '"]:checked');
+  if (radio && parseInt(radio.value, 10) === ansIdx) {
+    card.classList.add('correct');
+    badge.className = 'badge badge-ok';
+    badge.textContent = LABELS.correct_label;
+    correctEl.innerHTML = '';
+    var ok = document.getElementById('opt-' + qid + '-' + ansIdx);
+    if (ok) ok.classList.add('correct-answer');
+    return q.points;
+  }
+  card.classList.add('wrong');
+  badge.className = 'badge badge-no';
+  badge.textContent = LABELS.wrong_label;
+  var ansText = q.type === 'choice'
+    ? String.fromCharCode(65 + ansIdx) + '. ' + (q.options ? q.options[ansIdx] : '')
+    : (ansIdx === 0 ? LABELS.true_label : LABELS.false_label);
+  correctEl.innerHTML = LABELS.answer_prefix + ansText;
+  if (radio) {
+    var wrongOpt = document.getElementById('opt-' + qid + '-' + radio.value);
+    if (wrongOpt) wrongOpt.classList.add('wrong-answer');
+  }
+  var corr = document.getElementById('opt-' + qid + '-' + ansIdx);
+  if (corr) corr.classList.add('correct-answer');
+  return 0;
+}
+
+function gradeMulti(q, qid, card, badge, correctEl) {
+  var want = multiAnswerSet(q.answer, q.options);
+  var wantKeys = Object.keys(want).map(Number);
+  var checked = document.querySelectorAll('input[name="' + qid + '"]:checked');
+  var picked = [];
+  for (var i = 0; i < checked.length; i++) picked.push(parseInt(checked[i].value, 10));
+
+  var anyWrong = false, hitCorrect = 0;
+  for (var p = 0; p < picked.length; p++) {
+    if (want[picked[p]]) hitCorrect++;
+    else anyWrong = true;
+  }
+
+  // reveal correct / wrong option markers
+  var mopts = q.options || [];
+  for (var j = 0; j < mopts.length; j++) {
+    var el = document.getElementById('opt-' + qid + '-' + j);
+    if (!el) continue;
+    if (want[j]) el.classList.add('correct-answer');
+    else if (picked.indexOf(j) !== -1) el.classList.add('wrong-answer');
+  }
+
+  var earned;
+  if (!anyWrong && hitCorrect === wantKeys.length && picked.length === wantKeys.length) {
+    earned = q.points;
+    card.classList.add('correct');
+    badge.className = 'badge badge-ok';
+    badge.textContent = LABELS.correct_label;
+    correctEl.innerHTML = '';
+  } else if (!anyWrong && hitCorrect > 0) {
+    // 少选不错选 -> partial credit
+    earned = roundScore(q.points * hitCorrect / wantKeys.length);
+    card.classList.add('partial');
+    badge.className = 'badge badge-partial';
+    badge.textContent = LABELS.partial_label;
+    correctEl.innerHTML = LABELS.answer_prefix + multiAnswerText(wantKeys, mopts);
+  } else {
+    earned = 0;
+    card.classList.add('wrong');
+    badge.className = 'badge badge-no';
+    badge.textContent = LABELS.wrong_label;
+    correctEl.innerHTML = LABELS.answer_prefix + multiAnswerText(wantKeys, mopts);
+  }
+  return earned;
+}
+
+function multiAnswerText(keys, options) {
+  return keys.sort(function (a, b) { return a - b; }).map(function (k) {
+    return String.fromCharCode(65 + k) + '. ' + (options ? options[k] : '');
+  }).join('  ');
+}
+
+// ─── Image paste support ─────────────────────────────────────────────
+
+function __epaPasteListeners(container) {
+  var tas = container.querySelectorAll('.q-textarea');
+  for (var i = 0; i < tas.length; i++) {
+    (function(ta) {
+      var qid = ta.id.replace('text-', '');
+      ta.addEventListener('paste', function(e) {
+        var items = e.clipboardData && e.clipboardData.items;
+        if (!items) return;
+        for (var j = 0; j < items.length; j++) {
+          if (items[j].type.indexOf('image') !== -1) {
+            e.preventDefault();
+            var file = items[j].getAsFile();
+            var reader = new FileReader();
+            reader.onload = (function(id, anchor) {
+              return function(ev) {
+                var dataUrl = ev.target.result;
+                if (!__epaImages[id]) __epaImages[id] = [];
+                __epaImages[id].push(dataUrl);
+
+                var wrap = document.createElement('div');
+                wrap.className = 'paste-img-wrap';
+                var img = document.createElement('img');
+                img.src = dataUrl;
+                var rm = document.createElement('button');
+                rm.className = 'paste-img-remove';
+                rm.title = '移除图片';
+                rm.textContent = '×';
+                rm.onclick = (function(url, w) {
+                  return function() {
+                    var idx = __epaImages[id].indexOf(url);
+                    if (idx !== -1) __epaImages[id].splice(idx, 1);
+                    w.parentNode.removeChild(w);
+                  };
+                })(dataUrl, wrap);
+                wrap.appendChild(img);
+                wrap.appendChild(rm);
+                anchor.parentNode.insertBefore(wrap, anchor.nextSibling);
+              };
+            })(qid, ta);
+            reader.readAsDataURL(file);
+          }
+        }
+      });
+    })(tas[i]);
+  }
+}
+
+// ─── Collect all user answers for export ─────────────────────────────
+
+function collectAnswers() {
+  var out = [];
+  for (var i = 0; i < Q.length; i++) {
+    var q = Q[i];
+    var qid = 'q' + i;
+    var userAnswer = null;
+
+    if (q.type === 'choice' || q.type === 'tf') {
+      var radio = document.querySelector('input[name="' + qid + '"]:checked');
+      userAnswer = radio ? parseInt(radio.value, 10) : null;
+    } else if (q.type === 'multi') {
+      var checked = document.querySelectorAll('input[name="' + qid + '"]:checked');
+      userAnswer = [];
+      for (var c = 0; c < checked.length; c++) {
+        userAnswer.push(parseInt(checked[c].value, 10));
+      }
+    } else if (q.type === 'fill') {
+      var nBlanks = fillBlankCount(q.question);
+      var blanks = fillBlankAnswers(q.answer, nBlanks);
+      userAnswer = [];
+      for (var b = 0; b < blanks.length; b++) {
+        var inp = document.getElementById('fill-' + qid + '-' + b);
+        userAnswer.push(inp ? inp.value : '');
+      }
+    } else {
+      var ta = document.getElementById('text-' + qid);
+      userAnswer = ta ? ta.value : '';
+    }
+
+    out.push({
+      index: i,
+      type: q.type,
+      question: q.question,
+      options: q.options || null,
+      correct_answer: q.answer,
+      user_answer: userAnswer,
+      points: q.points,
+      explanation: q.explanation || '',
+      kc_id: q.kc_id || '',
+      images: (__epaImages[qid] || []).slice()
+    });
+  }
+  return out;
+}
+
+// ─── Save answers for AI grading ─────────────────────────────────────
+
+function saveForGrading() {
+  var answers = collectAnswers();
+  var chapterTitle = (document.title || '章节').replace(/\s+/g, '_');
+  var nowStr = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+  var filename = chapterTitle + '_answers_' + nowStr + '.json';
+
+  var data = JSON.stringify({
+    chapter: document.title || '',
+    saved_at: new Date().toISOString(),
+    questions: answers
+  }, null, 2);
+
+  var blob = new Blob([data], { type: 'application/json' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  var cmdEl = document.getElementById('epa-grade-cmd-text');
+  if (cmdEl) cmdEl.textContent = '/exampass grade "<下载目录>/' + filename + '"';
+  var modal = document.getElementById('epa-grade-modal');
+  if (modal) modal.classList.add('open');
+}
+
+function __epaCloseGradeModal() {
+  var modal = document.getElementById('epa-grade-modal');
+  if (modal) modal.classList.remove('open');
+}
+
+function __epaCopyGradeCmd() {
+  var cmdEl = document.getElementById('epa-grade-cmd-text');
+  if (!cmdEl) return;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(cmdEl.textContent);
+  } else {
+    var range = document.createRange();
+    range.selectNodeContents(cmdEl);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    document.execCommand('copy');
+    sel.removeAllRanges();
+  }
+  var btn = document.getElementById('epa-grade-copy-btn');
+  if (btn) { btn.textContent = '已复制'; setTimeout(function(){ btn.textContent = '复制命令'; }, 2000); }
+}
+
+function gradeFill(q, qid, card, badge, correctEl) {
+  var nBlanks = fillBlankCount(q.question);
+  var blanks = fillBlankAnswers(q.answer, nBlanks);
+  var n = blanks.length;
+  var hit = 0;
+  var displays = [];
+
+  for (var b = 0; b < n; b++) {
+    var inp = document.getElementById('fill-' + qid + '-' + b);
+    var accepted = blanks[b] || [''];
+    var user = inp ? normText(inp.value) : '';
+    var ok = false;
+    for (var a = 0; a < accepted.length; a++) {
+      if (accepted[a] !== '' && normText(accepted[a]) === user && user !== '') { ok = true; break; }
+    }
+    if (inp) inp.classList.add(ok ? 'fill-ok' : 'fill-no');
+    if (ok) hit++;
+    displays.push((n > 1 ? (b + 1) + '. ' : '') + accepted.filter(function (x) { return x !== ''; }).join(' / '));
+  }
+
+  var earned = roundScore(q.points * hit / n);
+  correctEl.innerHTML = LABELS.answer_prefix + displays.join('   ');
+
+  if (hit === n) {
+    card.classList.add('correct');
+    badge.className = 'badge badge-ok';
+    badge.textContent = LABELS.correct_label;
+  } else if (hit > 0) {
+    card.classList.add('partial');
+    badge.className = 'badge badge-partial';
+    badge.textContent = LABELS.partial_label;
+  } else {
+    card.classList.add('wrong');
+    badge.className = 'badge badge-no';
+    badge.textContent = LABELS.wrong_label;
+  }
+  return earned;
+}
+
+</script>
+</body>
+</html>

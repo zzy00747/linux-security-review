@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Linux系统安全与分析 · 复习资料索引</title>
+<style>
+  :root{
+    --paper:#faf7f0; --paper-dark:#f2ece0; --ink:#2a2722; --ink-light:#6b6355;
+    --accent:#8a6d3b; --accent-2:#b08d57; --divider:#e0d8c8; --must:#c0392b;
+    --key:#c47f17; --freq:#2d7a4f; --info:#6b7280; --shadow:rgba(60,50,30,.10);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; padding:0; background:var(--paper); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    line-height:1.7; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px; margin:0 auto; padding:52px 28px 90px}
+  header{margin-bottom:14px}
+  h1{
+    font-size:2.1em; margin:0 0 10px; letter-spacing:-.4px; font-weight:700;
+    background:linear-gradient(100deg,var(--accent),var(--accent-2));
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  }
+  .sub{color:var(--ink-light); font-size:.98em; margin:0 0 6px}
+  .sub code{background:var(--paper-dark); padding:1px 6px; border-radius:4px; font-size:.92em}
+
+  .stats{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+    gap:14px; margin:30px 0 40px;
+  }
+  .stat{
+    background:#fff; border:1px solid var(--divider); border-radius:12px;
+    padding:18px 20px; box-shadow:0 2px 10px var(--shadow); text-align:center;
+  }
+  .stat b{display:block; font-size:1.85em; color:var(--accent); line-height:1.2; font-weight:700}
+  .stat span{font-size:.86em; color:var(--ink-light); letter-spacing:.3px}
+
+  h2.sec{
+    font-size:1.22em; margin:44px 0 18px; padding-bottom:10px;
+    border-bottom:2px solid var(--divider); font-weight:700;
+  }
+  h2.sec .tag{
+    font-size:.68em; font-weight:500; color:#fff; background:var(--accent);
+    padding:2px 9px; border-radius:20px; margin-left:10px; vertical-align:middle;
+    letter-spacing:.5px;
+  }
+
+  /* 期末卷优先展示 */
+  .exam-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:18px}
+  .exam-card{
+    background:linear-gradient(135deg,#fff 0%,#fdfaf4 100%);
+    border:1px solid var(--divider); border-radius:14px; padding:24px 26px;
+    box-shadow:0 3px 16px var(--shadow); position:relative; overflow:hidden;
+    transition:transform .16s, box-shadow .16s;
+  }
+  .exam-card:hover{transform:translateY(-2px); box-shadow:0 6px 24px rgba(60,50,30,.16)}
+  .exam-card::before{
+    content:''; position:absolute; left:0; top:0; bottom:0; width:4px;
+    background:linear-gradient(180deg,var(--accent),var(--accent-2));
+  }
+  .exam-card h3{margin:0 0 8px; font-size:1.12em; font-weight:700}
+  .exam-card .meta{font-size:.86em; color:var(--ink-light); margin-bottom:14px; line-height:1.6}
+  .exam-card .meta b{color:var(--accent); font-weight:600}
+  .btn{
+    display:inline-block; padding:8px 18px; border-radius:8px; text-decoration:none;
+    font-size:.9em; font-weight:600; transition:all .15s;
+  }
+  .btn-primary{background:var(--accent); color:#fff}
+  .btn-primary:hover{background:#755c30}
+  .btn-ghost{background:var(--paper-dark); color:var(--ink); border:1px solid var(--divider)}
+  .btn-ghost:hover{background:#e8dfcd}
+
+  .cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(268px,1fr)); gap:16px}
+  .card{
+    background:#fff; border:1px solid var(--divider); border-radius:12px;
+    padding:18px 20px; box-shadow:0 2px 8px var(--shadow);
+    display:flex; flex-direction:column; transition:transform .15s, box-shadow .15s;
+  }
+  .card:hover{transform:translateY(-2px); box-shadow:0 5px 18px rgba(60,50,30,.15)}
+  .card.disabled{opacity:.45; filter:grayscale(.6)}
+  .card .ch{font-weight:700; font-size:1.02em; margin-bottom:12px; color:var(--ink)}
+  .card .nums{display:flex; gap:14px; font-size:.82em; color:var(--ink-light); margin-bottom:10px}
+  .card .nums b{color:var(--accent); font-size:1.15em; font-weight:700; margin-right:2px}
+  .card .hub{
+    font-size:.78em; color:var(--must); background:#fdf2f0; border-left:2px solid var(--must);
+    padding:4px 9px; border-radius:0 4px 4px 0; margin-bottom:12px; line-height:1.5;
+  }
+  .card .open{
+    margin-top:auto; font-size:.88em; font-weight:600; color:var(--accent);
+    text-decoration:none; padding-top:4px;
+  }
+  .card .open:hover{color:#755c30; text-decoration:underline}
+  .card .open.disabled{color:var(--ink-light); text-decoration:none}
+
+  .guide{
+    background:#fff; border:1px solid var(--divider); border-radius:12px;
+    padding:24px 28px; box-shadow:0 2px 10px var(--shadow); margin-top:20px;
+  }
+  .guide ol{margin:0; padding-left:22px}
+  .guide li{margin-bottom:11px; line-height:1.75}
+  .guide li:last-child{margin-bottom:0}
+  .guide b{color:var(--accent)}
+  .guide .warn{
+    background:#fdf6ec; border-left:3px solid var(--key); padding:12px 16px;
+    border-radius:0 6px 6px 0; margin-top:16px; font-size:.92em; color:#6b5525;
+  }
+
+  footer{
+    margin-top:56px; padding-top:22px; border-top:1px solid var(--divider);
+    font-size:.84em; color:var(--ink-light); text-align:center; line-height:1.9;
+  }
+  footer a{color:var(--accent); text-decoration:none}
+  footer a:hover{text-decoration:underline}
+
+  @media (max-width:640px){
+    .wrap{padding:32px 16px 60px}
+    h1{font-size:1.6em}
+    .stats{grid-template-columns:repeat(2,1fr); gap:10px}
+    .stat{padding:14px 12px}
+    .stat b{font-size:1.5em}
+    .cards{grid-template-columns:1fr}
+    .exam-grid{grid-template-columns:1fr}
+  }
+  @media print{
+    body{background:#fff}
+    .exam-card,.card,.guide{box-shadow:none; break-inside:avoid}
+    .btn{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Linux系统安全与分析 · 复习资料</h1>
+  <p class="sub">湘潭大学 · 2023 级网络空间安全 · 闭卷期末</p>
+  <p class="sub">基于 11 讲课件全量生成 · 每页含知识清单 + 原始 PPT 对照 + 交互测试</p>
+</header>
+
+<div class="stats">
+  <div class="stat"><b>11</b><span>讲课件</span></div>
+  <div class="stat"><b>100</b><span>知识组件</span></div>
+  <div class="stat"><b>198</b><span>练习题</span></div>
+  <div class="stat"><b>461</b><span>幻灯片对照</span></div>
+  <div class="stat"><b>32</b><span>期末仿真题</span></div>
+</div>
+
+<h2 class="sec">期末考试仿真卷<span class="tag">考前必做</span></h2>
+<div class="exam-grid">
+  <div class="exam-card">
+    <h3>📝 仿真卷（闭卷）</h3>
+    <div class="meta">
+      <b>32</b> 题 · <b>100</b> 分 · 120 分钟<br>
+      选择题 10 · 填空题 10 · 简答题 5 · 计算题 1 · 综合题 6<br>
+      难度梯度 基础 25% / 中档 45% / 拉分 30%
+    </div>
+    <a class="btn btn-primary" href="期末考试-仿真卷.html">开始答题 →</a>
+  </div>
+  <div class="exam-card">
+    <h3>✅ 答案与评分标准</h3>
+    <div class="meta">
+      逐题参考答案 · 详细解析 · 评分要点<br>
+      含易错提醒，<b>建议做完卷再看</b><br>
+      严格对齐老师复习课「要点一/要点二」
+    </div>
+    <a class="btn btn-ghost" href="期末考试-答案与评分标准.html">查看答案 →</a>
+  </div>
+</div>
+
+<h2 class="sec">分讲复习资料<span class="tag">11 讲</span></h2>
+<div class="cards">
+<div class="card"><div class="ch">第1讲</div><div class="nums"><span><b>9</b> 知识点</span><span><b>17</b> 题</span><span><b>29</b> 页</span></div><div class="hub">★ 枢纽：存储程序计算机与冯·诺依曼原理</div><a class="open" href="第1讲.html">打开 →</a></div>
+<div class="card"><div class="ch">第2讲</div><div class="nums"><span><b>8</b> 知识点</span><span><b>15</b> 题</span><span><b>37</b> 页</span></div><div class="hub">★ 枢纽：函数堆栈框架建立与拆除全过程</div><a class="open" href="第2讲.html">打开 →</a></div>
+<div class="card"><div class="ch">第3讲</div><div class="nums"><span><b>3</b> 知识点</span><span><b>10</b> 题</span><span><b>11</b> 页</span></div><div class="hub">★ 枢纽：存储层次与总线结构</div><a class="open" href="第3讲.html">打开 →</a></div>
+<div class="card"><div class="ch">第4讲</div><div class="nums"><span><b>11</b> 知识点</span><span><b>13</b> 题</span><span><b>42</b> 页</span></div><div class="hub">★ 枢纽：用户态与内核态权限划分</div><a class="open" href="第4讲.html">打开 →</a></div>
+<div class="card"><div class="ch">第5讲</div><div class="nums"><span><b>7</b> 知识点</span><span><b>11</b> 题</span><span><b>16</b> 页</span></div><div class="hub">★ 枢纽：嵌入式汇编语法与常用限定符</div><a class="open" href="第5讲.html">打开 →</a></div>
+<div class="card"><div class="ch">第6讲 可执行程序工作原理</div><div class="nums"><span><b>12</b> 知识点</span><span><b>28</b> 题</span><span><b>57</b> 页</span></div><div class="hub">★ 枢纽：ELF 目标文件格式概念</div><a class="open" href="第6讲%20可执行程序工作原理.html">打开 →</a></div>
+<div class="card"><div class="ch">第7讲 防火墙</div><div class="nums"><span><b>8</b> 知识点</span><span><b>11</b> 题</span><span><b>26</b> 页</span></div><div class="hub">★ 枢纽：iptables 与 netfilter 架构</div><a class="open" href="第7讲%20防火墙.html">打开 →</a></div>
+<div class="card"><div class="ch">第8讲 用户管理</div><div class="nums"><span><b>11</b> 知识点</span><span><b>12</b> 题</span><span><b>74</b> 页</span></div><div class="hub">★ 枢纽：useradd、passwd、su 用户创建实操</div><a class="open" href="第8讲%20用户管理.html">打开 →</a></div>
+<div class="card"><div class="ch">第9讲 文件系统</div><div class="nums"><span><b>11</b> 知识点</span><span><b>32</b> 题</span><span><b>61</b> 页</span></div><div class="hub">★ 枢纽：文件权限 rwx 与数字表示</div><a class="open" href="第9讲%20文件系统.html">打开 →</a></div>
+<div class="card"><div class="ch">第10讲 安全扫描工具</div><div class="nums"><span><b>10</b> 知识点</span><span><b>13</b> 题</span><span><b>54</b> 页</span></div><div class="hub">★ 枢纽：敏感端口与常见服务默认端口</div><a class="open" href="第10讲%20安全扫描工具.html">打开 →</a></div>
+<div class="card"><div class="ch">第11讲 系统诊断</div><div class="nums"><span><b>10</b> 知识点</span><span><b>36</b> 题</span><span><b>54</b> 页</span></div><div class="hub">★ 枢纽：IDS 与 NIDS/HIDS 分类</div><a class="open" href="第11讲%20系统诊断.html">打开 →</a></div>
+</div>
+
+<h2 class="sec">使用建议</h2>
+<div class="guide">
+  <ol>
+    <li><b>第一轮（通读）</b>：按讲次顺序打开，只看「📖 知识清单」tab。每个知识点按 <b>Hook → 一句话结论 → 为什么 → 是什么 → 怎么用 → 自测</b> 组织，先读结论再读展开。</li>
+    <li><b>第二轮（对照）</b>：右侧「PPT 对照栏」贴着该知识点对应的原始幻灯片。标题旁的 <code>[页N]</code> 小链接点击可滚到对应页，防止漏掉老师原话。</li>
+    <li><b>第三轮（自测）</b>：切到「📝 章节测试」tab 做题，点「提交批改」立刻出分并展开逐题解析。错题回到对应知识点重读。</li>
+    <li><b>第四轮（模考）</b>：做期末仿真卷，严格限时 120 分钟，做完再看答案页对评分要点。</li>
+  </ol>
+  <div class="warn">
+    <b>⚠ 特别注意</b>：老师复习课「要点一」第 10 条提到<b>进程描述符 task_struct、进程父子关系图、fork() 创建子进程</b>，
+    这部分来自教材 6.1/6.2，<b>11 讲 PPT 中没有</b>。仿真卷已按考纲出题覆盖，但建议另外翻教材这两节补充。
+  </div>
+</div>
+
+<footer>
+  由 <a href="https://github.com/WUBING2023/ExamPass-Assistant" target="_blank" rel="noopener">ExamPass Assistant</a> v2.0 生成 ·
+  共 11 讲 / 100 个知识组件 / 198 道练习题 / 32 道仿真题<br>
+  课件版权归授课教师所有 · 本资料仅供个人复习使用
+</footer>
+
+</div>
+</body>
+</html>
