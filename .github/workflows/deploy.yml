@@ -1,0 +1,58 @@
+name: Deploy to Cloudflare Workers
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Build & Deploy
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Verify assets
+        run: |
+          echo "=== 待部署文件 ==="
+          ls -la public/
+          count=$(ls public/*.html 2>/dev/null | wc -l)
+          echo "HTML 文件数: $count"
+          if [ "$count" -lt 14 ]; then
+            echo "::error::public/ 目录 HTML 文件不足 14 个，部署中止"
+            exit 1
+          fi
+          if [ ! -f public/index.html ]; then
+            echo "::error::缺少 public/index.html"
+            exit 1
+          fi
+          echo "✅ 资源检查通过"
+
+      - name: Deploy with Wrangler
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy
+
+      - name: Deployment summary
+        run: |
+          echo "### 🚀 部署完成" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "站点地址：https://linux-security-review.voidsec.workers.dev/" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| 文件 | 大小 |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          for f in public/*.html; do
+            size=$(du -h "$f" | cut -f1)
+            name=$(basename "$f")
+            echo "| $name | $size |" >> $GITHUB_STEP_SUMMARY
+          done
