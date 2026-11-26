@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Linux系统安全与分析 · 按章重点总结（5小时备考版）</title>
+<style>
+:root{
+  --paper:#faf8f3; --card:#fff; --ink:#242019; --ink2:#5d5648;
+  --line:#e4dccb; --acc:#8a5a2b; --acc2:#b8863f;
+  --must:#c0392b; --key:#c47f17; --freq:#2d7a4f;
+  --code-bg:#2b2b2b; --code-fg:#e8e6df; --logic-bg:#eef7f0; --logic-bd:#3f8f5c;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  line-height:1.75;font-size:15px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1000px;margin:0 auto;padding:34px 20px 80px}
+h1{font-size:1.72em;margin:0 0 6px;letter-spacing:-.3px;
+  background:linear-gradient(100deg,#8a5a2b,#c9974a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.meta{color:var(--ink2);font-size:.9em;margin:0 0 20px}
+h2{font-size:1.18em;margin:36px 0 12px;padding:9px 14px;border-radius:8px;
+  background:linear-gradient(90deg,#8a5a2b,#a9743a);color:#fff;font-weight:700}
+h3{font-size:1.02em;margin:20px 0 8px;padding-left:11px;border-left:4px solid var(--acc2);color:#6b4420}
+p{margin:7px 0}
+table{border-collapse:collapse;width:100%;margin:9px 0;font-size:.89em;background:#fff}
+th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+th{background:#f3ece0;font-weight:700;color:#6b4420}
+tr:nth-child(even) td{background:#fdfbf7}
+code{background:#efe9dd;padding:1px 5px;border-radius:3px;font-family:Consolas,Monaco,monospace;font-size:.9em;color:#8a4b1f}
+pre{background:var(--code-bg);color:var(--code-fg);padding:11px 14px;border-radius:8px;overflow-x:auto;
+  font-family:Consolas,Monaco,monospace;font-size:.84em;line-height:1.55;margin:9px 0}
+pre code{background:none;color:inherit;padding:0}
+.tip{background:#fdf6ec;border-left:4px solid var(--key);padding:9px 14px;border-radius:0 6px 6px 0;margin:9px 0;font-size:.91em}
+.warn{background:#fdf1ef;border-left:4px solid var(--must);padding:9px 14px;border-radius:0 6px 6px 0;margin:9px 0;font-size:.91em}
+.good{background:#eef7f1;border-left:4px solid var(--freq);padding:9px 14px;border-radius:0 6px 6px 0;margin:9px 0;font-size:.91em}
+.logic{background:var(--logic-bg);border:1px solid #cfe6d6;border-left:5px solid var(--logic-bd);
+  border-radius:0 9px 9px 0;padding:12px 16px;margin:8px 0 12px;font-size:.94em;line-height:1.8}
+.logic .lt{font-weight:700;color:#2f7048;display:block;margin-bottom:4px}
+.logic b{color:#1f5c3a}
+.logic em{color:#8a4b1f;font-style:normal;font-weight:600}
+.chcard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px 20px 18px;margin:16px 0;
+  box-shadow:0 2px 10px rgba(90,70,40,.07)}
+.chhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:14px 0 4px;padding-bottom:10px;border-bottom:2px solid var(--acc2)}
+.chbadge{background:var(--acc);color:#fff;font-weight:700;border-radius:8px;padding:3px 12px;font-size:.95em;white-space:nowrap}
+.chname{font-size:1.1em;font-weight:700;color:#6b4420}
+.chweight{font-size:.8em;color:#fff;background:var(--must);border-radius:10px;padding:2px 9px}
+.chweight.low{background:#9a8a6a}
+.kaofa{font-size:.82em;color:#fff;background:var(--freq);border-radius:10px;padding:2px 9px}
+.tag{display:inline-block;font-size:.74em;padding:1px 8px;border-radius:10px;color:#fff;margin-left:6px}
+.t-must{background:var(--must)} .t-key{background:var(--key)} .t-freq{background:var(--freq)}
+b.kp{color:#2c2c2c}
+.time{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+.time div{flex:1;min-width:130px;background:#fff;border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:.88em}
+.time b{color:var(--acc);display:block;font-size:1.02em;margin-bottom:3px}
+.flow{font-family:Consolas,monospace;background:#f7f2e8;border:1px dashed var(--acc2);
+  border-radius:8px;padding:9px 13px;margin:9px 0;font-size:.86em;overflow-x:auto}
+hr{border:none;border-top:1px dashed var(--line);margin:24px 0}
+.big{color:var(--must);font-weight:700}
+.toc{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 20px;margin-bottom:8px;font-size:.9em}
+.toc a{color:var(--acc);text-decoration:none;margin-right:14px;white-space:nowrap;line-height:2}
+.toc a:hover{text-decoration:underline}
+@media(max-width:640px){
+  .wrap{padding:20px 12px 60px}
+  h1{font-size:1.34em}
+  table{font-size:.81em} th,td{padding:4px 6px}
+  .chcard{padding:4px 12px 14px}
+  pre{font-size:.77em}
+}
+@media print{
+  body{background:#fff}
+  h2{background:#8a5a2b !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .chcard,.logic,.time div{box-shadow:none;break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Linux系统安全与分析 · 按章重点总结</h1>
+<p class="meta">5 小时备考版 · 跟着 11 讲课件顺序系统过一遍 · 每章含 <b>这章讲什么 → 逻辑主线 → 必背硬点 → 会怎么考</b></p>
+
+<div class="toc">
+<b>11 讲目录</b>（点章跳转）<br>
+<a href="#ch1">① 存储程序与X86</a><a href="#ch2">② 函数堆栈框架</a><a href="#ch3">③ 架构与存储层次</a>
+<a href="#ch4">④ 系统调用与两态</a><a href="#ch5">⑤ 嵌入式汇编</a><a href="#ch6">⑥ 可执行程序</a>
+<a href="#ch7">⑦ 防火墙</a><a href="#ch8">⑧ 用户管理</a><a href="#ch9">⑨ 文件系统</a>
+<a href="#ch10">⑩ 扫描工具</a><a href="#ch11">⑪ 系统诊断</a>
+</div>
+
+<h2>〇、5 小时怎么排（按分值权重）</h2>
+<div class="time">
+  <div><b>重点章 160 分钟</b>ch6(40) ch4(35) ch1(30) ch2(30) ch7(25)</div>
+  <div><b>次要章 70 分钟</b>ch8(20) ch9(20) ch3(15) ch5(15)</div>
+  <div><b>工具章 20 分钟</b>ch10(12) ch11(8)——只记端口/工具名</div>
+  <div><b>动手+模考 50 分钟</b>三道程序分析模板手推(30) + 刷仿真卷选择判断(20)</div>
+</div>
+<div class="logic"><span class="lt">💡 先说总逻辑：这门课的骨架是「一条主线 + 两大板块」</span>
+<b>一条主线</b>：一段 C 代码，怎么变成进程跑起来？→ <em>ch1 打地基(计算机怎么工作) → ch2 函数怎么调 → ch4 怎么进内核 → ch5 汇编直接调 → ch6 代码怎么变成可执行文件 → 最后 fork+execve 跑起来</em>。这条线串起来，内核分析就通了。<br>
+<b>两大板块</b>：前 6 讲是「<b>内核分析</b>」(程序怎么跑)，后 5 讲是「<b>系统安全</b>」(怎么防止被攻击：防火墙→用户→文件→扫描→检测)。<br>
+<em>速通诀窍</em>：每章先看下面的绿块（逻辑），知道它在主线里站哪，再记硬点。孤立地背，记不住；挂在主线上，就忘不了。</div>
+
+<!-- ============ ch1 ============ -->
+<h2 id="ch1">第 1 讲 · 存储程序计算机与 X86 基础</h2>
+<div class="chcard">
+<div class="chhead"><span class="chbadge">CH1</span><span class="chname">How the Computer Works</span><span class="chweight">约12分</span><span class="kaofa">选择+填空+堆栈画图</span></div>
+
+<div class="logic"><span class="lt">💡 这章的逻辑主线：从"计算机凭什么能自动算"到"x86 具体怎么实现"</span>
+先立一个总原理（<b>冯·诺依曼：指令和数据混存内存，CPU 按地址一条条取来执行</b>），再把原理落到 x86 的具体零件上（<em>寄存器是 CPU 的手边工作台，指令是操作，寻址是找数据</em>），最后用"栈"演示一次真实的操作。这一章是全课的地基，后面所有内容都建立在"寄存器+内存+指令"这套模型上。</div>
+
+<h3>必背硬点</h3>
+<table>
+<tr><th>要点</th><th>内容</th></tr>
+<tr><td><b>冯·诺依曼原理</b></td><td>指令和数据<b>混存在同一存储器</b>，CPU 作为指令解释器按地址顺序取指执行（注意：不是"程序和数据分开存"，那是反的）</td></tr>
+<tr><td><b>8 个通用寄存器</b></td><td>EAX 累加器(算术/返回值) · EBX 基址 · ECX 计数器 · EDX 数据 · ESI 源变址 · EDI 目的变址 · <b>ESP 栈顶指针</b> · <b>EBP 栈基指针</b></td></tr>
+<tr><td><b>4 个段寄存器</b></td><td>CS 代码段 · DS 数据段 · ES 附加段 · SS 堆栈段（存段基址，<b>不参与算术</b>）</td></tr>
+<tr><td><b>EIP / EFLAGS</b></td><td>EIP 指令指针（每执行一条自动+1，被 call/ret/jmp 改）· EFLAGS 标志寄存器</td></tr>
+<tr><td><b>操作数宽度后缀</b></td><td><b>b=8位 · w=16位 · l=32位 · q=64位</b>（movl 搬 4 字节）</td></tr>
+<tr><td><b>AT&amp;T 语法</b></td><td><code>指令 源, 目的</code>（和 Intel 书面写法<b>相反</b>）；寄存器加 <code>%</code>，立即数加 <code>$</code></td></tr>
+<tr><td><b>栈</b></td><td><b>向低地址增长</b>；push 先减后写(ESP-4)、pop 先读后加(ESP+4)</td></tr>
+</table>
+<div class="warn">⚠ <b>必考陷阱</b>：ESP 指栈顶(动)、EBP 指栈基(不动)、EIP 指指令地址；段寄存器不参与算术；「冯诺依曼=程序数据分开存」是<b>错的</b>。</div>
+<div class="tip">🎯 <b>会怎么考</b>：选择（寄存器功能/寻址方式）、填空（寄存器缩写）、<b>程序分析题——堆栈画图 + C↔汇编互译</b>（这章的堆栈题是 45 分大头）。</div>
+</div>
+
+<!-- ============ ch2 ============ -->
+<h2 id="ch2">第 2 讲 · 函数调用堆栈框架</h2>
+<div class="chcard">
+<div class="chhead"><span class="chbadge">CH2</span><span class="chname">How the OS Works</span><span class="chweight">约12分</span><span class="kaofa">程序分析+简答</span></div>
+
+<div class="logic"><span class="lt">💡 这章的逻辑主线：函数一个套一个，凭什么不乱？靠栈给每个函数分一块"临时地盘"</span>
+核心矛盾：函数会互相调用、还会递归，每个函数都要存自己的参数、返回地址、局部变量——存在哪？答案是用<b>栈</b>：进函数时划一块地，出来时拆掉。<br>
+关键发明是 <b>ESP/EBP 双指针</b>：ESP 随 push/pop 一直动，用它找东西会算错；所以进函数先把 ESP 抄给 EBP 钉死（<em>EBP 是钉墙上的锚，ESP 是随波逐流的船</em>），之后参数、局部变量都靠 EBP 定位。<code>call</code> 自动记住"回来去哪"，<code>ret</code> 照着回去。</div>
+
+<h3>必背硬点</h3>
+<table>
+<tr><th>要点</th><th>内容</th></tr>
+<tr><td><b>两个指针</b></td><td>ESP=栈顶（动态变） · EBP=栈基（函数内固定）</td></tr>
+<tr><td><b>call / ret</b></td><td>call：把返回地址压栈 + 跳到被调函数；ret：弹出返回地址 + 跳回</td></tr>
+<tr><td><b>框架建立(3步)</b></td><td><code>pushl %ebp</code> → <code>movl %esp,%ebp</code> → <code>subl $N,%esp</code>（压旧基、立新基、留空间）</td></tr>
+<tr><td><b>框架拆除(3步)</b></td><td><code>movl %ebp,%esp</code> → <code>popl %ebp</code> → <code>ret</code>（收空间、复旧基、返回）</td></tr>
+<tr><td><b>栈上布局</b></td><td>参数在 <b>EBP+8(第1个)、EBP+12(第2个)</b>；返回地址在 <b>EBP+4</b>；旧EBP在 <b>EBP+0</b>；局部变量在 <b>EBP-4</b> 起</td></tr>
+<tr><td><b>传参/返回值</b></td><td>参数用栈往里送；<b>返回值放在 EAX</b></td></tr>
+</table>
+<div class="warn">⚠ <b>必考陷阱</b>：<code>8(%ebp)</code> 才是第1个参数（4(%ebp) 是返回地址，写错就全错）；拆除时漏掉 <code>movl %ebp,%esp</code> 栈会失衡。</div>
+<div class="tip">🎯 <b>会怎么考</b>：<b>程序分析题——堆栈画图、汇编转 C</b>（占 45 分两块）；简答「简述堆栈框架建立与拆除过程」。</div>
+</div>
+
+<!-- ============ ch3 ============ -->
+<h2 id="ch3">第 3 讲 · X86 vs ARM64 与存储层次</h2>
+<div class="chcard">
+<div class="chhead"><span class="chbadge">CH3</span><span class="chname">Hardware Basics</span><span class="chweight low">约5分</span><span class="kaofa">选择+判断</span></div>
+
+<div class="logic"><span class="lt">💡 这章的逻辑主线：换个架构看差异，再往下看计算机存储怎么分层</span>
+前面讲的是 x86，这章告诉你"世界不止 x86"——ARM64 是另一大门派（手机/服务器），两者指令设计哲学不同。<b>x86 指令变长、灵活但复杂；ARM64 指令定长、简单省电</b>。再往下看"东西存哪"：越靠近 CPU 越快越贵越小，一层层缓存。篇幅短、事实为主，记住差异点即可。</div>
+
+<h3>必背硬点</h3>
+<table>
+<tr><th>对比项</th><th>X86</th><th>ARM64</th></tr>
+<tr><td>指令长度</td><td><b>变长</b>（1~15 字节）</td><td><b>固定 32 位</b></td></tr>
+<tr><td>访问内存</td><td>大部分指令都能直接访存</td><td><b>只有 str/ldr</b>（ST/LD）能访存</td></tr>
+<tr><td>设备 I/O</td><td><b>端口 I/O</b>（独立端口地址空间）</td><td><b>内存映射 I/O</b>（像访内存一样访设备）</td></tr>
+<tr><td>指令指针</td><td>EIP（只能被跳转指令改）</td><td>PC（只能被 b/bl/br/ret 改）</td></tr>
+</table>
+<p><b>存储层次</b>：寄存器(最快最小) → Cache → 内存 → 硬盘(最慢最大)。越近越快越贵。</p>
+<div class="tip">🎯 <b>会怎么考</b>：选择/判断「x86 指令定长还是变长」「ARM 用内存映射还是端口 I/O」。</div>
+</div>
+
+<!-- ============ ch4 ============ -->
+<h2 id="ch4">第 4 讲 · 系统调用与用户态/内核态</h2>
+<div class="chcard">
+<div class="chhead"><span class="chbadge">CH4</span><span class="chname">System Call</span><span class="chweight">约14分</span><span class="kaofa">简答+选择+程序分析</span></div>
+
+<div class="logic"><span class="lt">💡 这章的逻辑主线：用户程序不能碰内核 → 分两态 → 用系统调用"递申请"</span>
+核心矛盾：用户程序不可信，不能让它直接操作硬件/内核（否则系统崩）。解法是<b>分两层权限</b>：核心代码锁内核态(Ring0)，普通程序关用户态(Ring3)。用户要办事怎么办？<b>系统调用 = 按服务铃</b>——故意触发一个 trap 异常，主动请内核来处理。<br>
+系统调用分三层办（<em>API 递表 → system_call 安检 → sys_xyz 科室办理</em>），进入内核要先<b>切权限+换内核栈+保存现场</b>（内核不敢用用户的栈），办完 iret 返回。这章是全课最核心的机制章。</div>
+
+<h3>必背硬点</h3>
+<table>
+<tr><th>要点</th><th>内容</th></tr>
+<tr><td><b>两态</b></td><td>X86：Ring3(用户)/<b>Ring0(内核)</b>，Linux 只用 0 和 3；ARM64：EL0(用户)/EL1(内核)</td></tr>
+<tr><td><b>陷入/返回指令</b></td><td>X86：<code>int $0x80</code>/<code>syscall</code> 陷入，<code>iret</code>/<code>sysret</code> 返回；ARM64：<code>svc</code> 陷入，<code>eret</code> 返回</td></tr>
+<tr><td><b>态切换 4 动作</b></td><td>①切权限(Ring3→Ring0) ②<b>换栈(用户栈→内核栈)</b> ③保存现场 ④跳处理程序</td></tr>
+<tr><td><b>地址空间</b></td><td>32位 Linux：用户态只能访 <b>0x00000000~0xbfffffff</b>，0xc0000000 以上是内核空间</td></tr>
+<tr><td><b>三种地址</b></td><td>逻辑地址(你写的) → 线性/虚拟地址(段页转换后) → 物理地址(内存条真实位置)</td></tr>
+<tr><td><b>系统调用号/传参</b></td><td><b>EAX 放系统调用号</b>；参数依次放 EBX、ECX、EDX、ESI、EDI、EBP（最多6个）</td></tr>
+<tr><td><b>三层结构</b></td><td>API 层 xyz() → system_call 入口 → 服务例程 sys_xyz()</td></tr>
+<tr><td><b>陷阱(trap)</b></td><td>系统调用本质是<b>陷阱异常</b>（int 0x80 是向量号 128 的软中断）</td></tr>
+</table>
+<div class="warn">⚠ <b>必考陷阱</b>：态切换最易漏「<b>切换到内核栈</b>」；API≠系统调用（strlen 是库函数但不涉及系统调用）；用户态知道内核地址也<b>不能</b>直接访问。</div>
+<div class="tip">🎯 <b>会怎么考</b>：<b>简答「系统调用三层结构」「态切换发生什么」</b>、选择（权限级/地址空间/传参）、程序分析（内嵌汇编触发系统调用）。</div>
+</div>
+
+<!-- ============ ch5 ============ -->
+<h2 id="ch5">第 5 讲 · 嵌入式汇编</h2>
+<div class="chcard">
+<div class="chhead"><span class="chbadge">CH5</span><span class="chname">Inline Assembly</span><span class="chweight low">约6分</span><span class="kaofa">程序分析+填空</span></div>
+
+<div class="logic"><span class="lt">💡 这章的逻辑主线：在 C 里插一段汇编，亲手"按一次服务铃"</span>
+上一讲讲系统调用是"按服务铃"，这章就带你<b>亲手按一次</b>——用 <code>asm</code> 在 C 里直接写汇编，把系统调用号塞进 EAX、参数塞进寄存器、执行 <code>int $0x80</code>。看清从 C 代码到陷入内核的完整过程。核心工具是<b>约束符</b>（和编译器签的"合同"：这个变量是输入还是输出、放寄存器还是内存）。</div>
+
+<h3>必背硬点</h3>
+<table>
+<tr><th>约束符</th><th>含义</th></tr>
+<tr><td><code>=</code> / <code>+</code></td><td>=只写输出 / +读写</td></tr>
+<tr><td><code>r</code> / <code>m</code> / <code>g</code></td><td>r寄存器 / m内存 / g任意(编译器自选)</td></tr>
+<tr><td><code>a/b/c/d</code></td><td>分别指定 EAX/EBX/ECX/EDX</td></tr>
+</table>
+<table>
+<tr><th>示例</th><th>含义</th></tr>
+<tr><td>time 系统调用号</td><td>32位 <b>0xd(13)</b>；64位 0xc9(201)</td></tr>
+<tr><td>rename 系统调用号</td><td><b>0x26</b>（旧名放 ebx、新名放 ecx）</td></tr>
+<tr><td><code>syscall(编号, 参数...)</code></td><td>libc 通用函数，没有现成封装的系统调用用它</td></tr>
+</table>
+<div class="warn">⚠ 内嵌汇编题要求「<b>逐行说语义</b>」：<code>movq $0,%%rax</code>=清零累加器、<code>addq %1,%%rax</code>=累加输入、<code>movq %%rax,%0</code>=写回输出，不能只翻译助记符。操作数编号 <code>%0</code> 是输出、<code>%1</code> 起是输入。</div>
+<div class="tip">🎯 <b>会怎么考</b>：<b>程序分析题——内嵌汇编逐行分析 + 说打印结果</b>（15 分）；填空（约束符含义、系统调用号）。</div>
+</div>
+
+<!-- ============ ch6 ============ -->
+<h2 id="ch6">第 6 讲 · 可执行程序工作原理</h2>
+<div class="chcard">
+<div class="chhead"><span class="chbadge">CH6</span><span class="chname">Principle of Executable Programs</span><span class="chweight">约16分 · 最重</span><span class="kaofa">程序分析+简答+选择</span></div>
+
+<div class="logic"><span class="lt">💡 这章的逻辑主线：C 代码怎么一步步变成"能被系统装载运行"的程序？</span>
+完整链路：<b>源码 →(编译四步)→ ELF 文件 →(链接定地址)→ 可执行文件 →(fork+execve 装载)→ 跑起来</b>。<br>
+先讲 <em>ELF 格式</em>（可执行文件是个"有格式的箱子"，头部是总目录、节头表是每格说明书）；再讲 <em>编译四步</em>（预处理展开宏/头文件 → 编译成汇编 → 汇编成机器码 → 链接拼装定地址）；链接时解决"<b>符号解析</b>(欠账还账)"和"<b>重定位</b>(改地址)"；最后 <em>fork 分身 + execve 换脑</em> 把它跑起来。这是篇幅最大、分值最高的一章。</div>
+
+<h3>必背硬点</h3>
+<table>
+<tr><th>主题</th><th>内容</th></tr>
+<tr><td><b>ELF 三类型</b></td><td>可重定位(.o，半成品) / 可执行文件(成品) / 共享目标文件(.so，共享零件)</td></tr>
+<tr><td><b>ELF 结构</b></td><td>ELF Header(总目录) + 节头表(节说明书) + 程序头表(段映射)；<b>.o 只有节头表，没有程序头表</b></td></tr>
+<tr><td><b>编译四步</b></td><td><code>gcc -E</code>→.i · <code>gcc -S</code>→.s · <code>gcc -c</code>→.o · <code>gcc a.o -o a</code>→可执行</td></tr>
+<tr><td><b>三大节</b></td><td>.text 代码 · .data 已初始化全局变量 · <b>.bss 未初始化(文件不占空间,SHT_NOBITS)</b></td></tr>
+<tr><td><b>符号表/重定位表</b></td><td>符号表=欠账清单(有定义/无定义)；重定位表=改地址引用。<code>readelf -s</code>看符号、<code>-r</code>看重定位</td></tr>
+<tr><td><b>静态 vs 动态链接</b></td><td>静态=买齐家具带走(大但自足)；动态=借公共家具(小但依赖)；不加 -static 默认动态</td></tr>
+<tr><td><b>readelf/objdump</b></td><td><code>readelf -h</code>头 <code>-S</code>节头 <code>-l</code>程序头 <code>-s</code>符号 <code>-r</code>重定位</td></tr>
+<tr><td><b>fork vs execve</b></td><td>fork=分身(新PID,返回父=子PID/子=0)；execve=换脑(替换当前进程,PID不变)</td></tr>
+<tr><td><b>内存布局</b></td><td>栈(局部变量,向下长) · 堆(malloc,向上长) · .bss 未初始化全局 · .data 已初始化</td></tr>
+</table>
+<div class="warn">⚠ <b>必考陷阱</b>：.o 含相对地址非绝对地址、不能直接执行；.o <b>没程序头表</b>；.bss 不占文件空间但占内存。</div>
+<div class="tip">🎯 <b>会怎么考</b>：<b>简答「编译四步+各产什么文件」「静态vs动态链接」</b>、程序分析、选择（ELF类型/节的作用/fork返回值）。</div>
+</div>
+
+<!-- ============ ch7 ============ -->
+<h2 id="ch7">第 7 讲 · 防火墙 iptables</h2>
+<div class="chcard">
+<div class="chhead"><span class="chbadge">CH7</span><span class="chname">Firewall</span><span class="chweight">约11分</span><span class="kaofa">25分综合题+填空</span></div>
+
+<div class="logic"><span class="lt">💡 这章的逻辑主线：防火墙是网络门卫，五链四表是"海关通道"</span>
+防火墙 = 站在网口的<b>门卫</b>，按规矩决定谁能进出。iptables 是前台工具、netfilter 是内核里真正干活的框架。<br>
+<b>五链 = 五个关卡位置</b>（数据包走到哪就在哪受检，回答"在哪里查"）：PREROUTING→路由判断→INPUT(给本机)/FORWARD(转发)→OUTPUT(本机发)→POSTROUTING。<b>四表 = 每关能做的四类事</b>（回答"能做什么"）：filter 放不放行、nat 改地址、mangle 改包细节、raw 预处理。<br>
+<b class="big">死穴是顺序</b>：安检排队逐个过，前面拦下后面就不查——所以放行规则必须插到拒绝规则<b>前面（用 -I 不用 -A）</b>。</div>
+
+<h3>必背硬点</h3>
+<table>
+<tr><th>四表</th><th>作用</th><th>可作用链</th></tr>
+<tr><td><b>filter</b></td><td>过滤（默认最常用）</td><td>INPUT/FORWARD/OUTPUT</td></tr>
+<tr><td><b>nat</b></td><td>地址转换</td><td>PREROUTING/INPUT/OUTPUT/POSTROUTING（4链）</td></tr>
+<tr><td><b>mangle</b></td><td>改包内容(TTL/TOS)</td><td>五链全可</td></tr>
+<tr><td><b>raw</b></td><td>连接跟踪前处理</td><td>PREROUTING/OUTPUT（2链）</td></tr>
+</table>
+<p><b>五链</b>：PREROUTING 路由前 · INPUT 入站 · FORWARD 转发 · OUTPUT 出站 · POSTROUTING 路由后</p>
+<div class="flow">语法：[iptables -t 表] 命令 链 匹配条件 -j 动作
+命令：-A 追加(末尾) / -I 插入(首部) / -D 删 / -L 列表 / -F 清空 / -P 默认策略
+动作：ACCEPT 放行 / DROP 静默丢弃 / REJECT 拒绝(回响应) / LOG 记录</div>
+<table>
+<tr><th>场景</th><th>命令</th></tr>
+<tr><td>看INPUT规则(带序号)</td><td><code>iptables -L INPUT -n --line-numbers</code></td></tr>
+<tr><td>禁单个IP</td><td><code>iptables -A INPUT -s 192.168.1.20 -j DROP</code></td></tr>
+<tr><td>禁网段ping(保其他业务)</td><td><code>iptables -A INPUT -s 192.168.20.0/24 -p icmp -j DROP</code></td></tr>
+<tr><td><b>放行网段内单IP</b></td><td><code>iptables -I INPUT -s 192.168.20.115 -j ACCEPT</code></td></tr>
+<tr><td>UDP限速</td><td><code>-A INPUT -p udp -m limit --limit 10/s --limit-burst 20 -j ACCEPT</code> 再 <code>-A INPUT -p udp -j DROP</code></td></tr>
+</table>
+<div class="warn">⚠ <b>四大陷阱（25分综合题全在这）</b>：①禁ping必须加<code>-p icmp</code>否则封全段；②<b class="big">放行单IP必须用-I不能用-A</b>(命中即止,-A排在DROP后永不生效)；③用DROP不用REJECT(REJECT暴露主机存活)；④UDP限速要limit+兜底DROP两条配合。</div>
+<div class="tip">🎯 <b>会怎么考</b>：<b>25 分综合题</b>（小明网管的 iptables 场景 5 小问）、填空（命令补全）。</div>
+</div>
+
+<!-- ============ ch8 ============ -->
+<h2 id="ch8">第 8 讲 · 用户管理</h2>
+<div class="chcard">
+<div class="chhead"><span class="chbadge">CH8</span><span class="chname">User Management</span><span class="chweight">约10分</span><span class="kaofa">综合题+填空</span></div>
+
+<div class="logic"><span class="lt">💡 这章的逻辑主线：多人共用的系统，怎么管好"谁是谁、谁能干什么"</span>
+Linux 天生多用户，管理员要把"身份"和"权限"分清楚。核心是两个文件<b>分家</b>：<code>passwd</code> 存身份信息（UID/主目录/shell，所有程序都要读，所以 0644 人人可读）；<code>shadow</code> 存密码哈希（不能让人读走拿去爆破，所以 0000 只有 root 能读）。<em>身份公开，密码保密</em>。日常就是增删改用户 + 设密码复杂度防弱口令。</div>
+
+<h3>必背硬点</h3>
+<table>
+<tr><th>命令</th><th>作用</th></tr>
+<tr><td><code>useradd 名</code> / <code>passwd 名</code></td><td>建账号 / 设密码</td></tr>
+<tr><td><code>userdel -r 名</code> / <code>usermod</code></td><td>删账号含家目录(-r) / 改属性(-c描述 -L锁 -U解锁)</td></tr>
+<tr><td><code>su -</code> / <code>sudo</code></td><td>切换到某用户(要其密码) / 借权限做一件事(有日志)</td></tr>
+</table>
+<p><b>/etc/passwd 七字段</b>（0644）：用户名 : 密码占位x : <b>UID(第3,root=0)</b> : GID : 描述 : 主目录 : 登录Shell(<code>/sbin/nologin</code>=禁登录)</p>
+<p><b>/etc/shadow 九字段</b>（0000）：用户名 : <b>加密密码(<code>$6$</code>=SHA-512/<code>$5$</code>=SHA-256/<code>$1$</code>=MD5)</b> : 最后修改日 : 最小间隔 : <b>最大有效99999</b> : 警告7 : 宽限 : 失效 : 保留</p>
+<p><b>密码复杂度</b>：<code>/etc/security/pwquality.conf</code>（minlen 最短、minclass 字符类别数、maxrepeat 最大重复）</p>
+<div class="warn">⚠ passwd 7 字段/ shadow 9 字段别混；密码含特殊字符命令行用<b>单引号</b>；passwd 权限/属主变了=<b>入侵提权信号</b>，要 chown root + chmod 644 恢复。</div>
+<div class="tip">🎯 <b>会怎么考</b>：综合题（小明用户管理 5 小问：建号/passwd字段/nologin/shadow字段）、填空（命令、字段含义）。</div>
+</div>
+
+<!-- ============ ch9 ============ -->
+<h2 id="ch9">第 9 讲 · 文件系统</h2>
+<div class="chcard">
+<div class="chhead"><span class="chbadge">CH9</span><span class="chname">File System</span><span class="chweight">约9分</span><span class="kaofa">计算题+选择</span></div>
+
+<div class="logic"><span class="lt">💡 这章的逻辑主线：Linux「一切皆文件」——管好文件系统就是管好整个系统</span>
+文件系统分两层：<b>inode（索引卡，记属性和数据在哪）+ block（真正存数据）</b>。inode 是文件身份证，但<b>不存文件名</b>（文件名在目录里，所以改名不改 inode）。权限是「<b>3类人×3种权</b>」：属主/同组/其他人，各有 r(4)w(2)x(1)。安全相关：SUID 提权风险、删除恢复（extundelete）、防恢复（srm/dd）、关键文件加锁（chattr）、SELinux 强制访问控制。</div>
+
+<h3>必背硬点</h3>
+<table>
+<tr><th>要点</th><th>内容</th></tr>
+<tr><td><b>权限换算</b></td><td>r=4 w=2 x=1；<code>rwxr-xr--</code>=<b>754</b>；<code>rw-r--r--</code>=644；反向 755=rwxr-xr-x</td></tr>
+<tr><td><b>特殊权限</b></td><td><b>SUID</b>(属主s位)：执行时 EUID 变文件属主；<code>-rwsr-xr-x</code>=<b>4755</b>；审计 <code>find / -perm -4000</code></td></tr>
+<tr><td><b>inode</b></td><td>存大小/权限/属主/时间/block位置，<b>不存文件名</b>；<code>stat</code> 查看</td></tr>
+<tr><td><b>删除恢复</b></td><td>删除只是撕索引，数据还在；<code>extundelete --restore-file</code> 恢复</td></tr>
+<tr><td><b>安全删除</b></td><td><code>srm</code>(删前覆写) / <code>dd if=/dev/random of=设备</code> 覆写整个分区</td></tr>
+<tr><td><b>磁盘</b></td><td>分区→格式化→挂载；<code>df</code>看文件系统 / <code>du</code>看目录 / <code>lsblk</code>看设备</td></tr>
+<tr><td><b>MBR</b></td><td>最多 4 个主分区；不够用"扩展分区"里再切"逻辑分区"</td></tr>
+<tr><td><b>加锁</b></td><td><code>chattr +i</code>只读锁 / <code>+a</code>只能追加；<code>lsattr</code> 查看；连 root 都要解锁</td></tr>
+<tr><td><b>SELinux</b></td><td>给进程和文件打标签，标签匹配才放行；三模式 <b>Disabled / Permissive(只告警) / Enforcing(真拦)</b></td></tr>
+</table>
+<div class="warn">⚠ 算 rws 时 s 在 x 位该段仍算 1 分，再额外加特殊位 4（别把 -rwsr-xr-- 算成 0755）。</div>
+<div class="tip">🎯 <b>会怎么考</b>：<b>计算题（权限串↔数字互换 + SUID）</b>、选择（inode/特殊权限/SELinux模式）。</div>
+</div>
+
+<!-- ============ ch10 ============ -->
+<h2 id="ch10">第 10 讲 · 安全扫描工具</h2>
+<div class="chcard">
+<div class="chhead"><span class="chbadge">CH10</span><span class="chname">Security Scanning Tools</span><span class="chweight low">约3分</span><span class="kaofa">填空+选择</span></div>
+
+<div class="logic"><span class="lt">💡 这章的逻辑主线：渗透第一步是"踩点"——先摸清门在哪、门后是什么</span>
+攻击前先侦察：目标开了哪些<b>门（端口）</b>、门后是什么<b>服务</b>、有没有漏洞。端口是服务的"门牌号"，记住常见端口就能一眼看出开了什么服务。<em>nmap=慢而准的瑞士军刀，masscan=快而糙的扫描枪，nikto=专查Web，OpenVAS=综合体检</em>。分值低，重点记端口和工具参数。</div>
+
+<h3>必背硬点</h3>
+<table>
+<tr><th>端口</th><th>服务</th><th>端口</th><th>服务</th></tr>
+<tr><td>21</td><td>FTP</td><td>443</td><td>HTTPS</td></tr>
+<tr><td>22</td><td>SSH</td><td>3306</td><td>MySQL</td></tr>
+<tr><td>23</td><td>Telnet</td><td>3389</td><td>RDP</td></tr>
+<tr><td>80</td><td>HTTP</td><td>8080</td><td>Tomcat</td></tr>
+</table>
+<table>
+<tr><th>工具</th><th>关键选项/用途</th></tr>
+<tr><td><b>nmap</b></td><td><code>-sn</code>只探活 · <code>-sT</code>TCP连接扫描 · <code>-sS</code>SYN半开 · <code>-sU</code>UDP · <code>-sV</code>服务版本 · <code>-p1-65535</code>全端口</td></tr>
+<tr><td><b>masscan</b></td><td>异步无状态高速扫描，大网段用：<code>-p1-100 --rate=10000</code></td></tr>
+<tr><td><b>nikto</b></td><td>Web 服务器漏洞扫描</td></tr>
+<tr><td><b>OpenVAS</b></td><td>综合漏洞扫描系统（50000+ 测试）</td></tr>
+<tr><td><b>SQLMap</b></td><td>SQL 注入自动化</td></tr>
+</table>
+<div class="warn">⚠ UDP <b>无连接</b>，UDP 端口扫描<b>可靠性低</b>（靠超时猜）。端口范围 0~65535。nmap 只探活用 <code>-sn</code>。</div>
+<div class="tip">🎯 <b>会怎么考</b>：填空（端口号、nmap 参数）、选择（工具用途/扫描原理）。</div>
+</div>
+
+<!-- ============ ch11 ============ -->
+<h2 id="ch11">第 11 讲 · 系统诊断</h2>
+<div class="chcard">
+<div class="chhead"><span class="chbadge">CH11</span><span class="chname">System Diagnosis</span><span class="chweight low">约2分</span><span class="kaofa">选择+判断</span></div>
+
+<div class="logic"><span class="lt">💡 这章的逻辑主线：防火墙是门卫（拦），IDS 是监控（看有没有人翻墙进来）</span>
+门卫拦不住所有花招，所以需要<b>入侵检测(IDS)</b>来监控。按"看哪里"分：<b>NIDS 看全网流量(网络节点)、HIDS 看单台主机(文件/进程/日志)</b>。IDS 只喊、IPS 直接拦。还有几件配套武器：<em>蜜罐(诱饵机，引黑客来并记录)、Rootkit 检测(Chkrootkit/Rkhunter)、威胁情报(坏人资料库)、杀毒(ClamAV)</em>。分值最低，记住分类和工具名。</div>
+
+<h3>必背硬点</h3>
+<table>
+<tr><th>要点</th><th>内容</th></tr>
+<tr><td><b>IDS 分类</b></td><td><b>NIDS</b> 网络型(装在网络节点看流量) / <b>HIDS</b> 主机型(装单机看文件进程日志)</td></tr>
+<tr><td><b>IDS vs IPS</b></td><td>IDS 只检测告警；IPS 直接阻断（串在链路中间 inline）</td></tr>
+<tr><td><b>蜜罐 Kippo</b></td><td>SSH 蜜罐，诱骗黑客登录并记录全程操作</td></tr>
+<tr><td><b>Rootkit 检测</b></td><td>Chkrootkit / Rkhunter（木马=伪装好人，Rootkit=潜伏隐藏的高级木马）</td></tr>
+<tr><td><b>杀毒 ClamAV</b></td><td><code>freshclam</code> 更新病毒库 → <code>clamscan -r</code> 扫描</td></tr>
+<tr><td><b>预链接 prelink</b></td><td>提前算好动态链接，加快程序启动</td></tr>
+</table>
+<div class="tip">🎯 <b>会怎么考</b>：选择/判断（NIDS vs HIDS、IDS vs IPS、蜜罐作用）。</div>
+</div>
+
+<hr>
+<h2>附：5 小时最后 30 分钟——必背数字速记</h2>
+<div class="chcard">
+<div class="warn" style="margin:0">
+<b>寄存器</b>：EAX算术/EBX基址/ECX计数/EDX数据/ESI源/EDI目的/ESP栈顶/EBP栈基/EIP指令 · 段寄存器 CS/DS/ES/SS<br>
+<b>编译</b>：-E→.i · -S→.s · -c→.o · 链接→可执行 · readelf -h/-S/-l/-s/-r<br>
+<b>文件</b>：passwd 7字段(UID第3) · shadow 9字段($6$=SHA-512) · inode不含文件名 · rwxr-xr--=754 · rws…=4755<br>
+<b>iptables</b>：filter3链/nat4链/raw2链/mangle5链 · 五链PREROUTING-INPUT-FORWARD-OUTPUT-POSTROUTING · 放行用-I<br>
+<b>端口</b>：21/22/23/80/443/3306/3389/8080 · 范围0~65535<br>
+<b>口诀</b>：push先减后写·pop先读后加 · 父得子PID子得0错得-1 · 参数在8(%ebp) · 态切换必切内核栈
+</div>
+</div>
+
+<p style="text-align:center;color:var(--ink2);font-size:.85em;margin-top:30px">
+基于 11 讲 PPT 原文 + 老师复习课要点整理 · 按章系统梳理 · 祝你考试顺利
+</p>
+
+</div>
+</body>
+</html>
