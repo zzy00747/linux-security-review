@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>系统调用流程 · 考试作答详解</title>
+<style>
+:root{--paper:#faf8f3;--card:#fff;--ink:#242019;--ink2:#5d5648;--line:#e4dccb;--acc:#8a5a2b;--acc2:#b8863f;--must:#c0392b;--key:#c47f17;--freq:#2d7a4f;--code-bg:#2b2b2b;--code-fg:#e8e6df;--logic-bg:#eef7f0;--logic-bd:#3f8f5c;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.78;font-size:15px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:900px;margin:0 auto;padding:34px 20px 80px}
+h1{font-size:1.6em;margin:0 0 6px;background:linear-gradient(100deg,#8a5a2b,#c9974a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.meta{color:var(--ink2);font-size:.9em;margin:0 0 18px}
+h2{font-size:1.14em;margin:32px 0 10px;padding:9px 14px;border-radius:8px;background:linear-gradient(90deg,#8a5a2b,#a9743a);color:#fff;font-weight:700}
+h3{font-size:1em;margin:18px 0 6px;padding-left:11px;border-left:4px solid var(--acc2);color:#6b4420}
+p{margin:7px 0}
+table{border-collapse:collapse;width:100%;margin:9px 0;font-size:.9em;background:#fff}
+th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+th{background:#f3ece0;font-weight:700;color:#6b4420}
+tr:nth-child(even) td{background:#fdfbf7}
+code{background:#efe9dd;padding:1px 5px;border-radius:3px;font-family:Consolas,Monaco,monospace;font-size:.9em;color:#8a4b1f}
+pre{background:var(--code-bg);color:var(--code-fg);padding:12px 14px;border-radius:8px;overflow-x:auto;font-family:Consolas,Monaco,monospace;font-size:.85em;line-height:1.55;margin:9px 0}
+pre code{background:none;color:inherit;padding:0}
+.tip{background:#fdf6ec;border-left:4px solid var(--key);padding:10px 14px;border-radius:0 6px 6px 0;margin:9px 0;font-size:.92em}
+.warn{background:#fdf1ef;border-left:4px solid var(--must);padding:9px 14px;border-radius:0 6px 6px 0;margin:9px 0;font-size:.92em}
+.good{background:#eef7f1;border-left:4px solid var(--freq);padding:9px 14px;border-radius:0 6px 6px 0;margin:9px 0;font-size:.92em}
+.logic{background:var(--logic-bg);border:1px solid #cfe6d6;border-left:5px solid var(--logic-bd);border-radius:0 9px 9px 0;padding:12px 16px;margin:8px 0 14px;font-size:.94em;line-height:1.8}
+.logic .lt{font-weight:700;color:#2f7048;display:block;margin-bottom:4px}
+.logic b{color:#1f5c3a}.logic em{color:#8a4b1f;font-style:normal;font-weight:600}
+.steps{counter-reset:s;list-style:none;padding:0;margin:10px 0}
+.steps>li{counter-increment:s;position:relative;padding:8px 0 8px 46px;border-bottom:1px dashed var(--line)}
+.steps>li:last-child{border-bottom:none}
+.steps>li::before{content:counter(s);position:absolute;left:0;top:7px;width:30px;height:30px;background:var(--acc);color:#fff;border-radius:50%;text-align:center;line-height:30px;font-weight:700;font-size:.9em}
+.steps b{color:#6b4420}
+.big{color:var(--must);font-weight:700}
+.badge{display:inline-block;background:var(--must);color:#fff;font-size:.76em;padding:2px 9px;border-radius:10px;margin-left:8px;vertical-align:middle}
+.badge.k{background:var(--key)}.badge.g{background:var(--freq)}
+@media(max-width:640px){.wrap{padding:18px 12px 60px}h1{font-size:1.3em}table{font-size:.82em}th,td{padding:4px 6px}.steps>li{padding-left:40px}pre{font-size:.76em}}
+@media print{body{background:#fff}h2{background:#8a5a2b !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.logic,.tip,.warn{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>系统调用流程 · 考试作答详解</h1>
+<p class="meta">对应老师要点一第 6/7/8 条 · 结构按评分点组织 · 可直接默写进卷子</p>
+
+<div class="logic"><span class="lt">💡 一句话逻辑（答题开头先写这句，直接给分）</span>
+系统调用是<b>操作系统提供给用户程序请求内核服务的唯一接口</b>。用户态程序不能直接访问硬件和内核资源，必须通过系统调用"陷入"内核，由内核代为完成，完成后返回用户态。</div>
+
+<!-- ============ 一、三层结构 ============ -->
+<h2>一、系统调用的三层结构<span class="badge">要点一第6条</span></h2>
+<p>以调用 <code>time()</code> 为例，一次系统调用要经过三层：</p>
+<table>
+<tr><th>层</th><th>名称</th><th>职责</th></tr>
+<tr><td>① API 层</td><td><b>xyz()</b>（如 time、fork、open）</td><td>用户程序调用的库函数（glibc 封装）。负责：把系统调用号放进 EAX、参数放进寄存器、执行陷入指令、取回返回值</td></tr>
+<tr><td>② 系统调用入口层</td><td><b>system_call / entry_INT80_32 / entry_SYSCALL_64</b></td><td>进入内核后的统一入口。负责：保存现场、按调用号查<b>系统调用表</b>、分发到对应服务例程、恢复现场返回</td></tr>
+<tr><td>③ 服务例程层</td><td><b>sys_xyz()</b>（如 sys_time、sys_fork）</td><td>内核态真正干活的函数，完成实际功能并把结果放入 EAX</td></tr>
+</table>
+<div class="warn">⚠ <b>易错</b>：API 与系统调用<b>不是一一对应</b>。fork 一个 API 对应一个系统调用；strlen 是库函数但<b>根本不涉及</b>系统调用；printf 一个 API 可能内部封装 write 等多个系统调用。答题时点出"API 是外壳、系统调用是内核服务"这层关系更完整。</div>
+
+<!-- ============ 二、完整流程 ============ -->
+<h2>二、一次系统调用的完整流程（核心，务必分步写全）<span class="badge">要点一第7条</span></h2>
+<p class="meta">以 32 位 x86、用户程序调用 <code>time()</code> 为例，从用户态到内核再回到用户态：</p>
+<ol class="steps">
+<li><b>准备参数</b>：用户程序在用户态调用库函数 <code>time()</code>，库函数把<b>系统调用号放入 EAX</b>（time 为 0xd，即 13），参数按顺序放入 EBX、ECX、EDX、ESI、EDI、EBP。</li>
+<li><b>触发陷入</b>：执行陷入指令 <code>int $0x80</code>（或 <code>syscall</code>），CPU 发生一次软中断（陷阱 trap，向量号 128）。</li>
+<li><b>权限级切换</b>：CPU 从<b>用户态（Ring 3）切换到内核态（Ring 0）</b>。</li>
+<li><b>切换到内核栈</b>：CPU 自动把栈指针从<b>用户栈切换到该进程的内核栈</b>（由 TSS 提供内核栈地址）。<span class="big">这一步最容易被漏！</span></li>
+<li><b>保存现场</b>：CPU 自动把用户态的 <b>SS、ESP、EFLAGS、CS、EIP</b> 压入内核栈，保存返回用户态所需的全部信息。</li>
+<li><b>跳转入口</b>：根据中断描述符表（IDT）查到处理程序地址，跳转到系统调用入口 <code>entry_INT80_32</code>（64 位为 <code>entry_SYSCALL_64</code>）。</li>
+<li><b>查表分发</b>：入口代码进一步保存通用寄存器现场，然后以 EAX 中的<b>系统调用号为索引</b>，在<b>系统调用表（sys_call_table）</b>中找到对应的服务例程 <code>sys_time</code> 并调用。</li>
+<li><b>执行内核服务</b>：<code>sys_xyz()</code> 在内核态完成实际工作（如取系统时间），把<b>结果放入 EAX</b>。期间若访问用户空间地址，需用 copy_from_user / copy_to_user 做安全校验。</li>
+<li><b>恢复现场并返回</b>：恢复保存的通用寄存器和用户态寄存器，执行返回指令 <code>iret</code>（64 位为 <code>sysret</code>），CPU 从<b>内核态（Ring 0）切回用户态（Ring 3）</b>。</li>
+<li><b>继续执行</b>：返回到用户态下一条指令，EAX 中的返回值被库函数取出，<code>time()</code> 调用结束。</li>
+</ol>
+
+<!-- ============ 三、态切换关键动作 ============ -->
+<h2>三、态切换时发生了什么（常单独考）</h2>
+<div class="logic"><span class="lt">💡 为什么必须换栈？</span>
+用户态和内核态用<b>两个不同的栈</b>。用户栈是"用户的地盘"，可能被恶意构造或破坏，<b>内核不敢信任它</b>，所以一进内核立刻换成内核自己的栈——这样内核干活才安全。这就是"换栈"这一步不能漏的原因。</div>
+<table>
+<tr><th>关键动作</th><th>说明</th></tr>
+<tr><td>① 权限级切换</td><td>Ring 3（用户态）→ Ring 0（内核态）</td></tr>
+<tr><td>② <b>切换栈</b></td><td>用户栈 → 内核栈（两种态各用各的栈）</td></tr>
+<tr><td>③ 保存现场</td><td>把 SS/ESP/EFLAGS/CS/EIP 压入内核栈</td></tr>
+<tr><td>④ 跳处理程序</td><td>查中断向量表，跳到系统调用入口</td></tr>
+<tr><td>返回时</td><td><code>iret</code> 恢复现场，权限退回 Ring 3</td></tr>
+</table>
+
+<!-- ============ 四、传参规则 ============ -->
+<h2>四、参数传递规则（容易单独出填空/选择）</h2>
+<table>
+<tr><th>架构</th><th>系统调用号</th><th>参数寄存器（按顺序）</th></tr>
+<tr><td><b>32 位 x86</b></td><td>EAX</td><td>EBX、ECX、EDX、ESI、EDI、EBP（最多 6 个；超出则用指针指向内存）</td></tr>
+<tr><td><b>64 位 x86</b></td><td>RAX</td><td>RDI、RSI、RDX、RCX、R8、R9</td></tr>
+</table>
+<div class="tip"><b>为什么用寄存器传参、不用压栈？</b>因为用户态和内核态用不同栈，无法用"压栈"方式跨态传参；而且寄存器传参更快。这是答题的加分点。</div>
+
+<!-- ============ 五、触发方式演进 ============ -->
+<h2>五、陷入内核的方式演进</h2>
+<table>
+<tr><th>方式</th><th>说明</th><th>返回</th></tr>
+<tr><td><code>int $0x80</code></td><td>传统软中断方式，向量号 128，任何 x86 都支持</td><td><code>iret</code></td></tr>
+<tr><td><code>sysenter / sysexit</code></td><td>Intel 专用快速指令（AMD 不支持）</td><td><code>sysexit</code></td></tr>
+<tr><td><code>syscall / sysret</code></td><td>现代通用方式，通过 MSR 寄存器直接定位入口，最快</td><td><code>sysret</code></td></tr>
+</table>
+
+<!-- ============ 六、意义 ============ -->
+<h2>六、系统调用的三大意义（要点一第8条）</h2>
+<table>
+<tr><td><b>① 隔离保护</b></td><td>用户态程序不能直接访问底层硬件，通过系统调用把请求交给内核，避免用户程序破坏系统</td></tr>
+<tr><td><b>② 安全</b></td><td>所有对硬件的访问都经内核检查把关，防止非法操作</td></tr>
+<tr><td><b>③ 可移植</b></td><td>用户程序只面向统一接口编程，底层硬件变化对上层透明，换硬件不用重写程序</td></tr>
+</table>
+
+<!-- ============ 七、评分要点 ============ -->
+<h2>七、评分要点 &amp; 常见变体</h2>
+<div class="good">
+<b>如果是 6-8 分简答题，这样分配：</b><br>
+· 定义 + 三层结构 —— 2 分<br>
+· 完整流程（能写出"传参→int 0x80→切态→换栈→保存现场→查表→sys_xyz→恢复→iret"这条链）—— 3~4 分<br>
+· 态切换的换栈/保存现场 —— 1~2 分<br>
+· 传参规则（EAX 号 + 参数寄存器）—— 1 分
+</div>
+<div class="warn">
+<b>常见变体 &amp; 陷阱：</b><br>
+① <b>结合具体系统调用画流程</b>：把 time / fork / rename 套进上面的 9 步即可。rename 号是 0x26，参数 ebx=旧名、ecx=新名。<br>
+② <b>fork 与 execve 的特殊性</b>：fork <b>调用一次返回两次</b>（父进程返回子 PID、子进程返回 0）；execve <b>覆盖当前进程映像</b>（返回时已是新程序入口，PID 不变）。<br>
+③ <b>不要答错</b>：execve 不是"返回两次"（那是 fork）；态切换必须提"换内核栈"；系统调用是 trap（陷阱），不是普通中断。
+</div>
+
+<div class="tip" style="margin-top:18px">
+<b>背诵口诀</b>：<b>号入 EAX → int 0x80 → 切态换栈 → 存现场 → 查表找 sys_xyz → 干活结果进 EAX → iret 恢复 → 回用户态</b>。
+</div>
+
+<p style="text-align:center;color:var(--ink2);font-size:.84em;margin-top:28px">基于第4/5讲 PPT 原文整理 · 可直接用于考试作答</p>
+</div>
+</body>
+</html>
