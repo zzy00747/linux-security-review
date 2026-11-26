@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Linux系统安全与分析 · 3小时重点速查</title>
+<style>
+:root{
+  --paper:#faf8f3; --card:#fff; --ink:#242019; --ink2:#5d5648;
+  --line:#e4dccb; --acc:#8a5a2b; --acc2:#b8863f;
+  --must:#c0392b; --key:#c47f17; --freq:#2d7a4f; --code-bg:#2b2b2b; --code-fg:#e8e6df;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  line-height:1.72;font-size:15px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:960px;margin:0 auto;padding:34px 20px 80px}
+h1{font-size:1.75em;margin:0 0 6px;letter-spacing:-.3px;
+  background:linear-gradient(100deg,#8a5a2b,#c9974a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.meta{color:var(--ink2);font-size:.9em;margin:0 0 22px}
+h2{font-size:1.22em;margin:38px 0 14px;padding:9px 14px;border-radius:8px;
+  background:linear-gradient(90deg,#8a5a2b,#a9743a);color:#fff;font-weight:700}
+h3{font-size:1.05em;margin:22px 0 8px;padding-left:11px;border-left:4px solid var(--acc2);color:#6b4420}
+h4{font-size:.96em;margin:16px 0 6px;color:#7a5230}
+p{margin:7px 0}
+table{border-collapse:collapse;width:100%;margin:10px 0;font-size:.9em;background:#fff}
+th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+th{background:#f3ece0;font-weight:700;color:#6b4420}
+tr:nth-child(even) td{background:#fdfbf7}
+code{background:#efe9dd;padding:1px 5px;border-radius:3px;font-family:Consolas,Monaco,monospace;font-size:.9em;color:#8a4b1f}
+pre{background:var(--code-bg);color:var(--code-fg);padding:12px 14px;border-radius:8px;overflow-x:auto;
+  font-family:Consolas,Monaco,monospace;font-size:.85em;line-height:1.55;margin:10px 0}
+pre code{background:none;color:inherit;padding:0}
+.tip{background:#fdf6ec;border-left:4px solid var(--key);padding:10px 14px;border-radius:0 6px 6px 0;margin:10px 0;font-size:.92em}
+.warn{background:#fdf1ef;border-left:4px solid var(--must);padding:10px 14px;border-radius:0 6px 6px 0;margin:10px 0;font-size:.92em}
+.good{background:#eef7f1;border-left:4px solid var(--freq);padding:10px 14px;border-radius:0 6px 6px 0;margin:10px 0;font-size:.92em}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin:12px 0;
+  box-shadow:0 1px 6px rgba(90,70,40,.06)}
+.kp{font-weight:700;color:#2c2c2c}
+.exp{color:#6b6355}
+.tag{display:inline-block;font-size:.75em;padding:1px 8px;border-radius:10px;color:#fff;margin-left:6px;vertical-align:middle}
+.t-must{background:var(--must)} .t-key{background:var(--key)} .t-freq{background:var(--freq)}
+.toc{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 20px;margin-bottom:8px}
+.toc a{color:var(--acc);text-decoration:none;font-size:.92em}
+.toc a:hover{text-decoration:underline}
+.toc ol{margin:6px 0;padding-left:22px;columns:2;column-gap:26px}
+.toc li{margin:3px 0}
+.time{display:flex;gap:12px;flex-wrap:wrap;margin:12px 0}
+.time div{flex:1;min-width:150px;background:#fff;border:1px solid var(--line);border-radius:9px;padding:12px 14px}
+.time b{color:var(--acc);display:block;font-size:1.05em}
+.flow{font-family:Consolas,monospace;background:#f7f2e8;border:1px dashed var(--acc2);
+  border-radius:8px;padding:10px 14px;margin:10px 0;font-size:.88em;overflow-x:auto}
+hr{border:none;border-top:1px dashed var(--line);margin:26px 0}
+.big{color:var(--must);font-weight:700}
+@media(max-width:640px){
+  .wrap{padding:20px 12px 60px}
+  h1{font-size:1.4em}
+  table{font-size:.82em}
+  th,td{padding:4px 6px}
+  .toc ol{columns:1}
+  pre{font-size:.78em}
+}
+@media print{
+  body{background:#fff}
+  h2{background:#8a5a2b !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .card,.time div{box-shadow:none;break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Linux系统安全与分析 · 3小时重点速查</h1>
+<p class="meta">按老师复习课「要点一 / 要点二」组织 · 每条含 <b>必背表 + 一句话理解 + 易错陷阱</b> · 配套 45 分程序分析题模板</p>
+
+<div class="toc">
+<b>快速导航</b>
+<ol>
+  <li><a href="#plan">3 小时怎么用</a></li>
+  <li><a href="#reg">寄存器（必背表）</a></li>
+  <li><a href="#addr">寻址与常用指令</a></li>
+  <li><a href="#stack">堆栈画图 + 汇编转C</a></li>
+  <li><a href="#frame">函数堆栈框架五步</a></li>
+  <li><a href="#asm">嵌入式汇编约束符</a></li>
+  <li><a href="#syscall">系统调用三层结构</a></li>
+  <li><a href="#switch">态切换发生什么</a></li>
+  <li><a href="#compile">编译四步 + 内存布局</a></li>
+  <li><a href="#fork">进程描述符 + fork</a></li>
+  <li><a href="#ipt">iptables 四表五链</a></li>
+  <li><a href="#user">passwd / shadow 字段</a></li>
+  <li><a href="#perm">inode 与权限换算</a></li>
+  <li><a href="#scan">扫描工具</a></li>
+  <li><a href="#tmpl">程序分析题模板</a></li>
+  <li><a href="#trap">判断题高频陷阱</a></li>
+</ol>
+</div>
+
+<!-- ========== 时间规划 ========== -->
+<h2 id="plan">〇、3 小时怎么用（按分值分配）</h2>
+<div class="time">
+  <div><b>0:00–0:40</b>要点一硬点：寄存器表、指令、约束符、系统调用三层、编译四步。这些是<b>选择+填空+判断</b>的 30 分基本盘。</div>
+  <div><b>0:40–1:40</b><span class="big">程序分析题 45 分</span>。把堆栈画图、汇编转C、内嵌汇编三套模板各手写一遍（下面有模板，一定要动手推）。</div>
+  <div><b>1:40–2:30</b>要点二：iptables 命令、passwd/shadow 字段、权限换算。填空+判断+综合题。</div>
+  <div><b>2:30–3:00</b>刷仿真卷选择/判断 + 背易错清单。考前只看红色 ⚠ 部分。</div>
+</div>
+<div class="tip"><b>核心判断</b>：这门课 70 分是<b>程序分析(45) + 综合(25)</b>，全是「给代码/场景动笔推」。背概念只够拿 30 分，<b>动手推一遍模板比背十遍笔记有用</b>。</div>
+
+<!-- ========== 要点一 ========== -->
+<h2>一、要点一 · 内核分析（约 55–60 分）</h2>
+
+<h3 id="reg">1.1 常用寄存器（要点一第1条）<span class="tag t-must">必背</span></h3>
+<div class="card">
+<table>
+<tr><th>32位</th><th>16位</th><th>8位(高/低)</th><th>名称</th><th>主要用途</th></tr>
+<tr><td><b>EAX</b></td><td>AX</td><td>AH / AL</td><td>累加器</td><td>算术运算、<b>函数返回值</b>、系统调用号（32位）</td></tr>
+<tr><td><b>EBX</b></td><td>BX</td><td>BH / BL</td><td>基址寄存器</td><td>存放内存基址</td></tr>
+<tr><td><b>ECX</b></td><td>CX</td><td>CH / CL</td><td>计数器</td><td>循环计数、字符串操作</td></tr>
+<tr><td><b>EDX</b></td><td>DX</td><td>DH / DL</td><td>数据寄存器</td><td>乘除法辅助、I/O 端口</td></tr>
+<tr><td><b>ESI</b></td><td>SI</td><td>—</td><td>源变址</td><td>字符串/数组源地址</td></tr>
+<tr><td><b>EDI</b></td><td>DI</td><td>—</td><td>目的变址</td><td>字符串/数组目的地址</td></tr>
+<tr><td><b>ESP</b></td><td>SP</td><td>—</td><td>栈指针</td><td><b>始终指向栈顶</b>，push 减4/pop 加4</td></tr>
+<tr><td><b>EBP</b></td><td>BP</td><td>—</td><td>基址指针</td><td><b>指向当前函数栈框架基址</b></td></tr>
+<tr><td><b>EIP</b></td><td>IP</td><td>—</td><td>指令指针</td><td>下一条指令地址，<b>每条指令后自动递增</b></td></tr>
+<tr><td><b>EFLAGS</b></td><td>FLAGS</td><td>—</td><td>标志寄存器</td><td>ZF/CF/SF/OF 等状态位</td></tr>
+</table>
+<table>
+<tr><th>段寄存器</th><th>全称</th><th>存放内容</th></tr>
+<tr><td><b>CS</b></td><td>Code Segment</td><td>代码段的段基址（配合 CS:EIP 定位指令）</td></tr>
+<tr><td><b>DS</b></td><td>Data Segment</td><td>数据段的段基址</td></tr>
+<tr><td><b>ES</b></td><td>Extra Segment</td><td>附加数据段的段基址</td></tr>
+<tr><td><b>SS</b></td><td>Stack Segment</td><td>堆栈段的段基址</td></tr>
+</table>
+<div class="warn">⚠ <b>必考陷阱</b>：ESP 指<b>栈顶</b>（动态变），EBP 指<b>栈基</b>（函数内固定）；EIP 是<b>指令地址</b>不是栈地址。<b>段寄存器不参与算术运算</b>，只存段选择子。</div>
+</div>
+
+<h3 id="addr">1.2 寻址方式与常用指令（要点一第2条）<span class="tag t-key">重点</span></h3>
+<div class="card">
+<p><span class="kp">AT&amp;T 语法</span>：<code>指令 源, 目的</code>（注意：与 Intel 的「目的, 源」相反！）寄存器加 <code>%</code>，立即数加 <code>$</code>。</p>
+<table>
+<tr><th>后缀</th><th>宽度</th><th>示例</th></tr>
+<tr><td>b</td><td>8 位（byte）</td><td>movb</td></tr>
+<tr><td>w</td><td>16 位（word）</td><td>movw</td></tr>
+<tr><td><b>l</b></td><td><b>32 位（long）</b></td><td>movl / pushl / popl / addl / subl</td></tr>
+<tr><td>q</td><td>64 位（quad）</td><td>movq / addq</td></tr>
+</table>
+<p><b>常用寻址写法</b>：</p>
+<table>
+<tr><th>写法</th><th>含义</th><th>用途</th></tr>
+<tr><td><code>8(%ebp)</code></td><td>EBP+8 处内存</td><td><b>取第1个函数参数</b>（EBP+4 是返回地址）</td></tr>
+<tr><td><code>-4(%ebp)</code></td><td>EBP-4 处内存</td><td>取局部变量</td></tr>
+<tr><td><code>(%esp)</code></td><td>ESP 指向处</td><td>栈顶（刚 push 的实参）</td></tr>
+<tr><td><code>$8</code></td><td>立即数 8</td><td>常量</td></tr>
+</table>
+<p><b>常用指令</b>：<code>mov</code>传送 / <code>push</code>压栈 / <code>pop</code>出栈 / <code>add</code>加 / <code>sub</code>减 / <code>call</code>调用 / <code>ret</code>返回 / <code>lea</code>取地址 / <code>jmp</code>跳转。X86 <b>指令变长</b>，ARM64 <b>固定 32 位</b>。</p>
+</div>
+
+<h3 id="stack">1.3 堆栈画图 + 汇编转 C（要点一第3条 · 程序分析题核心）<span class="tag t-must">必考</span></h3>
+<div class="card">
+<p><span class="kp">栈向低地址增长</span>（Stack grows down）。这两类题占 45 分中的 30 分，必须会推。</p>
+<h4>① 堆栈画图题 —— 逐步推演法</h4>
+<div class="flow">push  $8   → ESP 先减 4 再写 8
+movl  %esp,%ebp → EBP = ESP（覆盖原值）
+pushl %ebp → ESP 减 4，写入旧 EBP 的值
+pushl $8   → ESP 减 4，写入 8
+addl  $4,%esp → ESP 加 4（只改指针，不清内存）
+popl  %ebp → 先读 ESP 处值给 EBP，再 ESP 加 4</div>
+<div class="warn">⚠ 三条铁律：<b>push 是先减后写、pop 是先读后加</b>；<code>addl $4,%esp</code> <b>只抬栈顶不清数据</b>（原值仍在内存，可被取证）；<code>movl %esp,%ebp</code> 会<b>覆盖 EBP 原值</b>。</div>
+<h4>② 汇编转 C —— 三看口诀</h4>
+<table>
+<tr><th>看什么</th><th>怎么判断</th></tr>
+<tr><td>看参数</td><td><code>8(%ebp)</code> 是第1个参数，<code>12(%ebp)</code> 是第2个。看到 <code>movl 8(%ebp),%eax</code> → 取参数</td></tr>
+<tr><td>看运算</td><td><code>addl $3,%eax</code> → 参数 +3；<code>addl $1,%eax</code> → 返回值 +1</td></tr>
+<tr><td>看调用</td><td><code>subl $4,%esp</code> + <code>movl %eax,(%esp)</code> + <code>call g</code> → <code>g(参数)</code>；call 后紧跟 <code>addl</code> → 返回值继续参与运算</td></tr>
+</table>
+<div class="good">✔ 典型答案：<code>g: return x+3;</code> / <code>f: return g(x);</code> / <code>main: return f(8)+1;</code></div>
+</div>
+
+<h3 id="frame">1.4 函数调用堆栈框架五步（要点一第4条）<span class="tag t-must">必背</span></h3>
+<div class="card">
+<p><b>建立（进函数，3 步）</b>：</p>
+<div class="flow">① pushl %ebp        ; 保存调用者 EBP
+② movl  %esp, %ebp  ; EBP 锚定到当前栈框架基址
+③ subl  $N, %esp    ; 为局部变量抬高栈顶 N 字节</div>
+<p><b>拆除（返回前，3 步）</b>：</p>
+<div class="flow">④ movl %ebp, %esp  ; ESP 复位，一次性丢弃局部变量空间
+⑤ popl %ebp        ; 恢复调用者 EBP
+⑥ ret              ; 弹出返回地址并跳转</div>
+<div class="tip"><b>口诀</b>：「<b>压旧基、立新基、留空间 → 收空间、复旧基、返回</b>」。EBP 是锚点（参数在 +8 起、局部变量在 -4 起），ESP 是游标（随 push/pop 变）。</div>
+<div class="warn">⚠ 顺序不能乱：先 <code>push ebp</code> 再 <code>mov esp,ebp</code>；拆除先 <code>mov ebp,esp</code> 再 <code>pop ebp</code>。漏掉第④步栈会失衡。</div>
+</div>
+
+<h3 id="asm">1.5 嵌入式汇编语法与约束符（要点一第5条）<span class="tag t-must">必背</span></h3>
+<div class="card">
+<p><b>语法</b>：<code>asm volatile("指令" : 输出 : 输入 : 破坏列表);</code></p>
+<table>
+<tr><th>约束符</th><th>含义</th><th>记忆</th></tr>
+<tr><td><b>=</b></td><td>只写的输出操作数</td><td>「等号=输出」</td></tr>
+<tr><td><b>+</b></td><td>既读又写的操作数</td><td>「加号=读写」</td></tr>
+<tr><td><b>r</b></td><td>通用寄存器</td><td>r = register</td></tr>
+<tr><td><b>m</b></td><td>内存操作数</td><td>m = memory</td></tr>
+<tr><td><b>g</b></td><td>通用（寄存器或内存皆可，编译器自选）</td><td>g = general</td></tr>
+<tr><td><b>i</b> / <b>n</b></td><td>立即数（i：0~31，n：立即数）</td><td>i = immediate</td></tr>
+<tr><td><b>a</b>/<b>b</b>/<b>c</b>/<b>d</b></td><td>分别指定 EAX/EBX/ECX/EDX</td><td>字母对应寄存器</td></tr>
+</table>
+<p><b>操作数编号</b>：<code>%0</code> = 第0个（输出），<code>%1</code> 起是输入；指令里的 <code>%%eax</code> 是转义写法，编译后就是 <code>%eax</code>。</p>
+<div class="warn">⚠ 内嵌汇编题必考「逐行说明作用」，不要只翻译助记符，要说出<b>语义</b>：<code>movq $0,%%rax</code>=清零累加器；<code>addq %1,%%rax</code>=累加第1个输入；<code>movq %%rax,%0</code>=结果写回输出。</div>
+</div>
+
+<h3 id="syscall">1.6 系统调用三层结构（要点一第6条）<span class="tag t-must">必考</span></h3>
+<div class="card">
+<div class="flow">用户程序 →  API 层 xyz()        （如 time()、fork()，glibc 封装）
+         ↓ 陷入（int $0x80 / syscall）
+      系统调用入口 system_call / entry_SYSCALL_64
+         ↓ 按系统调用号查表分发
+      服务例程 sys_xyz()          （内核态实际干活）</div>
+<table>
+<tr><th>层</th><th>作用</th></tr>
+<tr><td><b>xyz()</b> API 层</td><td>用户可见的库函数，把参数放寄存器、执行陷入指令、取回返回值</td></tr>
+<tr><td><b>system_call</b> 入口层</td><td>保存现场、按系统调用号查系统调用表、分发、恢复现场返回</td></tr>
+<tr><td><b>sys_xyz()</b> 服务例程</td><td>内核态完成实际功能</td></tr>
+</table>
+<div class="warn">⚠ API 与系统调用<b>不是一一对应</b>：fork 一个 API 对应一个系统调用；strlen 是库函数但<b>不涉及</b>系统调用；printf 一个 API 可能封装 write 等多个系统调用。</div>
+</div>
+
+<h3 id="switch">1.7 态切换时发生什么（要点一第7条）<span class="tag t-key">重点</span></h3>
+<div class="card">
+<p><b>用户态 ↔ 内核态</b>：通过中断/异常（系统调用是<b>陷阱 trap</b>）触发。</p>
+<table>
+<tr><th>架构</th><th>权限级</th><th>用户态/内核态</th><th>陷入指令</th><th>返回指令</th></tr>
+<tr><td>X86</td><td>Ring 0~3</td><td>Ring3 / Ring0（Linux 只用 0 和 3）</td><td><code>int $0x80</code> / <code>syscall</code></td><td><code>iret</code> / <code>sysret</code></td></tr>
+<tr><td>ARM64</td><td>EL0~EL3</td><td>EL0 / EL1</td><td><code>svc</code></td><td><code>eret</code></td></tr>
+</table>
+<p><b>切换的 4 个关键动作</b>：</p>
+<div class="flow">① 权限级切换：Ring3 → Ring0
+② 【关键】切换栈：用户栈 → 内核栈（每种态用各自的栈！）
+③ 保存现场：压入 SS/ESP/EFLAGS/CS/EIP 等寄存器到内核栈
+④ 查中断向量表跳转到处理程序；返回时 iret 恢复现场</div>
+<div class="warn">⚠ 最容易漏答「<b>切换到内核栈</b>」——用户态和内核态用两个不同的栈，这是态切换的核心动作。地址空间：32位 Linux 用户态只能访问 0x00000000~0xbfffffff，0xc0000000 以上是内核空间。</div>
+</div>
+
+<h3 id="compile">1.8 编译四步 + 内存布局（要点一第9条）<span class="tag t-must">必考</span></h3>
+<div class="card">
+<table>
+<tr><th>步骤</th><th>命令</th><th>产物</th><th>做什么</th></tr>
+<tr><td>预处理</td><td><code>gcc -E a.c -o a.i</code></td><td>.i</td><td>删注释、展开宏、插入 #include</td></tr>
+<tr><td>编译</td><td><code>gcc -S a.i -o a.s</code></td><td>.s</td><td>翻译成汇编语言</td></tr>
+<tr><td>汇编</td><td><code>gcc -c a.s -o a.o</code></td><td>.o</td><td>翻译成机器码（已是 ELF）</td></tr>
+<tr><td>链接</td><td><code>gcc a.o -o a</code></td><td>可执行文件</td><td>符号解析 + 重定位</td></tr>
+</table>
+<p><b>内存布局（栈、堆、.bss 各存什么 —— 老师明确追问）</b>：</p>
+<table>
+<tr><th>区域</th><th>存放内容</th><th>特性</th></tr>
+<tr><td><b>栈 stack</b></td><td>局部变量、函数参数、返回地址</td><td>系统自动分配释放，<b>向低地址增长</b></td></tr>
+<tr><td><b>堆 heap</b></td><td>malloc/new 动态申请</td><td>程序员手动管理，<b>向高地址增长</b></td></tr>
+<tr><td><b>.bss</b></td><td><b>未初始化</b>的全局/静态变量</td><td>文件里<b>不占空间</b>（SHT_NOBITS），运行时清零</td></tr>
+<tr><td>.data</td><td><b>已初始化</b>的全局/静态变量</td><td>占文件空间</td></tr>
+<tr><td>.text</td><td>机器指令</td><td>通常只读</td></tr>
+</table>
+<p><b>readelf / objdump 常用选项</b>：<code>readelf -h</code>文件头 / <code>-S</code>节头 / <code>-l</code>程序头(段表) / <code>-s</code>符号表 / <code>-r</code>重定位。ELF 三种类型：可重定位(.o) / 可执行 / 共享库(.so)；<b>程序头表只在可执行文件和 .so 中有，.o 没有</b>。</p>
+</div>
+
+<h3 id="fork">1.9 进程描述符 + fork（要点一第10条 · 来自教材6.1/6.2）<span class="tag t-must">必考</span></h3>
+<div class="card">
+<p><b>进程描述符 task_struct</b>：内核用 <code>task_struct</code> 结构体描述一个进程，包含 PID、进程状态、父子进程指针、打开文件表、地址空间等信息。</p>
+<table>
+<tr><th>fork() 返回</th><th>含义</th></tr>
+<tr><td><b>父进程返回子进程 PID（&gt;0）</b></td><td>父进程据此知道子进程编号</td></tr>
+<tr><td><b>子进程返回 0</b></td><td>子进程据此识别「我是子」</td></tr>
+<tr><td><b>失败返回 -1</b></td><td>创建失败</td></tr>
+</table>
+<p><b>fork 的本质</b>：调用一次返回两次；子进程复制父进程的 PCB/地址空间（写时复制）。<b>fork 与 execve 区别</b>：fork 创建新进程（PID 变），execve 替换当前进程映像（PID 不变）。</p>
+<div class="warn">⚠ 经典陷阱：<code>else if ((pid=fork()) &lt; 0)</code> 这个分支<b>正常情况永不执行</b>（fork 成功只返回 &gt;0 或 0）。画进程树时，else-if 链<b>命中即跳出</b>，一个进程只走一个分支，别把一条链上所有 printf 都算给同一进程。</div>
+</div>
+
+<!-- ========== 要点二 ========== -->
+<h2>二、要点二 · 系统安全（约 40–45 分）</h2>
+
+<h3 id="ipt">2.1 iptables 四表五链（要点二第1条）<span class="tag t-must">必考 25分综合题</span></h3>
+<div class="card">
+<table>
+<tr><th>表</th><th>作用</th><th>可作用链</th></tr>
+<tr><td><b>filter</b></td><td>过滤（最常用，默认表）</td><td>INPUT / FORWARD / OUTPUT</td></tr>
+<tr><td><b>nat</b></td><td>地址转换</td><td>PREROUTING / INPUT / OUTPUT / POSTROUTING</td></tr>
+<tr><td><b>mangle</b></td><td>修改数据包内容（TTL/TOS）</td><td>五链全可</td></tr>
+<tr><td><b>raw</b></td><td>连接跟踪前处理</td><td>PREROUTING / OUTPUT</td></tr>
+</table>
+<p><b>五链</b>：<code>PREROUTING</code>路由前 → <code>INPUT</code>入站（给本机）→ <code>FORWARD</code>转发（给别人）→ <code>OUTPUT</code>出站（本机发）→ <code>POSTROUTING</code>路由后</p>
+<p><b>命令模板</b>：</p>
+<div class="flow">iptables [-t 表] 命令 链 匹配条件 -j 动作
+命令：-A 追加(末尾) / -I 插入(默认首部) / -D 删除 / -L 列表 / -F 清空 / -P 默认策略
+动作：ACCEPT 放行 / DROP 静默丢弃 / REJECT 拒绝(返回响应) / LOG 记录</div>
+<table>
+<tr><th>场景</th><th>命令</th></tr>
+<tr><td>看 INPUT 规则（带序号）</td><td><code>iptables -L INPUT -n --line-numbers</code></td></tr>
+<tr><td>禁单个 IP</td><td><code>iptables -A INPUT -s 192.168.1.20 -j DROP</code></td></tr>
+<tr><td>禁网段 ping（保留其他业务）</td><td><code>iptables -A INPUT -s 192.168.20.0/24 -p icmp -j DROP</code></td></tr>
+<tr><td><b>放行网段内单个 IP</b></td><td><code>iptables -I INPUT -s 192.168.20.115 -j ACCEPT</code></td></tr>
+<tr><td>UDP 限速</td><td><code>-A INPUT -p udp -m limit --limit 10/s --limit-burst 20 -j ACCEPT</code><br>再 <code>-A INPUT -p udp -j DROP</code></td></tr>
+</table>
+<div class="warn">⚠ <b>四大陷阱（25分综合题全在这）</b>：<br>
+① 禁 ping 必须加 <code>-p icmp</code>，否则封掉整个网段所有流量；<br>
+② <b class="big">放行单个 IP 必须用 -I 不能用 -A</b>——规则自上而下匹配、命中即止，-A 追加的放行规则排在 DROP 之后永远不生效；<br>
+③ 用 DROP 不用 REJECT——REJECT 会返回响应暴露主机存活；<br>
+④ UDP 限速必须 limit + 兜底 DROP 两条配合。</div>
+</div>
+
+<h3 id="user">2.2 用户管理 passwd / shadow（要点二第2条）<span class="tag t-must">必背</span></h3>
+<div class="card">
+<p><b>/etc/passwd 七字段</b>（默认权限 <b>0644</b>）：</p>
+<table>
+<tr><th>#</th><th>字段</th><th>示例 root:x:0:0:root:/root:/bin/bash</th></tr>
+<tr><td>1</td><td>用户名</td><td>root</td></tr>
+<tr><td>2</td><td>密码占位符</td><td>x（真实密码在 shadow）</td></tr>
+<tr><td>3</td><td><b>UID</b></td><td>0（root 的 UID 是 0）</td></tr>
+<tr><td>4</td><td>GID</td><td>0</td></tr>
+<tr><td>5</td><td>描述信息</td><td>root</td></tr>
+<tr><td>6</td><td>主目录</td><td>/root</td></tr>
+<tr><td>7</td><td>登录 Shell</td><td>/bin/bash（<code>/sbin/nologin</code> 表示禁止登录）</td></tr>
+</table>
+<p><b>/etc/shadow 九字段</b>（默认权限 <b>0000</b>）：</p>
+<table>
+<tr><th>#</th><th>字段</th><th>说明（示例 $6$...::0:99999:7:::）</th></tr>
+<tr><td>1</td><td>用户名</td><td>root</td></tr>
+<tr><td>2</td><td><b>加密密码</b></td><td><code>$6$</code>=SHA-512、<code>$5$</code>=SHA-256、<code>$1$</code>=MD5；<code>$</code> 之间是盐值</td></tr>
+<tr><td>3</td><td>最后修改日</td><td>0（从 1970-1-1 起第 0 天）</td></tr>
+<tr><td>4</td><td>最小间隔</td><td>0（随时可改）</td></tr>
+<tr><td>5</td><td><b>最大有效天数</b></td><td>99999（永不过期）</td></tr>
+<tr><td>6</td><td>警告天数</td><td>7（到期前 7 天提醒）</td></tr>
+<tr><td>7</td><td>宽限天数</td><td>空（过期即失效）</td></tr>
+<tr><td>8</td><td>失效日期</td><td>空（永不失效）</td></tr>
+<tr><td>9</td><td>保留</td><td>空</td></tr>
+</table>
+<p><b>命令</b>：<code>useradd wendy</code>建用户 / <code>passwd wendy</code>设密码 / <code>userdel -r</code>删用户及家目录 / <code>usermod -c</code>改描述 <code>-L</code>锁定 <code>-U</code>解锁 / <code>su -</code>切换 / <code>sudo</code>提权。<br>密码复杂度配置文件：<code>/etc/security/pwquality.conf</code>（minlen 最小长度、minclass 字符类别数、maxrepeat 最大重复）。</p>
+<div class="warn">⚠ passwd 是 7 字段、shadow 是 9 字段，别记混。密码含 <code>$%^&amp;</code> 等特殊字符时命令行要用<b>单引号</b>包裹。passwd/shadow 权限或属主变了 = 可能被入侵提权，要 <code>chown root:root &amp;&amp; chmod 644/000</code> 恢复。</div>
+</div>
+
+<h3 id="perm">2.3 inode 与权限换算（要点二第3条）<span class="tag t-must">必考计算</span></h3>
+<div class="card">
+<p><b>inode 存什么</b>：文件大小、权限、属主、时间戳、block 位置、硬链接数……<b>但不存文件名</b>（文件名在目录项里）。<code>stat</code> 查看 inode 信息。</p>
+<p><b>权限 10 位</b>：<code>-rwxr-xr--</code> = 类型(1) + 属主(3) + 组(3) + 其他(3)。类型 <code>-</code>普通文件 <code>d</code>目录 <code>l</code>链接。</p>
+<table>
+<tr><th>权限位</th><th>数字</th><th>说明</th></tr>
+<tr><td>r</td><td>4</td><td>读</td></tr>
+<tr><td>w</td><td>2</td><td>写</td></tr>
+<tr><td>x</td><td>1</td><td>执行</td></tr>
+<tr><td>-</td><td>0</td><td>无</td></tr>
+</table>
+<p><b>换算范例</b>：<code>rwxr-xr--</code> → 属主 4+2+1=<b>7</b>，组 4+0+1=<b>5</b>，其他 4+0+0=<b>4</b> → <b>754</b>。<br>反向：<code>644</code> → rw- r-- r--。</p>
+<p><b>特殊权限</b>：<b>SUID</b>（属主执行位变 <code>s</code>，数字 4xxx）：执行时 EUID 变为<b>文件属主</b>的 UID，如 <code>-rwsr-xr-x</code>=<b>4755</b>。/usr/bin/passwd 就是 root 的 SUID 程序，若被利用可提权。<b>SGID</b>（组执行位 s，2xxx）。审计 SUID：<code>find / -perm -4000 -type f</code>。</p>
+<div class="warn">⚠ 算 rws 时：s 位在 x 位置 → 该段仍算 1 分（执行位有效），额外再加特殊位 4。别把 <code>-rwsr-xr--</code> 算成 0755。</div>
+</div>
+
+<h3 id="scan">2.4 扫描工具（要点二第4条）<span class="tag t-freq">高频</span></h3>
+<div class="card">
+<table>
+<tr><th>工具</th><th>用途</th><th>关键选项</th></tr>
+<tr><td><b>nmap</b></td><td>主机发现 + 端口扫描 + 服务识别</td><td><code>-sn</code>只探活、<code>-sT</code>TCP连接扫描、<code>-sS</code>SYN半开、<code>-sU</code>UDP扫描、<code>-sV</code>服务版本、<code>-p1-65535</code>全端口</td></tr>
+<tr><td><b>masscan</b></td><td>高速大网段端口扫描（异步无状态）</td><td><code>-p1-100 --rate=10000</code></td></tr>
+<tr><td><b>nikto</b></td><td>Web 服务器漏洞扫描（3300+ 危险文件）</td><td><code>-h 目标 -c 目录</code></td></tr>
+<tr><td><b>OpenVAS</b></td><td>综合漏洞扫描系统（50000+ 测试）</td><td>C/S 架构，图形前端</td></tr>
+<tr><td><b>SQLMap</b></td><td>SQL 注入自动检测与利用</td><td>支持 MySQL/Oracle/PostgreSQL 等</td></tr>
+</table>
+<p><b>常见端口</b>：SSH 22 / Telnet 23 / FTP 21 / HTTP 80 / HTTPS 443 / RDP 3389 / MySQL 3306 / Tomcat 8080 / NFS 2049。端口范围 0~65535。</p>
+<div class="warn">⚠ UDP 是<b>无连接</b>协议，UDP 端口扫描<b>可靠性低</b>（无 3 次握手，靠超时判断）。nmap 只探活用 <code>-sn</code> 不是 <code>-sP</code>（旧写法）。</div>
+</div>
+
+<!-- ========== 程序分析题模板 ========== -->
+<h2 id="tmpl">三、三道程序分析题模板（45 分 · 一定要手写一遍）</h2>
+
+<div class="card">
+<h3 style="border-color:var(--must)">模板 A · 内嵌汇编逐行分析（15 分）</h3>
+<p><b>答题格式</b>：每行 = 指令字面 + <b>语义动作</b>（必须说「干什么」，不能只翻译）</p>
+<div class="flow">movq  $0,%%rax   → 把立即数 0 送入 rax，清零累加器
+addq  %1,%%rax   → 把第1个输入 (val1) 累加到 rax
+addq  %2,%%rax   → 把第2个输入 (val2) 累加到 rax
+movq  %%rax,%0   → 把结果写回第0个输出 (val3)
+约束 "=m"(val3)  → val3 是只写输出，位于内存
+约束 "g"(val1)   → val1 由编译器自由分配寄存器或内存
+最终 val3 = 0+1+2 = 3 → 打印 val1:1+val2:2=val3:3</div>
+</div>
+
+<div class="card">
+<h3 style="border-color:var(--must)">模板 B · 汇编转 C（15 分）</h3>
+<p><b>三看口诀</b>：参数看 <code>8(%ebp)</code>、运算看 <code>addl</code> 立即数、调用看 <code>call</code> 前后。</p>
+<div class="flow">g: movl 8(%ebp),%eax ; addl $3,%eax ; ret
+   → int g(int x){ return x+3; }
+
+f: subl $4,%esp ; movl 8(%ebp),%eax ; movl %eax,(%esp) ; call g
+   → int f(int x){ return g(x); }
+
+main: movl $8,(%esp) ; call f ; addl $1,%eax
+   → int main(void){ return f(8)+1; }</div>
+<div class="tip"><b>为什么 8(%ebp)</b>：栈布局是「实参 → 返回地址(4) → 旧EBP(4)」，所以 0(%ebp)=旧EBP、4(%ebp)=<b>返回地址</b>、8(%ebp)=<b>第1个参数</b>。写 4(%ebp) 取到的是返回地址就错了。</div>
+</div>
+
+<div class="card">
+<h3 style="border-color:var(--must)">模板 C · 堆栈画图（15 分）</h3>
+<p>设初始 ESP=0x1000，逐条推（<b>push 先减后写、pop 先读后加</b>）：</p>
+<table>
+<tr><th>指令</th><th>ESP 变化</th><th>内存动作</th></tr>
+<tr><td>pushl $8</td><td>0x1000→<b>0x0FFC</b></td><td>[0x0FFC]=8</td></tr>
+<tr><td>movl %esp,%ebp</td><td>不变</td><td>EBP=0x0FFC</td></tr>
+<tr><td>pushl %ebp</td><td>0x0FFC→<b>0x0FF8</b></td><td>[0x0FF8]=0x0FFC</td></tr>
+<tr><td>pushl $8</td><td>0x0FF8→<b>0x0FF4</b></td><td>[0x0FF4]=8</td></tr>
+<tr><td>addl $4,%esp</td><td>0x0FF4→<b>0x0FF8</b></td><td>只抬栈顶，[0x0FF4] 数据仍在</td></tr>
+<tr><td>popl %ebp</td><td>0x0FF8→<b>0x0FFC</b></td><td>EBP=[0x0FF8]=0x0FFC</td></tr>
+</table>
+<p>最终：<b>ESP=EBP=0x0FFC</b>（重合），栈内容 [0x0FFC]=8、[0x0FF8]=0x0FFC、[0x0FF4]=8（残留）。</p>
+</div>
+
+<!-- ========== 判断题陷阱 ========== -->
+<h2 id="trap">四、判断题高频陷阱（10 分，白送别白丢）</h2>
+<div class="card">
+<table>
+<tr><th>命题</th><th>对错</th><th>原因</th></tr>
+<tr><td>可重定位目标文件(.o)已含绝对地址，可直接执行</td><td class="big">错</td><td>.o 用相对地址，绝对地址是链接时填的</td></tr>
+<tr><td>程序头表在 .o / 可执行 / .so 中都存在</td><td class="big">错</td><td><b>.o 没有程序头表</b>，只有节头表</td></tr>
+<tr><td>静态链接体积比动态链接大，但外部依赖更低</td><td>对</td><td>代码复制进可执行文件</td></tr>
+<tr><td>用 -A 追加放行规则能让被禁 IP 恢复访问</td><td class="big">错</td><td>必须 -I 插到 DROP 之前</td></tr>
+<tr><td>nat 表可作用于 PREROUTING/INPUT/OUTPUT/POSTROUTING</td><td>对</td><td>nat 是四链</td></tr>
+<tr><td>UID 为 0 的用户只有 root 一个</td><td class="big">错</td><td>系统不限制 UID 0 数量，多个是后门信号</td></tr>
+<tr><td>SUID 设置后任何用户执行时 EUID 变为文件属主</td><td>对</td><td>这正是 SUID 的含义</td></tr>
+<tr><td>inode 保存文件名，改文件名会改 inode 号</td><td class="big">错</td><td>inode 不含文件名，文件名在目录项</td></tr>
+<tr><td>HIDS 装单机看主机行为，NIDS 装网络节点看流量</td><td>对</td><td>按部署位置划分</td></tr>
+<tr><td>用户态程序知道内核地址就能直接访问</td><td class="big">错</td><td>靠页表权限隔离，越权触发异常</td></tr>
+<tr><td>fork 在父进程返回子 PID、子进程返回 0</td><td>对</td><td>调用一次返回两次</td></tr>
+<tr><td>冯·诺依曼结构的核心是程序和数据分开存储</td><td class="big">错</td><td>恰恰是<b>混存</b>在同一存储器</td></tr>
+</table>
+<div class="tip"><b>判断题套路</b>：看到「只有」「一定」「都能」「都含」「不需要」这类<b>绝对化词</b>，先怀疑是错的。上面 12 条的错项全部踩在这个套路上。</div>
+</div>
+
+<!-- ========== 易错速记 ========== -->
+<h2>五、考前 10 分钟只看这里</h2>
+<div class="card">
+<div class="warn" style="margin:0">
+<b>必背数字</b>：passwd 7 字段 / shadow 9 字段 / 端口 0~65535 / SSH 22 / HTTP 80 / HTTPS 443 / RDP 3389 / filter 3 链 / nat 4 链 / raw 2 链 / mangle 5 链 / 32位用户空间 0x00000000-0xbfffffff<br><br>
+<b>必背命令</b>：<code>gcc -E/-S/-c</code> 四步 · <code>readelf -h/-S/-l/-s/-r</code> · <code>iptables -L INPUT -n --line-numbers</code> · <code>iptables -I INPUT -s IP -j ACCEPT</code> · <code>useradd/passwd/userdel -r/usermod</code> · <code>stat</code>查inode · <code>nmap -sn/-sT/-sV</code> · <code>find / -perm -4000</code>查SUID<br><br>
+<b>必背口诀</b>：push先减后写、pop先读后加 · ESP栈顶/EBP栈基/EIP指令 · 父得子PID、子得0、错得-1 · 放行用-I插前面
+</div>
+</div>
+
+<hr>
+<p style="text-align:center;color:var(--ink2);font-size:.85em">
+基于 11 讲 PPT 原文 + 老师复习课要点整理 · 祝你考试顺利
+</p>
+
+</div>
+</body>
+</html>

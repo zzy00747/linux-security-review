@@ -49,6 +49,20 @@
 
   /* 期末卷优先展示 */
   .exam-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:18px}
+  /* 重点速查入口 */
+  .crash-card{
+    display:flex; align-items:center; gap:20px; flex-wrap:wrap;
+    background:linear-gradient(120deg,#fff5e6 0%,#ffe9cc 100%);
+    border:2px solid var(--accent-2); border-left:6px solid var(--must);
+    border-radius:14px; padding:22px 26px; box-shadow:0 4px 20px rgba(180,120,40,.16);
+    margin-bottom:8px;
+  }
+  .crash-left{flex:1; min-width:260px}
+  .crash-title{font-size:1.12em; font-weight:700; color:#8a4b1f; margin-bottom:8px}
+  .crash-desc{font-size:.87em; color:#6b5525; line-height:1.7}
+  .crash-desc b{color:var(--must)}
+  .crash-btn{background:var(--must) !important; white-space:nowrap; padding:11px 24px !important} 
+  .crash-btn:hover{background:#a02e21 !important}
   .exam-card{
     background:linear-gradient(135deg,#fff 0%,#fdfaf4 100%);
     border:1px solid var(--divider); border-radius:14px; padding:24px 26px;
@@ -145,6 +159,19 @@
   <div class="stat"><b>198</b><span>练习题</span></div>
   <div class="stat"><b>461</b><span>幻灯片对照</span></div>
   <div class="stat"><b>29</b><span>期末仿真题</span></div>
+</div>
+
+<h2 class="sec">考前速查<span class="tag">3 小时冲刺首选</span></h2>
+<div class="crash-card">
+  <div class="crash-left">
+    <div class="crash-title">⚡ 重点速查（按老师要点一 / 要点二）</div>
+    <div class="crash-desc">
+      寄存器 · 指令 · 堆栈画图 · 内嵌汇编 · 系统调用 · 编译四步 · fork ·
+      iptables · passwd/shadow · 权限换算 · 扫描工具<br>
+      每条含 <b>必背表 + 一句话理解 + 易错陷阱</b>，附 <b>45 分程序分析题解法模板</b> 与 <b>判断题 12 条陷阱</b>
+    </div>
+  </div>
+  <a class="btn btn-primary crash-btn" href="重点速查.html">立即查看 →</a>
 </div>
 
 <h2 class="sec">期末考试仿真卷<span class="tag">考前必做</span></h2>
