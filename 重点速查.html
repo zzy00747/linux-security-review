@@ -3,24 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Linux系统安全与分析 · 3小时重点速查</title>
+<title>Linux系统安全与分析 · 3小时重点速查（带逻辑讲解）</title>
 <style>
 :root{
   --paper:#faf8f3; --card:#fff; --ink:#242019; --ink2:#5d5648;
   --line:#e4dccb; --acc:#8a5a2b; --acc2:#b8863f;
-  --must:#c0392b; --key:#c47f17; --freq:#2d7a4f; --code-bg:#2b2b2b; --code-fg:#e8e6df;
+  --must:#c0392b; --key:#c47f17; --freq:#2d7a4f;
+  --code-bg:#2b2b2b; --code-fg:#e8e6df; --logic-bg:#eef7f0; --logic-bd:#3f8f5c;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--paper);color:var(--ink);
   font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
-  line-height:1.72;font-size:15px;-webkit-font-smoothing:antialiased}
-.wrap{max-width:960px;margin:0 auto;padding:34px 20px 80px}
-h1{font-size:1.75em;margin:0 0 6px;letter-spacing:-.3px;
+  line-height:1.75;font-size:15px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:980px;margin:0 auto;padding:34px 20px 80px}
+h1{font-size:1.72em;margin:0 0 6px;letter-spacing:-.3px;
   background:linear-gradient(100deg,#8a5a2b,#c9974a);-webkit-background-clip:text;background-clip:text;color:transparent}
-.meta{color:var(--ink2);font-size:.9em;margin:0 0 22px}
-h2{font-size:1.22em;margin:38px 0 14px;padding:9px 14px;border-radius:8px;
+.meta{color:var(--ink2);font-size:.9em;margin:0 0 20px}
+h2{font-size:1.2em;margin:38px 0 14px;padding:9px 14px;border-radius:8px;
   background:linear-gradient(90deg,#8a5a2b,#a9743a);color:#fff;font-weight:700}
-h3{font-size:1.05em;margin:22px 0 8px;padding-left:11px;border-left:4px solid var(--acc2);color:#6b4420}
+h3{font-size:1.04em;margin:24px 0 8px;padding-left:11px;border-left:4px solid var(--acc2);color:#6b4420}
 h4{font-size:.96em;margin:16px 0 6px;color:#7a5230}
 p{margin:7px 0}
 table{border-collapse:collapse;width:100%;margin:10px 0;font-size:.9em;background:#fff}
@@ -36,6 +37,12 @@ pre code{background:none;color:inherit;padding:0}
 .good{background:#eef7f1;border-left:4px solid var(--freq);padding:10px 14px;border-radius:0 6px 6px 0;margin:10px 0;font-size:.92em}
 .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin:12px 0;
   box-shadow:0 1px 6px rgba(90,70,40,.06)}
+/* 逻辑讲解块 */
+.logic{background:var(--logic-bg);border:1px solid #cfe6d6;border-left:5px solid var(--logic-bd);
+  border-radius:0 9px 9px 0;padding:13px 17px;margin:8px 0 14px;font-size:.94em;line-height:1.8}
+.logic .lt{font-weight:700;color:#2f7048;display:block;margin-bottom:5px;font-size:.98em}
+.logic b{color:#1f5c3a}
+.logic em{color:#8a4b1f;font-style:normal;font-weight:600}
 .kp{font-weight:700;color:#2c2c2c}
 .exp{color:#6b6355}
 .tag{display:inline-block;font-size:.75em;padding:1px 8px;border-radius:10px;color:#fff;margin-left:6px;vertical-align:middle}
@@ -54,7 +61,7 @@ hr{border:none;border-top:1px dashed var(--line);margin:26px 0}
 .big{color:var(--must);font-weight:700}
 @media(max-width:640px){
   .wrap{padding:20px 12px 60px}
-  h1{font-size:1.4em}
+  h1{font-size:1.36em}
   table{font-size:.82em}
   th,td{padding:4px 6px}
   .toc ol{columns:1}
@@ -63,7 +70,7 @@ hr{border:none;border-top:1px dashed var(--line);margin:26px 0}
 @media print{
   body{background:#fff}
   h2{background:#8a5a2b !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .card,.time div{box-shadow:none;break-inside:avoid}
+  .card,.time div,.logic{box-shadow:none;break-inside:avoid}
 }
 </style>
 </head>
@@ -71,44 +78,50 @@ hr{border:none;border-top:1px dashed var(--line);margin:26px 0}
 <div class="wrap">
 
 <h1>Linux系统安全与分析 · 3小时重点速查</h1>
-<p class="meta">按老师复习课「要点一 / 要点二」组织 · 每条含 <b>必背表 + 一句话理解 + 易错陷阱</b> · 配套 45 分程序分析题模板</p>
+<p class="meta">按老师复习课「要点一 / 要点二」组织 · 每个要点先讲 <b>💡 人话逻辑</b>，再给必背表 · 附 45 分程序分析题模板</p>
 
 <div class="toc">
 <b>快速导航</b>
 <ol>
   <li><a href="#plan">3 小时怎么用</a></li>
-  <li><a href="#reg">寄存器（必背表）</a></li>
-  <li><a href="#addr">寻址与常用指令</a></li>
+  <li><a href="#reg">寄存器</a></li>
+  <li><a href="#addr">寻址与指令</a></li>
   <li><a href="#stack">堆栈画图 + 汇编转C</a></li>
-  <li><a href="#frame">函数堆栈框架五步</a></li>
-  <li><a href="#asm">嵌入式汇编约束符</a></li>
-  <li><a href="#syscall">系统调用三层结构</a></li>
-  <li><a href="#switch">态切换发生什么</a></li>
+  <li><a href="#frame">函数堆栈框架</a></li>
+  <li><a href="#asm">嵌入式汇编</a></li>
+  <li><a href="#syscall">系统调用三层</a></li>
+  <li><a href="#switch">态切换</a></li>
   <li><a href="#compile">编译四步 + 内存布局</a></li>
   <li><a href="#fork">进程描述符 + fork</a></li>
   <li><a href="#ipt">iptables 四表五链</a></li>
-  <li><a href="#user">passwd / shadow 字段</a></li>
-  <li><a href="#perm">inode 与权限换算</a></li>
+  <li><a href="#user">passwd / shadow</a></li>
+  <li><a href="#perm">inode 与权限</a></li>
   <li><a href="#scan">扫描工具</a></li>
   <li><a href="#tmpl">程序分析题模板</a></li>
-  <li><a href="#trap">判断题高频陷阱</a></li>
+  <li><a href="#trap">判断题陷阱</a></li>
 </ol>
 </div>
 
 <!-- ========== 时间规划 ========== -->
 <h2 id="plan">〇、3 小时怎么用（按分值分配）</h2>
 <div class="time">
-  <div><b>0:00–0:40</b>要点一硬点：寄存器表、指令、约束符、系统调用三层、编译四步。这些是<b>选择+填空+判断</b>的 30 分基本盘。</div>
-  <div><b>0:40–1:40</b><span class="big">程序分析题 45 分</span>。把堆栈画图、汇编转C、内嵌汇编三套模板各手写一遍（下面有模板，一定要动手推）。</div>
-  <div><b>1:40–2:30</b>要点二：iptables 命令、passwd/shadow 字段、权限换算。填空+判断+综合题。</div>
-  <div><b>2:30–3:00</b>刷仿真卷选择/判断 + 背易错清单。考前只看红色 ⚠ 部分。</div>
+  <div><b>0:00–0:40</b>要点一硬点：寄存器、指令、约束符、系统调用三层、编译四步。拿下选择+填空+判断的 30 分基本盘。</div>
+  <div><b>0:40–1:40</b><span class="big">程序分析题 45 分</span>。三套模板各手写一遍，一定要动笔推。</div>
+  <div><b>1:40–2:30</b>要点二：iptables、passwd/shadow、权限换算。</div>
+  <div><b>2:30–3:00</b>刷选择/判断 + 背易错清单，只看红色 ⚠。</div>
 </div>
-<div class="tip"><b>核心判断</b>：这门课 70 分是<b>程序分析(45) + 综合(25)</b>，全是「给代码/场景动笔推」。背概念只够拿 30 分，<b>动手推一遍模板比背十遍笔记有用</b>。</div>
+<div class="logic"><span class="lt">💡 先说个总逻辑</span>
+这门课的分数是「<b>背 30 分 + 动手 70 分</b>」。选择题填空判断（30 分）靠记忆；程序分析（45）+ 综合（25）全是给代码、给场景让你<b>动笔推</b>。
+所以时间别全花在背——<em>模板一定要自己手推一遍</em>，看别人推和你自己会推是两码事。</div>
 
 <!-- ========== 要点一 ========== -->
 <h2>一、要点一 · 内核分析（约 55–60 分）</h2>
 
 <h3 id="reg">1.1 常用寄存器（要点一第1条）<span class="tag t-must">必背</span></h3>
+<div class="logic"><span class="lt">💡 先讲逻辑：寄存器是 CPU 的"手边工作台"</span>
+CPU 算东西，数据放哪？内存虽然大但<b>太远（慢）</b>，寄存器就在 CPU 手边（快）。所以正在算的数、下一条指令在哪、栈顶在哪，统统放寄存器。<br>
+为什么不搞一个万能寄存器？<b>分工效率最高</b>：<em>EAX 是算术主力</em>（加减乘除、存返回值），<em>ECX 天生会数数</em>（循环计数），<em>ESP/EBP 是栈的两个定位针</em>（一个指栈顶、一个指栈基），<em>EIP 永远指着下一条要执行的指令</em>——程序能一句句往下跑，全靠 EIP 每步自动 +1。<br>
+段寄存器（CS/DS/ES/SS）不一样，它们像"分区管理员"，只负责告诉你"哪一段内存"，不参与算术。</div>
 <div class="card">
 <table>
 <tr><th>32位</th><th>16位</th><th>8位(高/低)</th><th>名称</th><th>主要用途</th></tr>
@@ -125,17 +138,20 @@ hr{border:none;border-top:1px dashed var(--line);margin:26px 0}
 </table>
 <table>
 <tr><th>段寄存器</th><th>全称</th><th>存放内容</th></tr>
-<tr><td><b>CS</b></td><td>Code Segment</td><td>代码段的段基址（配合 CS:EIP 定位指令）</td></tr>
-<tr><td><b>DS</b></td><td>Data Segment</td><td>数据段的段基址</td></tr>
-<tr><td><b>ES</b></td><td>Extra Segment</td><td>附加数据段的段基址</td></tr>
-<tr><td><b>SS</b></td><td>Stack Segment</td><td>堆栈段的段基址</td></tr>
+<tr><td><b>CS</b></td><td>Code Segment</td><td>代码段基址（配合 CS:EIP 定位指令）</td></tr>
+<tr><td><b>DS</b></td><td>Data Segment</td><td>数据段基址</td></tr>
+<tr><td><b>ES</b></td><td>Extra Segment</td><td>附加数据段基址</td></tr>
+<tr><td><b>SS</b></td><td>Stack Segment</td><td>堆栈段基址</td></tr>
 </table>
-<div class="warn">⚠ <b>必考陷阱</b>：ESP 指<b>栈顶</b>（动态变），EBP 指<b>栈基</b>（函数内固定）；EIP 是<b>指令地址</b>不是栈地址。<b>段寄存器不参与算术运算</b>，只存段选择子。</div>
+<div class="warn">⚠ <b>必考陷阱</b>：ESP 指<b>栈顶</b>（动态变），EBP 指<b>栈基</b>（函数内固定）；EIP 是<b>指令地址</b>不是栈地址。<b>段寄存器不参与算术运算</b>。</div>
 </div>
 
 <h3 id="addr">1.2 寻址方式与常用指令（要点一第2条）<span class="tag t-key">重点</span></h3>
+<div class="logic"><span class="lt">💡 先讲逻辑：CPU 拿数据有几种"报地址"的方式</span>
+你要 CPU 算一个数，得告诉它数在哪——这就是寻址。<b>最简单：直接给地址</b>（立即数 <code>$8</code>）；<b>用寄存器里的值当地址</b>；<b>寄存器+偏移</b>（<code>8(%ebp)</code>=EBP 再加 8 个字节的位置）。<br>
+最关键一条：<b>AT&amp;T 语法是「源在前、目的在后」</b>（<code>movl %esp,%ebp</code> 是把 esp 的值给 ebp），和 Intel 书面写法<b>正好反过来</b>。记住这个顺序，转 C 题就不会把方向搞错。</div>
 <div class="card">
-<p><span class="kp">AT&amp;T 语法</span>：<code>指令 源, 目的</code>（注意：与 Intel 的「目的, 源」相反！）寄存器加 <code>%</code>，立即数加 <code>$</code>。</p>
+<p><span class="kp">AT&amp;T 语法</span>：<code>指令 源, 目的</code>；寄存器加 <code>%</code>，立即数加 <code>$</code>。</p>
 <table>
 <tr><th>后缀</th><th>宽度</th><th>示例</th></tr>
 <tr><td>b</td><td>8 位（byte）</td><td>movb</td></tr>
@@ -143,7 +159,6 @@ hr{border:none;border-top:1px dashed var(--line);margin:26px 0}
 <tr><td><b>l</b></td><td><b>32 位（long）</b></td><td>movl / pushl / popl / addl / subl</td></tr>
 <tr><td>q</td><td>64 位（quad）</td><td>movq / addq</td></tr>
 </table>
-<p><b>常用寻址写法</b>：</p>
 <table>
 <tr><th>写法</th><th>含义</th><th>用途</th></tr>
 <tr><td><code>8(%ebp)</code></td><td>EBP+8 处内存</td><td><b>取第1个函数参数</b>（EBP+4 是返回地址）</td></tr>
@@ -155,20 +170,25 @@ hr{border:none;border-top:1px dashed var(--line);margin:26px 0}
 </div>
 
 <h3 id="stack">1.3 堆栈画图 + 汇编转 C（要点一第3条 · 程序分析题核心）<span class="tag t-must">必考</span></h3>
+<div class="logic"><span class="lt">💡 先讲逻辑：栈是个"从天花板往下堆箱子"的架子</span>
+内存地址是<b>从高往低</b>用的——想象栈顶在天花板，你往上放箱子，越堆越低，所以叫"<b>栈向低地址增长</b>"。<br>
+<em>push = 放箱子</em>：先把位置往下挪 4 格（ESP-4），再把东西放进去（<b>先减后写</b>）。<br>
+<em>pop = 拿箱子</em>：先把东西拿起来（读 ESP 处），再把位置往上挪 4 格（<b>先读后加</b>）。<br>
+<em>addl $4,%esp 只是把"手指"往上挪，箱子还在原处没搬走</em>——这就是"数据仍残留"的原因（也是取证能读到已删数据的原因）。<br>
+<b>汇编转 C 就是反着读</b>：看哪里取参数（<code>8(%ebp)</code>）、看做了什么运算（<code>addl</code>）、看调了谁（<code>call</code>）。</div>
 <div class="card">
-<p><span class="kp">栈向低地址增长</span>（Stack grows down）。这两类题占 45 分中的 30 分，必须会推。</p>
-<h4>① 堆栈画图题 —— 逐步推演法</h4>
+<h4>① 堆栈画图 —— 逐步推演</h4>
 <div class="flow">push  $8   → ESP 先减 4 再写 8
 movl  %esp,%ebp → EBP = ESP（覆盖原值）
 pushl %ebp → ESP 减 4，写入旧 EBP 的值
 pushl $8   → ESP 减 4，写入 8
 addl  $4,%esp → ESP 加 4（只改指针，不清内存）
 popl  %ebp → 先读 ESP 处值给 EBP，再 ESP 加 4</div>
-<div class="warn">⚠ 三条铁律：<b>push 是先减后写、pop 是先读后加</b>；<code>addl $4,%esp</code> <b>只抬栈顶不清数据</b>（原值仍在内存，可被取证）；<code>movl %esp,%ebp</code> 会<b>覆盖 EBP 原值</b>。</div>
+<div class="warn">⚠ 三条铁律：<b>push 先减后写、pop 先读后加</b>；<code>addl $4,%esp</code> <b>只抬栈顶不清数据</b>；<code>movl %esp,%ebp</code> 会<b>覆盖 EBP 原值</b>。</div>
 <h4>② 汇编转 C —— 三看口诀</h4>
 <table>
 <tr><th>看什么</th><th>怎么判断</th></tr>
-<tr><td>看参数</td><td><code>8(%ebp)</code> 是第1个参数，<code>12(%ebp)</code> 是第2个。看到 <code>movl 8(%ebp),%eax</code> → 取参数</td></tr>
+<tr><td>看参数</td><td><code>8(%ebp)</code> 是第1个参数，<code>12(%ebp)</code> 是第2个</td></tr>
 <tr><td>看运算</td><td><code>addl $3,%eax</code> → 参数 +3；<code>addl $1,%eax</code> → 返回值 +1</td></tr>
 <tr><td>看调用</td><td><code>subl $4,%esp</code> + <code>movl %eax,(%esp)</code> + <code>call g</code> → <code>g(参数)</code>；call 后紧跟 <code>addl</code> → 返回值继续参与运算</td></tr>
 </table>
@@ -176,37 +196,52 @@ popl  %ebp → 先读 ESP 处值给 EBP，再 ESP 加 4</div>
 </div>
 
 <h3 id="frame">1.4 函数调用堆栈框架五步（要点一第4条）<span class="tag t-must">必背</span></h3>
+<div class="logic"><span class="lt">💡 先讲逻辑：为什么要 EBP？——因为 ESP 一直在动，得钉个锚</span>
+函数执行时，ESP 每 push 一个局部变量、每调一次子函数就变一次。如果用 ESP 找参数（"参数在 ESP+8"），那 ESP 一动偏移就错，你根本算不准参数在哪。<br>
+所以聪明做法：<b>进函数第一件事，把 ESP 抄一份给 EBP 钉死</b>。之后不管 ESP 怎么上下，参数永远是 <em>EBP+8</em>、局部变量永远是 <em>EBP-4</em>——因为 EBP 从没动过。<br>
+一句话：<b>EBP 是钉在墙上的锚，ESP 是随波逐流的船</b>。离开函数时再把 ESP 拉回 EBP（一次性丢掉所有局部变量），锚也就收走了。</div>
 <div class="card">
 <p><b>建立（进函数，3 步）</b>：</p>
-<div class="flow">① pushl %ebp        ; 保存调用者 EBP
-② movl  %esp, %ebp  ; EBP 锚定到当前栈框架基址
-③ subl  $N, %esp    ; 为局部变量抬高栈顶 N 字节</div>
+<div class="flow">① pushl %ebp        ; 保存调用者 EBP（锚要留个底）
+② movl  %esp, %ebp  ; 把 ESP 抄给 EBP → 立新锚
+③ subl  $N, %esp    ; 给局部变量腾 N 字节空间</div>
 <p><b>拆除（返回前，3 步）</b>：</p>
-<div class="flow">④ movl %ebp, %esp  ; ESP 复位，一次性丢弃局部变量空间
-⑤ popl %ebp        ; 恢复调用者 EBP
-⑥ ret              ; 弹出返回地址并跳转</div>
-<div class="tip"><b>口诀</b>：「<b>压旧基、立新基、留空间 → 收空间、复旧基、返回</b>」。EBP 是锚点（参数在 +8 起、局部变量在 -4 起），ESP 是游标（随 push/pop 变）。</div>
+<div class="flow">④ movl %ebp, %esp  ; ESP 拉回锚点，一次性丢掉局部变量
+⑤ popl %ebp        ; 恢复调用者的旧锚
+⑥ ret              ; 弹出返回地址并跳转回去</div>
+<div class="tip"><b>口诀</b>：「<b>压旧基、立新基、留空间 → 收空间、复旧基、返回</b>」。参数在 EBP+8 起，局部变量在 EBP-4 起。</div>
 <div class="warn">⚠ 顺序不能乱：先 <code>push ebp</code> 再 <code>mov esp,ebp</code>；拆除先 <code>mov ebp,esp</code> 再 <code>pop ebp</code>。漏掉第④步栈会失衡。</div>
 </div>
 
 <h3 id="asm">1.5 嵌入式汇编语法与约束符（要点一第5条）<span class="tag t-must">必背</span></h3>
+<div class="logic"><span class="lt">💡 先讲逻辑：约束符是你和编译器的"合同"</span>
+你在 C 里插一段汇编，编译器不知道<em>你的变量该放哪、是输入还是输出</em>。约束符就是这份合同：<br>
+<code>"=m"(val3)</code> 意思是"<b>val3 是输出（=），放内存（m）</b>，我汇编执行完会把结果写进去，你（编译器）别乱安排"。<br>
+<code>"g"(val1)</code> 意思是"val1 是输入，<b>你随便放寄存器或内存都行（g=general）</b>"。<br>
+记住：<b>= 输出、+ 读写、r 寄存器、m 内存、g 随便</b>。操作数编号 %0 是第一个输出、%1 起是输入。</div>
 <div class="card">
 <p><b>语法</b>：<code>asm volatile("指令" : 输出 : 输入 : 破坏列表);</code></p>
 <table>
 <tr><th>约束符</th><th>含义</th><th>记忆</th></tr>
-<tr><td><b>=</b></td><td>只写的输出操作数</td><td>「等号=输出」</td></tr>
-<tr><td><b>+</b></td><td>既读又写的操作数</td><td>「加号=读写」</td></tr>
+<tr><td><b>=</b></td><td>只写的输出操作数</td><td>等号=输出</td></tr>
+<tr><td><b>+</b></td><td>既读又写的操作数</td><td>加号=读写</td></tr>
 <tr><td><b>r</b></td><td>通用寄存器</td><td>r = register</td></tr>
 <tr><td><b>m</b></td><td>内存操作数</td><td>m = memory</td></tr>
 <tr><td><b>g</b></td><td>通用（寄存器或内存皆可，编译器自选）</td><td>g = general</td></tr>
 <tr><td><b>i</b> / <b>n</b></td><td>立即数（i：0~31，n：立即数）</td><td>i = immediate</td></tr>
 <tr><td><b>a</b>/<b>b</b>/<b>c</b>/<b>d</b></td><td>分别指定 EAX/EBX/ECX/EDX</td><td>字母对应寄存器</td></tr>
 </table>
-<p><b>操作数编号</b>：<code>%0</code> = 第0个（输出），<code>%1</code> 起是输入；指令里的 <code>%%eax</code> 是转义写法，编译后就是 <code>%eax</code>。</p>
-<div class="warn">⚠ 内嵌汇编题必考「逐行说明作用」，不要只翻译助记符，要说出<b>语义</b>：<code>movq $0,%%rax</code>=清零累加器；<code>addq %1,%%rax</code>=累加第1个输入；<code>movq %%rax,%0</code>=结果写回输出。</div>
+<div class="warn">⚠ 内嵌汇编题必考「逐行说明作用」，要说出<b>语义</b>不是翻译助记符：<code>movq $0,%%rax</code>=清零累加器；<code>addq %1,%%rax</code>=累加第1个输入；<code>movq %%rax,%0</code>=结果写回输出。</div>
 </div>
 
 <h3 id="syscall">1.6 系统调用三层结构（要点一第6条）<span class="tag t-must">必考</span></h3>
+<div class="logic"><span class="lt">💡 先讲逻辑：用户程序不能直接进内核，得像去政府办事一样过安检</span>
+为什么不能直接调内核函数？<em>因为用户程序不可信</em>——万一你写个死循环或恶意代码在内核里跑，整个系统就崩了。<br>
+所以要过三道流程：<br>
+① <b>xyz() API 层</b> = 去<b>办事窗口领表</b>（glibc 帮你把参数摆好）；<br>
+② <b>system_call 入口</b> = <b>安检+登记</b>（保存现场、查系统调用表，决定找哪个科室）；<br>
+③ <b>sys_xyz() 服务例程</b> = <b>具体科室</b>真正把事办完。<br>
+用户程序永远碰不到内核代码，只能"递申请"。</div>
 <div class="card">
 <div class="flow">用户程序 →  API 层 xyz()        （如 time()、fork()，glibc 封装）
          ↓ 陷入（int $0x80 / syscall）
@@ -223,31 +258,38 @@ popl  %ebp → 先读 ESP 处值给 EBP，再 ESP 加 4</div>
 </div>
 
 <h3 id="switch">1.7 态切换时发生什么（要点一第7条）<span class="tag t-key">重点</span></h3>
+<div class="logic"><span class="lt">💡 先讲逻辑：为什么要"换栈"？——内核不敢用用户的栈</span>
+用户态和内核态用的是<b>两个不同的栈</b>。<em>用户栈是"你的地盘"</em>，可能被你的程序破坏或恶意构造；内核不能信任它，所以进门（进内核）时立刻<b>换用内核自己的栈</b>——这样内核干活才安全。<br>
+这就是态切换最容易被漏答的关键动作：<b>切权限（Ring3→Ring0）+ 换栈（用户栈→内核栈）+ 保存现场 + 跳处理程序</b>。回来时用 iret 把现场恢复、权限退回用户态。</div>
 <div class="card">
-<p><b>用户态 ↔ 内核态</b>：通过中断/异常（系统调用是<b>陷阱 trap</b>）触发。</p>
 <table>
 <tr><th>架构</th><th>权限级</th><th>用户态/内核态</th><th>陷入指令</th><th>返回指令</th></tr>
 <tr><td>X86</td><td>Ring 0~3</td><td>Ring3 / Ring0（Linux 只用 0 和 3）</td><td><code>int $0x80</code> / <code>syscall</code></td><td><code>iret</code> / <code>sysret</code></td></tr>
 <tr><td>ARM64</td><td>EL0~EL3</td><td>EL0 / EL1</td><td><code>svc</code></td><td><code>eret</code></td></tr>
 </table>
-<p><b>切换的 4 个关键动作</b>：</p>
 <div class="flow">① 权限级切换：Ring3 → Ring0
-② 【关键】切换栈：用户栈 → 内核栈（每种态用各自的栈！）
-③ 保存现场：压入 SS/ESP/EFLAGS/CS/EIP 等寄存器到内核栈
-④ 查中断向量表跳转到处理程序；返回时 iret 恢复现场</div>
-<div class="warn">⚠ 最容易漏答「<b>切换到内核栈</b>」——用户态和内核态用两个不同的栈，这是态切换的核心动作。地址空间：32位 Linux 用户态只能访问 0x00000000~0xbfffffff，0xc0000000 以上是内核空间。</div>
+② 【关键】切换栈：用户栈 → 内核栈（每种态各自的栈！）
+③ 保存现场：压入 SS/ESP/EFLAGS/CS/EIP 到内核栈
+④ 查中断向量表跳处理程序；返回时 iret 恢复现场</div>
+<div class="warn">⚠ 最容易漏答「<b>切换到内核栈</b>」。地址空间：32位 Linux 用户态只能访问 0x00000000~0xbfffffff，0xc0000000 以上是内核空间。</div>
 </div>
 
 <h3 id="compile">1.8 编译四步 + 内存布局（要点一第9条）<span class="tag t-must">必考</span></h3>
+<div class="logic"><span class="lt">💡 先讲逻辑：把"人话"翻译成"机器 0/1"要分几道工序</span>
+你写的 C 是给人看的，CPU 只认 0/1。中间要过几道工序：<br>
+<em>预处理</em>=把 #define 宏和 #include 的文件<b>文本替换</b>展开（还是 C，只是变长了）；<br>
+<em>编译</em>=翻译成<b>汇编</b>（人类还能读的机器指令）；<br>
+<em>汇编</em>=汇编翻成 <b>0/1 机器码</b>（.o）；<br>
+<em>链接</em>=把多个 .o 和库<b>拼成一个完整程序，并把地址都定下来</b>。<br>
+<b>内存布局的逻辑</b>：能自动回收的临时变量放<b>栈</b>；手动申请的放<b>堆</b>；未初始化的全局变量放 <b>.bss</b>（反正初值都是 0，文件里不用真的存一堆 0）。</div>
 <div class="card">
 <table>
 <tr><th>步骤</th><th>命令</th><th>产物</th><th>做什么</th></tr>
 <tr><td>预处理</td><td><code>gcc -E a.c -o a.i</code></td><td>.i</td><td>删注释、展开宏、插入 #include</td></tr>
 <tr><td>编译</td><td><code>gcc -S a.i -o a.s</code></td><td>.s</td><td>翻译成汇编语言</td></tr>
 <tr><td>汇编</td><td><code>gcc -c a.s -o a.o</code></td><td>.o</td><td>翻译成机器码（已是 ELF）</td></tr>
-<tr><td>链接</td><td><code>gcc a.o -o a</code></td><td>可执行文件</td><td>符号解析 + 重定位</td></tr>
+<tr><td>链接</td><td><code>gcc a.o -o a</code></td><td>可执行文件</td><td>符号解析 + 重定位定地址</td></tr>
 </table>
-<p><b>内存布局（栈、堆、.bss 各存什么 —— 老师明确追问）</b>：</p>
 <table>
 <tr><th>区域</th><th>存放内容</th><th>特性</th></tr>
 <tr><td><b>栈 stack</b></td><td>局部变量、函数参数、返回地址</td><td>系统自动分配释放，<b>向低地址增长</b></td></tr>
@@ -256,26 +298,39 @@ popl  %ebp → 先读 ESP 处值给 EBP，再 ESP 加 4</div>
 <tr><td>.data</td><td><b>已初始化</b>的全局/静态变量</td><td>占文件空间</td></tr>
 <tr><td>.text</td><td>机器指令</td><td>通常只读</td></tr>
 </table>
-<p><b>readelf / objdump 常用选项</b>：<code>readelf -h</code>文件头 / <code>-S</code>节头 / <code>-l</code>程序头(段表) / <code>-s</code>符号表 / <code>-r</code>重定位。ELF 三种类型：可重定位(.o) / 可执行 / 共享库(.so)；<b>程序头表只在可执行文件和 .so 中有，.o 没有</b>。</p>
+<p><b>readelf / objdump</b>：<code>readelf -h</code>文件头 / <code>-S</code>节头 / <code>-l</code>程序头(段表) / <code>-s</code>符号表 / <code>-r</code>重定位。ELF 三种：可重定位(.o) / 可执行 / 共享库(.so)；<b>程序头表只在可执行文件和 .so 有，.o 没有</b>。</p>
 </div>
 
-<h3 id="fork">1.9 进程描述符 + fork（要点一第10条 · 来自教材6.1/6.2）<span class="tag t-must">必考</span></h3>
+<h3 id="fork">1.9 进程描述符 + fork（要点一第10条 · 教材6.1/6.2）<span class="tag t-must">必考</span></h3>
+<div class="logic"><span class="lt">💡 先讲逻辑：fork 是"分身术"，返回值是分身的身份证</span>
+<code>fork()</code> 让当前进程<b>复制出一个分身</b>。父子俩从<b>同一个点</b>继续往下跑，长得一模一样——那怎么知道自己是谁？<br>
+靠返回值：<b>父进程拿到"孩子的身份证号"（子 PID，&gt;0）</b>，<b>子进程拿到 0</b>（"我是孩子，没有孩子"）。所以 <code>if(pid==0)</code> 就是"我是子进程"的分支。<br>
+<em>task_struct</em> 是内核记录每个进程的"档案袋"，里面存 PID、父子关系、打开的文件、地址空间等。</div>
 <div class="card">
-<p><b>进程描述符 task_struct</b>：内核用 <code>task_struct</code> 结构体描述一个进程，包含 PID、进程状态、父子进程指针、打开文件表、地址空间等信息。</p>
+<p><b>进程描述符 task_struct</b>：内核描述进程的结构体，含 PID、状态、父子进程指针、打开文件表、地址空间。</p>
 <table>
 <tr><th>fork() 返回</th><th>含义</th></tr>
 <tr><td><b>父进程返回子进程 PID（&gt;0）</b></td><td>父进程据此知道子进程编号</td></tr>
 <tr><td><b>子进程返回 0</b></td><td>子进程据此识别「我是子」</td></tr>
 <tr><td><b>失败返回 -1</b></td><td>创建失败</td></tr>
 </table>
-<p><b>fork 的本质</b>：调用一次返回两次；子进程复制父进程的 PCB/地址空间（写时复制）。<b>fork 与 execve 区别</b>：fork 创建新进程（PID 变），execve 替换当前进程映像（PID 不变）。</p>
-<div class="warn">⚠ 经典陷阱：<code>else if ((pid=fork()) &lt; 0)</code> 这个分支<b>正常情况永不执行</b>（fork 成功只返回 &gt;0 或 0）。画进程树时，else-if 链<b>命中即跳出</b>，一个进程只走一个分支，别把一条链上所有 printf 都算给同一进程。</div>
+<p><b>fork vs execve</b>：fork 创建新进程（PID 变），execve 替换当前进程映像（PID 不变）。</p>
+<div class="warn">⚠ 陷阱：<code>else if ((pid=fork()) &lt; 0)</code> 这个分支<b>正常永不执行</b>（fork 成功只返回 &gt;0 或 0）。画进程树时 else-if 链<b>命中即跳出</b>，一个进程只走一个分支，别把整条链的 printf 都算给同一进程。</div>
 </div>
 
 <!-- ========== 要点二 ========== -->
 <h2>二、要点二 · 系统安全（约 40–45 分）</h2>
 
 <h3 id="ipt">2.1 iptables 四表五链（要点二第1条）<span class="tag t-must">必考 25分综合题</span></h3>
+<div class="logic"><span class="lt">💡 先讲逻辑：数据包走"海关通道"，五链是关卡、四表是每关能做的事</span>
+想象数据包是"人"，从网卡进来到离开，要走一条固定的<b>海关通道</b>：<br>
+<code>入境口(PREROUTING) → 判断去哪 → 本地居民走 INPUT / 过境旅客走 FORWARD → 出境口(POSTROUTING)</code>，本地人寄东西走 <code>OUTPUT</code>。<br>
+<b>「链」= 五个关卡位置</b>，回答「<b>在哪里查</b>」；<b>「表」= 每个关卡能做的四类事</b>，回答「<b>能做什么</b>」：<br>
+· <em>filter</em>=<b>放不放行</b>（安检说"过"或"不过"，最常用）<br>
+· <em>nat</em>=<b>改地址</b>（换护照上的门牌号，改源/目的 IP）<br>
+· <em>mangle</em>=<b>改包的细节</b>（改 TTL 之类的外包装）<br>
+· <em>raw</em>=<b>最前置的预处理</b>（正式检查前先动手脚）<br>
+<b class="big">为什么链的顺序是死穴</b>：安检是<b>排队逐个过</b>，前面被拦下后面根本不查。所以你若先设"整个网段 DROP"，再加"She 的 IP ACCEPT"，She 仍会被前面那条 DROP 拦下——因为她排在后面永远轮不到。<b>放行必须插到拒绝前面（用 -I 不用 -A）</b>，这就是 25 分题的核心。</div>
 <div class="card">
 <table>
 <tr><th>表</th><th>作用</th><th>可作用链</th></tr>
@@ -284,8 +339,7 @@ popl  %ebp → 先读 ESP 处值给 EBP，再 ESP 加 4</div>
 <tr><td><b>mangle</b></td><td>修改数据包内容（TTL/TOS）</td><td>五链全可</td></tr>
 <tr><td><b>raw</b></td><td>连接跟踪前处理</td><td>PREROUTING / OUTPUT</td></tr>
 </table>
-<p><b>五链</b>：<code>PREROUTING</code>路由前 → <code>INPUT</code>入站（给本机）→ <code>FORWARD</code>转发（给别人）→ <code>OUTPUT</code>出站（本机发）→ <code>POSTROUTING</code>路由后</p>
-<p><b>命令模板</b>：</p>
+<p><b>五链</b>：<code>PREROUTING</code>路由前 → <code>INPUT</code>入站(给本机) → <code>FORWARD</code>转发(给别人) → <code>OUTPUT</code>出站(本机发) → <code>POSTROUTING</code>路由后</p>
 <div class="flow">iptables [-t 表] 命令 链 匹配条件 -j 动作
 命令：-A 追加(末尾) / -I 插入(默认首部) / -D 删除 / -L 列表 / -F 清空 / -P 默认策略
 动作：ACCEPT 放行 / DROP 静默丢弃 / REJECT 拒绝(返回响应) / LOG 记录</div>
@@ -295,16 +349,21 @@ popl  %ebp → 先读 ESP 处值给 EBP，再 ESP 加 4</div>
 <tr><td>禁单个 IP</td><td><code>iptables -A INPUT -s 192.168.1.20 -j DROP</code></td></tr>
 <tr><td>禁网段 ping（保留其他业务）</td><td><code>iptables -A INPUT -s 192.168.20.0/24 -p icmp -j DROP</code></td></tr>
 <tr><td><b>放行网段内单个 IP</b></td><td><code>iptables -I INPUT -s 192.168.20.115 -j ACCEPT</code></td></tr>
-<tr><td>UDP 限速</td><td><code>-A INPUT -p udp -m limit --limit 10/s --limit-burst 20 -j ACCEPT</code><br>再 <code>-A INPUT -p udp -j DROP</code></td></tr>
+<tr><td>UDP 限速</td><td><code>-A INPUT -p udp -m limit --limit 10/s --limit-burst 20 -j ACCEPT</code> 再 <code>-A INPUT -p udp -j DROP</code></td></tr>
 </table>
 <div class="warn">⚠ <b>四大陷阱（25分综合题全在这）</b>：<br>
 ① 禁 ping 必须加 <code>-p icmp</code>，否则封掉整个网段所有流量；<br>
-② <b class="big">放行单个 IP 必须用 -I 不能用 -A</b>——规则自上而下匹配、命中即止，-A 追加的放行规则排在 DROP 之后永远不生效；<br>
+② <b class="big">放行单个 IP 必须用 -I 不能用 -A</b>——规则自上而下、命中即止，-A 追加的放行排在 DROP 后永远不生效；<br>
 ③ 用 DROP 不用 REJECT——REJECT 会返回响应暴露主机存活；<br>
 ④ UDP 限速必须 limit + 兜底 DROP 两条配合。</div>
 </div>
 
 <h3 id="user">2.2 用户管理 passwd / shadow（要点二第2条）<span class="tag t-must">必背</span></h3>
+<div class="logic"><span class="lt">💡 先讲逻辑：passwd 和 shadow 为什么要分家？</span>
+<code>/etc/passwd</code> 存 UID、主目录、登录 shell，<b>这些所有程序都要读</b>（ls 显示文件属主要查它、登录程序要查你的主目录），所以它必须<b>人人可读（0644）</b>。<br>
+但密码哈希<b>绝不能让人随便读走</b>——拿到哈希就能拿去离线爆破。所以把密码单独放 <code>/etc/shadow</code>，<b>只有 root 能读（0000）</b>。<br>
+一句话：<em>身份信息（passwd）公开，密码（shadow）保密</em>。这就是两个文件分家的逻辑。<br>
+也因此——passwd 的权限/属主一旦变成别人可写，就说明有人能自己加个 UID=0 的号来提权，是<b>被入侵的信号</b>。</div>
 <div class="card">
 <p><b>/etc/passwd 七字段</b>（默认权限 <b>0644</b>）：</p>
 <table>
@@ -330,14 +389,18 @@ popl  %ebp → 先读 ESP 处值给 EBP，再 ESP 加 4</div>
 <tr><td>8</td><td>失效日期</td><td>空（永不失效）</td></tr>
 <tr><td>9</td><td>保留</td><td>空</td></tr>
 </table>
-<p><b>命令</b>：<code>useradd wendy</code>建用户 / <code>passwd wendy</code>设密码 / <code>userdel -r</code>删用户及家目录 / <code>usermod -c</code>改描述 <code>-L</code>锁定 <code>-U</code>解锁 / <code>su -</code>切换 / <code>sudo</code>提权。<br>密码复杂度配置文件：<code>/etc/security/pwquality.conf</code>（minlen 最小长度、minclass 字符类别数、maxrepeat 最大重复）。</p>
-<div class="warn">⚠ passwd 是 7 字段、shadow 是 9 字段，别记混。密码含 <code>$%^&amp;</code> 等特殊字符时命令行要用<b>单引号</b>包裹。passwd/shadow 权限或属主变了 = 可能被入侵提权，要 <code>chown root:root &amp;&amp; chmod 644/000</code> 恢复。</div>
+<p><b>命令</b>：<code>useradd wendy</code>建 / <code>passwd wendy</code>设密码 / <code>userdel -r</code>删及家目录 / <code>usermod -c</code>改描述 <code>-L</code>锁 <code>-U</code>解锁 / <code>su -</code>切换 / <code>sudo</code>提权。复杂度配置：<code>/etc/security/pwquality.conf</code>（minlen/minclass/maxrepeat）。</p>
+<div class="warn">⚠ passwd 7 字段、shadow 9 字段别记混。密码含 <code>$%^&amp;</code> 等特殊字符时命令行要用<b>单引号</b>。权限/属主变了要 <code>chown root:root &amp;&amp; chmod 644/000</code> 恢复。</div>
 </div>
 
 <h3 id="perm">2.3 inode 与权限换算（要点二第3条）<span class="tag t-must">必考计算</span></h3>
+<div class="logic"><span class="lt">💡 先讲逻辑：文件权限为什么是"3 类人 × 3 种权"？</span>
+一个文件要管住三种人：<b>属主（自己）、同组人、其他人</b>。每种人能做的事就三种：<b>读(r)、写(w)、执行(x)</b>。所以正好「3 类人 × 3 种权」= 9 位，三位一组。<br>
+为什么数字是 4/2/1？因为每一位就是个开关：<em>r=4、w=2、x=1</em>，三个开关全开 4+2+1=7。所以 <code>rwx</code>=7、<code>r-x</code>=5、<code>r--</code>=4。<br>
+<b>inode 是文件的"身份证"</b>——存大小、权限、属主、数据在哪，<em>但偏偏不存文件名</em>（文件名在目录里，目录负责"名字 → inode 号"的映射，所以改名不改 inode）。</div>
 <div class="card">
-<p><b>inode 存什么</b>：文件大小、权限、属主、时间戳、block 位置、硬链接数……<b>但不存文件名</b>（文件名在目录项里）。<code>stat</code> 查看 inode 信息。</p>
-<p><b>权限 10 位</b>：<code>-rwxr-xr--</code> = 类型(1) + 属主(3) + 组(3) + 其他(3)。类型 <code>-</code>普通文件 <code>d</code>目录 <code>l</code>链接。</p>
+<p><b>inode</b> 存大小、权限、属主、时间戳、block 位置……<b>但不存文件名</b>。<code>stat</code> 查看。</p>
+<p><b>权限 10 位</b>：<code>-rwxr-xr--</code> = 类型(1)+属主(3)+组(3)+其他(3)。类型 <code>-</code>普通 <code>d</code>目录 <code>l</code>链接。</p>
 <table>
 <tr><th>权限位</th><th>数字</th><th>说明</th></tr>
 <tr><td>r</td><td>4</td><td>读</td></tr>
@@ -345,31 +408,36 @@ popl  %ebp → 先读 ESP 处值给 EBP，再 ESP 加 4</div>
 <tr><td>x</td><td>1</td><td>执行</td></tr>
 <tr><td>-</td><td>0</td><td>无</td></tr>
 </table>
-<p><b>换算范例</b>：<code>rwxr-xr--</code> → 属主 4+2+1=<b>7</b>，组 4+0+1=<b>5</b>，其他 4+0+0=<b>4</b> → <b>754</b>。<br>反向：<code>644</code> → rw- r-- r--。</p>
-<p><b>特殊权限</b>：<b>SUID</b>（属主执行位变 <code>s</code>，数字 4xxx）：执行时 EUID 变为<b>文件属主</b>的 UID，如 <code>-rwsr-xr-x</code>=<b>4755</b>。/usr/bin/passwd 就是 root 的 SUID 程序，若被利用可提权。<b>SGID</b>（组执行位 s，2xxx）。审计 SUID：<code>find / -perm -4000 -type f</code>。</p>
-<div class="warn">⚠ 算 rws 时：s 位在 x 位置 → 该段仍算 1 分（执行位有效），额外再加特殊位 4。别把 <code>-rwsr-xr--</code> 算成 0755。</div>
+<p><b>换算范例</b>：<code>rwxr-xr--</code> → 7 / 5 / 4 → <b>754</b>；反向 <code>644</code> → rw- r-- r--。</p>
+<p><b>特殊权限</b>：<b>SUID</b>（属主执行位变 <code>s</code>）：执行时 EUID 变为<b>文件属主</b>，如 <code>-rwsr-xr-x</code>=<b>4755</b>。/usr/bin/passwd 就是 root 的 SUID，被利用可提权。审计：<code>find / -perm -4000 -type f</code>。</p>
+<div class="warn">⚠ 算 rws 时：s 在 x 位置该段仍算 1 分（执行位有效），再额外加特殊位 4。别把 <code>-rwsr-xr--</code> 算成 0755。</div>
 </div>
 
 <h3 id="scan">2.4 扫描工具（要点二第4条）<span class="tag t-freq">高频</span></h3>
+<div class="logic"><span class="lt">💡 先讲逻辑：渗透第一步是"踩点"——先摸清门在哪</span>
+攻击前要先侦察：目标开了哪些<b>门（端口）</b>、门后是什么<b>服务</b>、有没有<b>漏洞</b>。就像小偷先踩点看哪扇窗没关。<br>
+<em>nmap</em>=慢而准的瑞士军刀（探活+扫端口+认服务）；<em>masscan</em>=快而糙的扫描枪（大网段扫得快，靠"发完就跑"）；<em>nikto</em>=专查 Web 服务器；<em>OpenVAS</em>=综合体检（5 万+ 项检查）。</div>
 <div class="card">
 <table>
 <tr><th>工具</th><th>用途</th><th>关键选项</th></tr>
-<tr><td><b>nmap</b></td><td>主机发现 + 端口扫描 + 服务识别</td><td><code>-sn</code>只探活、<code>-sT</code>TCP连接扫描、<code>-sS</code>SYN半开、<code>-sU</code>UDP扫描、<code>-sV</code>服务版本、<code>-p1-65535</code>全端口</td></tr>
-<tr><td><b>masscan</b></td><td>高速大网段端口扫描（异步无状态）</td><td><code>-p1-100 --rate=10000</code></td></tr>
-<tr><td><b>nikto</b></td><td>Web 服务器漏洞扫描（3300+ 危险文件）</td><td><code>-h 目标 -c 目录</code></td></tr>
-<tr><td><b>OpenVAS</b></td><td>综合漏洞扫描系统（50000+ 测试）</td><td>C/S 架构，图形前端</td></tr>
-<tr><td><b>SQLMap</b></td><td>SQL 注入自动检测与利用</td><td>支持 MySQL/Oracle/PostgreSQL 等</td></tr>
+<tr><td><b>nmap</b></td><td>主机发现+端口扫描+服务识别</td><td><code>-sn</code>只探活、<code>-sT</code>TCP连接、<code>-sS</code>SYN半开、<code>-sU</code>UDP、<code>-sV</code>服务版本、<code>-p1-65535</code>全端口</td></tr>
+<tr><td><b>masscan</b></td><td>高速大网段扫描（异步无状态）</td><td><code>-p1-100 --rate=10000</code></td></tr>
+<tr><td><b>nikto</b></td><td>Web 服务器漏洞扫描</td><td><code>-h 目标 -c 目录</code></td></tr>
+<tr><td><b>OpenVAS</b></td><td>综合漏洞扫描系统（50000+ 测试）</td><td>C/S 架构</td></tr>
+<tr><td><b>SQLMap</b></td><td>SQL 注入自动检测与利用</td><td>支持 MySQL/Oracle/PG 等</td></tr>
 </table>
 <p><b>常见端口</b>：SSH 22 / Telnet 23 / FTP 21 / HTTP 80 / HTTPS 443 / RDP 3389 / MySQL 3306 / Tomcat 8080 / NFS 2049。端口范围 0~65535。</p>
-<div class="warn">⚠ UDP 是<b>无连接</b>协议，UDP 端口扫描<b>可靠性低</b>（无 3 次握手，靠超时判断）。nmap 只探活用 <code>-sn</code> 不是 <code>-sP</code>（旧写法）。</div>
+<div class="warn">⚠ UDP 是<b>无连接</b>协议，UDP 端口扫描<b>可靠性低</b>（没有 3 次握手，只能靠超时判断）。nmap 只探活用 <code>-sn</code>。</div>
 </div>
 
 <!-- ========== 程序分析题模板 ========== -->
 <h2 id="tmpl">三、三道程序分析题模板（45 分 · 一定要手写一遍）</h2>
+<div class="logic"><span class="lt">💡 先讲逻辑：这三道题就是老师例题原题，套路固定</span>
+程序分析题看着吓人，其实是<b>三个固定套路</b>：内嵌汇编（逐行说语义）、汇编转C（三看：参数/运算/调用）、堆栈画图（push 先减后写、pop 先读后加）。<b>自己动笔推一遍，比看十遍都强</b>——考试就是换个数字让你推。</div>
 
 <div class="card">
 <h3 style="border-color:var(--must)">模板 A · 内嵌汇编逐行分析（15 分）</h3>
-<p><b>答题格式</b>：每行 = 指令字面 + <b>语义动作</b>（必须说「干什么」，不能只翻译）</p>
+<p><b>答题格式</b>：每行 = 指令字面 + <b>语义动作</b>（说"干什么"，不能只翻译）</p>
 <div class="flow">movq  $0,%%rax   → 把立即数 0 送入 rax，清零累加器
 addq  %1,%%rax   → 把第1个输入 (val1) 累加到 rax
 addq  %2,%%rax   → 把第2个输入 (val2) 累加到 rax
@@ -405,11 +473,13 @@ main: movl $8,(%esp) ; call f ; addl $1,%eax
 <tr><td>addl $4,%esp</td><td>0x0FF4→<b>0x0FF8</b></td><td>只抬栈顶，[0x0FF4] 数据仍在</td></tr>
 <tr><td>popl %ebp</td><td>0x0FF8→<b>0x0FFC</b></td><td>EBP=[0x0FF8]=0x0FFC</td></tr>
 </table>
-<p>最终：<b>ESP=EBP=0x0FFC</b>（重合），栈内容 [0x0FFC]=8、[0x0FF8]=0x0FFC、[0x0FF4]=8（残留）。</p>
+<p>最终：<b>ESP=EBP=0x0FFC</b>（重合），[0x0FFC]=8、[0x0FF8]=0x0FFC、[0x0FF4]=8（残留）。</p>
 </div>
 
 <!-- ========== 判断题陷阱 ========== -->
 <h2 id="trap">四、判断题高频陷阱（10 分，白送别白丢）</h2>
+<div class="logic"><span class="lt">💡 先讲逻辑：判断题的套路只有一个——绝对化表述</span>
+出题人想让你判"错"，最爱的就是塞<b>「只有」「一定」「都能」「都含」「不需要」</b>这种绝对词。看到这类词，先别急着打勾，<b>先在脑子里找反例</b>——找到反例它就是错的。下面 12 条错项全部踩这个套路。</div>
 <div class="card">
 <table>
 <tr><th>命题</th><th>对错</th><th>原因</th></tr>
@@ -426,7 +496,6 @@ main: movl $8,(%esp) ; call f ; addl $1,%eax
 <tr><td>fork 在父进程返回子 PID、子进程返回 0</td><td>对</td><td>调用一次返回两次</td></tr>
 <tr><td>冯·诺依曼结构的核心是程序和数据分开存储</td><td class="big">错</td><td>恰恰是<b>混存</b>在同一存储器</td></tr>
 </table>
-<div class="tip"><b>判断题套路</b>：看到「只有」「一定」「都能」「都含」「不需要」这类<b>绝对化词</b>，先怀疑是错的。上面 12 条的错项全部踩在这个套路上。</div>
 </div>
 
 <!-- ========== 易错速记 ========== -->
@@ -441,7 +510,7 @@ main: movl $8,(%esp) ; call f ; addl $1,%eax
 
 <hr>
 <p style="text-align:center;color:var(--ink2);font-size:.85em">
-基于 11 讲 PPT 原文 + 老师复习课要点整理 · 祝你考试顺利
+基于 11 讲 PPT 原文 + 老师复习课要点整理 · 每个要点带底层逻辑讲解 · 祝你考试顺利
 </p>
 
 </div>
