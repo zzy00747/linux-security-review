@@ -7,8 +7,8 @@
 <script>
 MathJax = {
   tex: {
-    inlineMath: [['$', '$'], ['\(', '\)']],
-    displayMath: [['$$', '$$'], ['\[', '\]']]
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']]
   }
 };
 </script>
@@ -165,6 +165,15 @@ div.toc li { margin: 3px 0; font-size: 0.95em; }
 @media (max-width: 400px) {
   body { padding: 8px 6px 32px; font-size: 10.5pt; }
 }
+
+/* ── 速通逻辑讲解块（每个知识点前的一句话底层逻辑） ── */
+.logic {
+  background: #eef7f0; border: 1px solid #cfe6d6; border-left: 5px solid #3f8f5c;
+  border-radius: 0 8px 8px 0; padding: 11px 15px; margin: 4px 0 12px;
+  font-size: 0.93em; line-height: 1.75; color: #24503a;
+}
+.logic b { color: #1f5c3a; }
+.logic em { color: #8a4b1f; font-style: normal; font-weight: 600; }
 
 /* === Interactive Test Styles === */
 
@@ -403,22 +412,23 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 <div class="toc">
 <h2>目录</h2>
 <ul>
-<li><a href="#s48899467">第10讲 安全扫描工具</a></li>
-  <li><a href="#s59198815">10.1 敏感端口与常见服务默认端口</a></li>
-  <li><a href="#s31930380">10.2 章节导览与扫描背景</a></li>
-  <li><a href="#s23295625">10.3 主机发现技术 ICMP 与 ARP</a></li>
-  <li><a href="#s98131696">10.4 nmap 主机发现实操与参数</a></li>
-  <li><a href="#s15283092">10.5 nmap TCP/UDP 端口扫描与服务识别</a></li>
-  <li><a href="#s18511427">10.6 masscan 高速端口扫描</a></li>
-  <li><a href="#s41742512">10.7 Nikto Web 服务器扫描</a></li>
-  <li><a href="#s53368032">10.8 OpenVAS 漏洞扫描系统</a></li>
-  <li><a href="#s53131463">10.9 UDP 协议特性与 UDP 扫描可靠性</a></li>
-  <li><a href="#s53773231">10.10 SQL 注入原理与 SQLMap 工具</a></li>
+<li><a href="#s20789351">第10讲 安全扫描工具</a></li>
+  <li><a href="#s38902675">10.1 敏感端口与常见服务默认端口</a></li>
+  <li><a href="#s41721057">10.2 章节导览与扫描背景</a></li>
+  <li><a href="#s81498063">10.3 主机发现技术 ICMP 与 ARP</a></li>
+  <li><a href="#s83511789">10.4 nmap 主机发现实操与参数</a></li>
+  <li><a href="#s26507743">10.5 nmap TCP/UDP 端口扫描与服务识别</a></li>
+  <li><a href="#s42085510">10.6 masscan 高速端口扫描</a></li>
+  <li><a href="#s35555671">10.7 Nikto Web 服务器扫描</a></li>
+  <li><a href="#s41602028">10.8 OpenVAS 漏洞扫描系统</a></li>
+  <li><a href="#s48985960">10.9 UDP 协议特性与 UDP 扫描可靠性</a></li>
+  <li><a href="#s17435652">10.10 SQL 注入原理与 SQLMap 工具</a></li>
 </ul>
 </div>
-<h2 id="s48899467">第10讲 安全扫描工具</h2>
+<h2 id="s20789351">第10讲 安全扫描工具</h2>
 
-<h3 id="s59198815">10.1 敏感端口与常见服务默认端口<span class="pg-chip" data-page="4">页4</span><span class="pg-chip" data-page="5">页5</span><span class="pg-chip" data-page="6">页6</span><span class="pg-chip" data-page="7">页7</span><span class="pg-chip" data-page="8">页8</span><span class="pg-chip" data-page="4">页4</span></h3>
+<h3 id="s38902675">10.1 敏感端口与常见服务默认端口<span class="pg-chip" data-page="4">页4</span><span class="pg-chip" data-page="5">页5</span><span class="pg-chip" data-page="6">页6</span><span class="pg-chip" data-page="7">页7</span><span class="pg-chip" data-page="8">页8</span><span class="pg-chip" data-page="4">页4</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>端口是服务的"<b>门牌号</b>"：22 是 SSH、80 是网页、443 是加密网页……记住常见门牌号，扫一眼就知道对方开了什么服务、有什么风险。</div>
 
 <p><span class="exp">Hook：一台服务器上同时跑着 SSH、MySQL、Redis、Tomcat，攻击者连密码都不用猜，只要知道你开了哪些端口，就能挑最软的那个下手——端口就是对外暴露的「门牌号」。</span></p>
 
@@ -443,7 +453,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s31930380">10.2 章节导览与扫描背景<span class="pg-chip" data-page="1">页1</span><span class="pg-chip" data-page="2">页2</span><span class="pg-chip" data-page="3">页3</span><span class="pg-chip" data-page="54">页54</span></h3>
+<h3 id="s41721057">10.2 章节导览与扫描背景<span class="pg-chip" data-page="1">页1</span><span class="pg-chip" data-page="2">页2</span><span class="pg-chip" data-page="3">页3</span><span class="pg-chip" data-page="54">页54</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>渗透第一步是"<b>踩点</b>"：先摸清目标开了哪些门（端口）、门后是什么服务、有没有漏洞——像小偷先看哪扇窗没关。</div>
 
 <p><span class="exp">Hook：互联网上时刻存在大量扫描行为，其中恶意扫描占极高比重。既然攻击者天天在扫你，你为什么还要自己扫自己？</span></p>
 
@@ -459,7 +470,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-info">了解</span></p>
 
-<h3 id="s23295625">10.3 主机发现技术 ICMP 与 ARP<span class="pg-chip" data-page="10">页10</span><span class="pg-chip" data-page="11">页11</span><span class="pg-chip" data-page="10">页10</span></h3>
+<h3 id="s81498063">10.3 主机发现技术 ICMP 与 ARP<span class="pg-chip" data-page="10">页10</span><span class="pg-chip" data-page="11">页11</span><span class="pg-chip" data-page="10">页10</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>先找"<b>谁活着</b>"：发 ICMP 的 ping 问"你在吗"，或用 ARP 问同网段的机器。知道哪些主机在线，才谈得上扫端口。</div>
 
 <p><span class="exp">Hook：拿到一个 /24 网段，255 个地址里到底哪几台机器活着？总不能一个个 ping 手工试。</span></p>
 
@@ -475,7 +487,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-key">重点</span></p>
 
-<h3 id="s98131696">10.4 nmap 主机发现实操与参数<span class="pg-chip" data-page="9">页9</span><span class="pg-chip" data-page="12">页12</span><span class="pg-chip" data-page="13">页13</span><span class="pg-chip" data-page="14">页14</span><span class="pg-chip" data-page="15">页15</span><span class="pg-chip" data-page="16">页16</span><span class="pg-chip" data-page="17">页17</span><span class="pg-chip" data-page="9">页9</span></h3>
+<h3 id="s83511789">10.4 nmap 主机发现实操与参数<span class="pg-chip" data-page="9">页9</span><span class="pg-chip" data-page="12">页12</span><span class="pg-chip" data-page="13">页13</span><span class="pg-chip" data-page="14">页14</span><span class="pg-chip" data-page="15">页15</span><span class="pg-chip" data-page="16">页16</span><span class="pg-chip" data-page="17">页17</span><span class="pg-chip" data-page="9">页9</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>nmap 探活：<code>-sn</code> 只 ping 扫主机、不扫端口；TCP 扫描靠三次握手判断端口开没开。它是慢而准的"瑞士军刀"。</div>
 
 <p><span class="exp">Hook：一条 <code>nmap -v -n -sn -PE 192.168.209.0/24</code>，1.87 秒就把 256 个地址里活着的 5 台主机全揪出来了，它到底做了什么？</span></p>
 
@@ -499,7 +512,8 @@ Nmap done: 256 IP addresses (5 hosts up) scanned in 1.87 seconds</code></pre>
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s15283092">10.5 nmap TCP/UDP 端口扫描与服务识别<span class="pg-chip" data-page="18">页18</span><span class="pg-chip" data-page="19">页19</span><span class="pg-chip" data-page="20">页20</span><span class="pg-chip" data-page="21">页21</span><span class="pg-chip" data-page="22">页22</span><span class="pg-chip" data-page="43">页43</span><span class="pg-chip" data-page="44">页44</span><span class="pg-chip" data-page="45">页45</span><span class="pg-chip" data-page="46">页46</span><span class="pg-chip" data-page="47">页47</span><span class="pg-chip" data-page="48">页48</span><span class="pg-chip" data-page="18">页18</span></h3>
+<h3 id="s26507743">10.5 nmap TCP/UDP 端口扫描与服务识别<span class="pg-chip" data-page="18">页18</span><span class="pg-chip" data-page="19">页19</span><span class="pg-chip" data-page="20">页20</span><span class="pg-chip" data-page="21">页21</span><span class="pg-chip" data-page="22">页22</span><span class="pg-chip" data-page="43">页43</span><span class="pg-chip" data-page="44">页44</span><span class="pg-chip" data-page="45">页45</span><span class="pg-chip" data-page="46">页46</span><span class="pg-chip" data-page="47">页47</span><span class="pg-chip" data-page="48">页48</span><span class="pg-chip" data-page="18">页18</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>TCP 端口怎么判断开没开？<b>靠三次握手</b>：能握手成功说明端口开着（服务在听），被拒说明关着。UDP 没握手，就只能靠超时猜。</div>
 
 <p><span class="exp">Hook：管理员完全可能把敏感程序挪到非默认端口上跑。你扫出 111 端口开着，它到底是 rpcbind 还是别的什么？光知道「开着」远远不够。</span></p>
 
@@ -528,7 +542,8 @@ PORT    STATE SERVICE VERSION
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s18511427">10.6 masscan 高速端口扫描<span class="pg-chip" data-page="23">页23</span><span class="pg-chip" data-page="24">页24</span><span class="pg-chip" data-page="25">页25</span><span class="pg-chip" data-page="26">页26</span><span class="pg-chip" data-page="27">页27</span><span class="pg-chip" data-page="28">页28</span><span class="pg-chip" data-page="29">页29</span><span class="pg-chip" data-page="30">页30</span><span class="pg-chip" data-page="31">页31</span><span class="pg-chip" data-page="32">页32</span><span class="pg-chip" data-page="23">页23</span></h3>
+<h3 id="s42085510">10.6 masscan 高速端口扫描<span class="pg-chip" data-page="23">页23</span><span class="pg-chip" data-page="24">页24</span><span class="pg-chip" data-page="25">页25</span><span class="pg-chip" data-page="26">页26</span><span class="pg-chip" data-page="27">页27</span><span class="pg-chip" data-page="28">页28</span><span class="pg-chip" data-page="29">页29</span><span class="pg-chip" data-page="30">页30</span><span class="pg-chip" data-page="31">页31</span><span class="pg-chip" data-page="32">页32</span><span class="pg-chip" data-page="23">页23</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>masscan 是"<b>快而糙的扫描枪</b>"：发完包就跑、不维护连接，所以能在几分钟扫完整个大网段。先 masscan 快扫，再用 nmap 精扫。</div>
 
 <p><span class="exp">Hook：nmap 扫 65535 个端口花了 3.19 秒还算快，但如果要扫一整个 B 段呢？换个工具，速度能再上一个量级。</span></p>
 
@@ -553,7 +568,8 @@ Discovered open port 53/tcp on 192.168.209.2</code></pre>
 
 <p><span class="tag-key">重点</span></p>
 
-<h3 id="s41742512">10.7 Nikto Web 服务器扫描<span class="pg-chip" data-page="33">页33</span><span class="pg-chip" data-page="34">页34</span><span class="pg-chip" data-page="35">页35</span><span class="pg-chip" data-page="36">页36</span><span class="pg-chip" data-page="37">页37</span><span class="pg-chip" data-page="33">页33</span></h3>
+<h3 id="s35555671">10.7 Nikto Web 服务器扫描<span class="pg-chip" data-page="33">页33</span><span class="pg-chip" data-page="34">页34</span><span class="pg-chip" data-page="35">页35</span><span class="pg-chip" data-page="36">页36</span><span class="pg-chip" data-page="37">页37</span><span class="pg-chip" data-page="33">页33</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>Nikto 专查 Web 服务器：扫 3300+ 危险文件、600+ 潜在问题——只盯网站这一块。</div>
 
 <p><span class="exp">Hook：端口扫完、应用也认出来了，下一步该问：这个 Web 站点的目录里有没有备份文件、有没有过时的组件、有没有危险的 CGI？</span></p>
 
@@ -578,7 +594,8 @@ Discovered open port 53/tcp on 192.168.209.2</code></pre>
 
 <p><span class="tag-key">重点</span></p>
 
-<h3 id="s53368032">10.8 OpenVAS 漏洞扫描系统<span class="pg-chip" data-page="38">页38</span><span class="pg-chip" data-page="39">页39</span><span class="pg-chip" data-page="40">页40</span><span class="pg-chip" data-page="41">页41</span><span class="pg-chip" data-page="42">页42</span><span class="pg-chip" data-page="38">页38</span></h3>
+<h3 id="s41602028">10.8 OpenVAS 漏洞扫描系统<span class="pg-chip" data-page="38">页38</span><span class="pg-chip" data-page="39">页39</span><span class="pg-chip" data-page="40">页40</span><span class="pg-chip" data-page="41">页41</span><span class="pg-chip" data-page="42">页42</span><span class="pg-chip" data-page="38">页38</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>OpenVAS 是"<b>综合体检</b>"：5 万多条检查项，把系统、服务、应用层的漏洞一次扫个遍。</div>
 
 <p><span class="exp">Hook：Nikto 只盯 Web，那操作系统层面的补丁缺失、服务配置缺陷谁来管？需要一个覆盖全栈的脆弱性评估平台。</span></p>
 
@@ -605,7 +622,8 @@ Discovered open port 53/tcp on 192.168.209.2</code></pre>
 
 <p><span class="tag-key">重点</span></p>
 
-<h3 id="s53131463">10.9 UDP 协议特性与 UDP 扫描可靠性<span class="pg-chip" data-page="44">页44</span><span class="pg-chip" data-page="45">页45</span><span class="pg-chip" data-page="46">页46</span><span class="pg-chip" data-page="47">页47</span><span class="pg-chip" data-page="48">页48</span><span class="pg-chip" data-page="44">页44</span></h3>
+<h3 id="s48985960">10.9 UDP 协议特性与 UDP 扫描可靠性<span class="pg-chip" data-page="44">页44</span><span class="pg-chip" data-page="45">页45</span><span class="pg-chip" data-page="46">页46</span><span class="pg-chip" data-page="47">页47</span><span class="pg-chip" data-page="48">页48</span><span class="pg-chip" data-page="44">页44</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>UDP 是<b>无连接</b>协议（发出去不管到没到），所以 UDP 端口扫描<b>很不可靠</b>——只能靠"超时没回应"来猜，容易被防火墙误导。</div>
 
 <p><span class="exp">Hook：同样扫 65535 个端口，TCP 那次 3.19 秒给出干净结论，UDP 这次却满屏 open|filtered——为什么 UDP 扫描这么「说不准」？</span></p>
 
@@ -632,7 +650,8 @@ PORT      STATE         SERVICE
 
 <p><span class="tag-key">重点</span></p>
 
-<h3 id="s53773231">10.10 SQL 注入原理与 SQLMap 工具<span class="pg-chip" data-page="49">页49</span><span class="pg-chip" data-page="50">页50</span><span class="pg-chip" data-page="51">页51</span><span class="pg-chip" data-page="52">页52</span><span class="pg-chip" data-page="53">页53</span><span class="pg-chip" data-page="49">页49</span></h3>
+<h3 id="s17435652">10.10 SQL 注入原理与 SQLMap 工具<span class="pg-chip" data-page="49">页49</span><span class="pg-chip" data-page="50">页50</span><span class="pg-chip" data-page="51">页51</span><span class="pg-chip" data-page="52">页52</span><span class="pg-chip" data-page="53">页53</span><span class="pg-chip" data-page="49">页49</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>SQL 注入的本质：<b>把用户输入拼进 SQL 语句，输入特制内容就能操纵数据库</b>（如 <code>&#39; OR 1=1 --</code>）。SQLMap 把这个过程自动化了。</div>
 
 <p><span class="exp">Hook：端口和 Web 目录都查干净了，可只要登录框里那个参数没做过滤，整张用户表还是能被一条 URL 拖走。</span></p>
 

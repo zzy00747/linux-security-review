@@ -7,8 +7,8 @@
 <script>
 MathJax = {
   tex: {
-    inlineMath: [['$', '$'], ['\(', '\)']],
-    displayMath: [['$$', '$$'], ['\[', '\]']]
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']]
   }
 };
 </script>
@@ -165,6 +165,15 @@ div.toc li { margin: 3px 0; font-size: 0.95em; }
 @media (max-width: 400px) {
   body { padding: 8px 6px 32px; font-size: 10.5pt; }
 }
+
+/* ── 速通逻辑讲解块（每个知识点前的一句话底层逻辑） ── */
+.logic {
+  background: #eef7f0; border: 1px solid #cfe6d6; border-left: 5px solid #3f8f5c;
+  border-radius: 0 8px 8px 0; padding: 11px 15px; margin: 4px 0 12px;
+  font-size: 0.93em; line-height: 1.75; color: #24503a;
+}
+.logic b { color: #1f5c3a; }
+.logic em { color: #8a4b1f; font-style: normal; font-weight: 600; }
 
 /* === Interactive Test Styles === */
 
@@ -403,20 +412,21 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 <div class="toc">
 <h2>目录</h2>
 <ul>
-<li><a href="#s85674151">第7讲 防火墙</a></li>
-  <li><a href="#s58855095">7.1 防火墙作用与商业/开源分类</a></li>
-  <li><a href="#s18965387">7.2 防火墙与 ISO 模型的层次关系</a></li>
-  <li><a href="#s73888091">7.3 防火墙的五大局限性</a></li>
-  <li><a href="#s16780179">7.4 iptables 与 netfilter 架构</a></li>
-  <li><a href="#s63450450">7.5 iptables 规则与匹配条件</a></li>
-  <li><a href="#s20489051">7.6 iptables 五链与四表及过滤流程</a></li>
-  <li><a href="#s52897669">7.7 iptables 语法、命令参数与触发动作</a></li>
-  <li><a href="#s65046572">7.8 iptables 实操命令与堡垒机</a></li>
+<li><a href="#s24783807">第7讲 防火墙</a></li>
+  <li><a href="#s80921162">7.1 防火墙作用与商业/开源分类</a></li>
+  <li><a href="#s42472453">7.2 防火墙与 ISO 模型的层次关系</a></li>
+  <li><a href="#s37547953">7.3 防火墙的五大局限性</a></li>
+  <li><a href="#s37622153">7.4 iptables 与 netfilter 架构</a></li>
+  <li><a href="#s45774153">7.5 iptables 规则与匹配条件</a></li>
+  <li><a href="#s74584791">7.6 iptables 五链与四表及过滤流程</a></li>
+  <li><a href="#s83793222">7.7 iptables 语法、命令参数与触发动作</a></li>
+  <li><a href="#s70611101">7.8 iptables 实操命令与堡垒机</a></li>
 </ul>
 </div>
-<h2 id="s85674151">第7讲 防火墙</h2>
+<h2 id="s24783807">第7讲 防火墙</h2>
 
-<h3 id="s58855095">7.1 防火墙作用与商业/开源分类<span class="pg-chip" data-page="1">页1</span><span class="pg-chip" data-page="2">页2</span><span class="pg-chip" data-page="3">页3</span><span class="pg-chip" data-page="1">页1</span></h3>
+<h3 id="s80921162">7.1 防火墙作用与商业/开源分类<span class="pg-chip" data-page="1">页1</span><span class="pg-chip" data-page="2">页2</span><span class="pg-chip" data-page="3">页3</span><span class="pg-chip" data-page="1">页1</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>防火墙就是网络的<b>门卫</b>：站在门口，按规矩决定谁能进、谁不能进。它是安全的第一道防线，不是唯一防线。</div>
 
 <p><span class="exp">Hook：一台服务器把 22、80、3306 全开在公网上，和一个只开 80 的服务器，被攻破的概率差多少？答案往往不在操作系统本身，而在门外那道「关卡」有没有立起来。</span></p>
 
@@ -432,7 +442,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s18965387">7.2 防火墙与 ISO 模型的层次关系<span class="pg-chip" data-page="4">页4</span><span class="pg-chip" data-page="4">页4</span></h3>
+<h3 id="s42472453">7.2 防火墙与 ISO 模型的层次关系<span class="pg-chip" data-page="4">页4</span><span class="pg-chip" data-page="4">页4</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>门卫主要看 <b>3-4 层（网络层/传输层）的 IP 和端口</b>——因为这里信息最清晰、拦得最有效。</div>
 
 <p><span class="exp">Hook：防火墙到底「看」得到数据包的哪些部分？它能不能看懂你在网页里输入了什么密码？这个问题的答案决定了防火墙能力的上限。</span></p>
 
@@ -448,7 +459,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-key">重点</span></p>
 
-<h3 id="s73888091">7.3 防火墙的五大局限性<span class="pg-chip" data-page="5">页5</span><span class="pg-chip" data-page="5">页5</span></h3>
+<h3 id="s37547953">7.3 防火墙的五大局限性<span class="pg-chip" data-page="5">页5</span><span class="pg-chip" data-page="5">页5</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>门卫也有盲区：<em>内网互相攻击它管不了、藏在正常端口里的攻击它看不穿、它自己出漏洞也白搭</em>。所以不能只靠防火墙。</div>
 
 <p><span class="exp">Hook：既然装了防火墙，是不是就安全了？很多单位出事之后第一句话就是「我们明明有防火墙啊」——问题恰恰出在「防火墙能管什么」被想当然了。</span></p>
 
@@ -464,7 +476,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-key">重点</span></p>
 
-<h3 id="s16780179">7.4 iptables 与 netfilter 架构<span class="pg-chip" data-page="6">页6</span><span class="pg-chip" data-page="7">页7</span><span class="pg-chip" data-page="6">页6</span></h3>
+<h3 id="s37622153">7.4 iptables 与 netfilter 架构<span class="pg-chip" data-page="6">页6</span><span class="pg-chip" data-page="7">页7</span><span class="pg-chip" data-page="6">页6</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b><b>iptables 是"前台"(用户态敲命令的工具)，netfilter 是"后台"(内核里真正干活的框架)</b>。你敲 iptables 命令，实际是 netfilter 在内核里执行。</div>
 
 <p><span class="exp">Hook：你敲的每一条 iptables 命令，其实都没有亲自「过滤」任何一个数据包。真正干活的是内核里一个你看不见的模块——那 iptables 到底在忙什么？</span></p>
 
@@ -483,7 +496,8 @@ find /lib/modules/$(uname -r) -name '*.ko'   # 列出所有 .ko 模块文件</co
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s63450450">7.5 iptables 规则与匹配条件<span class="pg-chip" data-page="8">页8</span><span class="pg-chip" data-page="8">页8</span></h3>
+<h3 id="s45774153">7.5 iptables 规则与匹配条件<span class="pg-chip" data-page="8">页8</span><span class="pg-chip" data-page="8">页8</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>规则就是 <code>if 条件 then 动作</code>：如果「源 IP 是 X 且访问 22 端口」，那就「DROP」。一条条排好，数据包挨个对号入座。</div>
 
 <p><span class="exp">Hook：如果让你用一句话向同事交代「这台机器的防火墙策略」，你会怎么说？大概率是若干条「如果……就……」——这串「如果……就……」正是规则。</span></p>
 
@@ -499,7 +513,8 @@ find /lib/modules/$(uname -r) -name '*.ko'   # 列出所有 .ko 模块文件</co
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s20489051">7.6 iptables 五链与四表及过滤流程<span class="pg-chip" data-page="9">页9</span><span class="pg-chip" data-page="10">页10</span><span class="pg-chip" data-page="11">页11</span><span class="pg-chip" data-page="9">页9</span></h3>
+<h3 id="s74584791">7.6 iptables 五链与四表及过滤流程<span class="pg-chip" data-page="9">页9</span><span class="pg-chip" data-page="10">页10</span><span class="pg-chip" data-page="11">页11</span><span class="pg-chip" data-page="9">页9</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>五链四表 = <b>海关通道</b>：五链是五个关卡位置（在哪里查），四表是每个关卡能做的四类事（filter 放不放行/nat 改地址/mangle 改包细节/raw 预处理）。</div>
 
 <p><span class="exp">Hook：一个从外网发往本机 80 端口的数据包，在内核里要经过几个「检查站」？如果它只是路过这台机器要去别处，路线又有什么不同？</span></p>
 
@@ -521,7 +536,8 @@ find /lib/modules/$(uname -r) -name '*.ko'   # 列出所有 .ko 模块文件</co
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s52897669">7.7 iptables 语法、命令参数与触发动作<span class="pg-chip" data-page="12">页12</span><span class="pg-chip" data-page="13">页13</span><span class="pg-chip" data-page="14">页14</span><span class="pg-chip" data-page="15">页15</span><span class="pg-chip" data-page="16">页16</span><span class="pg-chip" data-page="12">页12</span></h3>
+<h3 id="s83793222">7.7 iptables 语法、命令参数与触发动作<span class="pg-chip" data-page="12">页12</span><span class="pg-chip" data-page="13">页13</span><span class="pg-chip" data-page="14">页14</span><span class="pg-chip" data-page="15">页15</span><span class="pg-chip" data-page="16">页16</span><span class="pg-chip" data-page="12">页12</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>iptables 语法四段式：<code>[-t 表] 命令 链 匹配条件 -j 动作</code>。像造句：在哪张表、干什么、哪条链、什么条件、怎么处理。</div>
 
 <p><span class="exp">Hook：面对一屏陌生的 iptables 命令，怎么在 10 秒内读懂它在干什么？只要认出「表—命令—链—条件—动作」五个位置，任何一条规则都能被拆开。</span></p>
 
@@ -537,7 +553,8 @@ find /lib/modules/$(uname -r) -name '*.ko'   # 列出所有 .ko 模块文件</co
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s65046572">7.8 iptables 实操命令与堡垒机<span class="pg-chip" data-page="17">页17</span><span class="pg-chip" data-page="18">页18</span><span class="pg-chip" data-page="19">页19</span><span class="pg-chip" data-page="20">页20</span><span class="pg-chip" data-page="21">页21</span><span class="pg-chip" data-page="22">页22</span><span class="pg-chip" data-page="23">页23</span><span class="pg-chip" data-page="24">页24</span><span class="pg-chip" data-page="25">页25</span><span class="pg-chip" data-page="26">页26</span><span class="pg-chip" data-page="17">页17</span></h3>
+<h3 id="s70611101">7.8 iptables 实操命令与堡垒机<span class="pg-chip" data-page="17">页17</span><span class="pg-chip" data-page="18">页18</span><span class="pg-chip" data-page="19">页19</span><span class="pg-chip" data-page="20">页20</span><span class="pg-chip" data-page="21">页21</span><span class="pg-chip" data-page="22">页22</span><span class="pg-chip" data-page="23">页23</span><span class="pg-chip" data-page="24">页24</span><span class="pg-chip" data-page="25">页25</span><span class="pg-chip" data-page="26">页26</span><span class="pg-chip" data-page="17">页17</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>实操就是把这套语法用在真实场景：禁某个 IP、禁网段 ping、放行特定人、限速。堡垒机则是集中管控所有运维登录的"总闸"。</div>
 
 <p><span class="exp">Hook：只学过参数表，真给你一台机器，能写出「禁止某台主机 ping 我」这条规则吗？把参数落成命令，中间还差几次踩坑。</span></p>
 

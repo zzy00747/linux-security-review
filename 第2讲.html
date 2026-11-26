@@ -7,8 +7,8 @@
 <script>
 MathJax = {
   tex: {
-    inlineMath: [['$', '$'], ['\(', '\)']],
-    displayMath: [['$$', '$$'], ['\[', '\]']]
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']]
   }
 };
 </script>
@@ -165,6 +165,15 @@ div.toc li { margin: 3px 0; font-size: 0.95em; }
 @media (max-width: 400px) {
   body { padding: 8px 6px 32px; font-size: 10.5pt; }
 }
+
+/* ── 速通逻辑讲解块（每个知识点前的一句话底层逻辑） ── */
+.logic {
+  background: #eef7f0; border: 1px solid #cfe6d6; border-left: 5px solid #3f8f5c;
+  border-radius: 0 8px 8px 0; padding: 11px 15px; margin: 4px 0 12px;
+  font-size: 0.93em; line-height: 1.75; color: #24503a;
+}
+.logic b { color: #1f5c3a; }
+.logic em { color: #8a4b1f; font-style: normal; font-weight: 600; }
 
 /* === Interactive Test Styles === */
 
@@ -403,20 +412,21 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 <div class="toc">
 <h2>目录</h2>
 <ul>
-<li><a href="#s26145635">第2讲 How the OS works 操作系统如何工作</a></li>
-  <li><a href="#s50800145">2.1 函数调用堆栈框架的作用</a></li>
-  <li><a href="#s73553782">2.2 esp/ebp 寄存器与 push/pop 堆栈操作</a></li>
-  <li><a href="#s77645597">2.3 cs:eip 与 call/ret 调用返回机制</a></li>
-  <li><a href="#s25543742">2.4 函数堆栈框架建立与拆除全过程</a></li>
-  <li><a href="#s33602927">2.5 objdump 反汇编观察堆栈框架</a></li>
-  <li><a href="#s72511178">2.6 堆栈传参、eax 返回值与局部变量存储</a></li>
-  <li><a href="#s65501840">2.7 多函数调用 main/p1/p2 堆栈演练</a></li>
-  <li><a href="#s94343454">2.8 C 内嵌汇编语法与 gcc -m32 编译</a></li>
+<li><a href="#s78801526">第2讲 How the OS works 操作系统如何工作</a></li>
+  <li><a href="#s64478625">2.1 函数调用堆栈框架的作用</a></li>
+  <li><a href="#s17719174">2.2 esp/ebp 寄存器与 push/pop 堆栈操作</a></li>
+  <li><a href="#s18004579">2.3 cs:eip 与 call/ret 调用返回机制</a></li>
+  <li><a href="#s51231583">2.4 函数堆栈框架建立与拆除全过程</a></li>
+  <li><a href="#s43766189">2.5 objdump 反汇编观察堆栈框架</a></li>
+  <li><a href="#s35354328">2.6 堆栈传参、eax 返回值与局部变量存储</a></li>
+  <li><a href="#s69218307">2.7 多函数调用 main/p1/p2 堆栈演练</a></li>
+  <li><a href="#s26168394">2.8 C 内嵌汇编语法与 gcc -m32 编译</a></li>
 </ul>
 </div>
-<h2 id="s26145635">第2讲 How the OS works 操作系统如何工作</h2>
+<h2 id="s78801526">第2讲 How the OS works 操作系统如何工作</h2>
 
-<h3 id="s50800145">2.1 函数调用堆栈框架的作用<span class="pg-chip" data-page="1">页1</span><span class="pg-chip" data-page="2">页2</span><span class="pg-chip" data-page="1">页1</span></h3>
+<h3 id="s64478625">2.1 函数调用堆栈框架的作用<span class="pg-chip" data-page="1">页1</span><span class="pg-chip" data-page="2">页2</span><span class="pg-chip" data-page="1">页1</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>函数一个套一个地调用，怎么保证各自不打架？靠<b>栈给每个函数分一块临时地盘</b>：进去时划地，出来时拆除。地盘清清爽爽，谁也不占谁的。</div>
 
 <p><span class="exp">Hook：C 语言的函数可以一层套一层地调用，可是函数返回时它怎么知道该回到哪里？它把答案写在了内存里——写在一块叫「堆栈」的地方。</span></p>
 
@@ -432,7 +442,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s73553782">2.2 esp/ebp 寄存器与 push/pop 堆栈操作<span class="pg-chip" data-page="3">页3</span><span class="pg-chip" data-page="3">页3</span></h3>
+<h3 id="s17719174">2.2 esp/ebp 寄存器与 push/pop 堆栈操作<span class="pg-chip" data-page="3">页3</span><span class="pg-chip" data-page="3">页3</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>把栈想成一根弹簧：<b>ESP 是弹簧的顶端（一直在动），EBP 是钉在墙上的锚（函数内不动）</b>。用动态的 ESP 找东西会算错，所以要用固定的 EBP。</div>
 
 <p><span class="exp">Hook：堆栈在内存里只是一段普通地址，没有任何「栈」的物理标记。是谁在维护这个抽象的栈？只有两个寄存器。</span></p>
 
@@ -456,7 +467,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s77645597">2.3 cs:eip 与 call/ret 调用返回机制<span class="pg-chip" data-page="4">页4</span><span class="pg-chip" data-page="5">页5</span><span class="pg-chip" data-page="4">页4</span></h3>
+<h3 id="s18004579">2.3 cs:eip 与 call/ret 调用返回机制<span class="pg-chip" data-page="4">页4</span><span class="pg-chip" data-page="5">页5</span><span class="pg-chip" data-page="4">页4</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b><code>call</code> = 记住"回来该去哪"（把返回地址压栈），<code>ret</code> = 照着记忆跳回去。就像出门前给家里留个字条，办完事照字条回来。</div>
 
 <p><span class="exp">Hook：函数调用看起来是个高级概念，但 CPU 眼里它只是两条指令：一条把「回来的路」记在栈上，另一条照着这条路跳回去。</span></p>
 
@@ -476,7 +488,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s25543742">2.4 函数堆栈框架建立与拆除全过程<span class="pg-chip" data-page="6">页6</span><span class="pg-chip" data-page="7">页7</span><span class="pg-chip" data-page="8">页8</span><span class="pg-chip" data-page="9">页9</span><span class="pg-chip" data-page="10">页10</span><span class="pg-chip" data-page="11">页11</span><span class="pg-chip" data-page="12">页12</span><span class="pg-chip" data-page="13">页13</span><span class="pg-chip" data-page="14">页14</span><span class="pg-chip" data-page="6">页6</span></h3>
+<h3 id="s51231583">2.4 函数堆栈框架建立与拆除全过程<span class="pg-chip" data-page="6">页6</span><span class="pg-chip" data-page="7">页7</span><span class="pg-chip" data-page="8">页8</span><span class="pg-chip" data-page="9">页9</span><span class="pg-chip" data-page="10">页10</span><span class="pg-chip" data-page="11">页11</span><span class="pg-chip" data-page="12">页12</span><span class="pg-chip" data-page="13">页13</span><span class="pg-chip" data-page="14">页14</span><span class="pg-chip" data-page="6">页6</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>一个函数的一生就三步：<b>压旧基（存旧的锚）→ 立新基（钉新锚）→ 留空间（给局部变量腾地方）</b>；走时反过来：收空间→复旧基→返回。</div>
 
 <p><span class="exp">Hook：一次函数调用，内存里其实只发生了四次指针移动和一个入栈。把这五步背下来，任何画栈题都只是照着走一遍。</span></p>
 
@@ -503,7 +516,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s33602927">2.5 objdump 反汇编观察堆栈框架<span class="pg-chip" data-page="15">页15</span><span class="pg-chip" data-page="16">页16</span><span class="pg-chip" data-page="17">页17</span><span class="pg-chip" data-page="18">页18</span><span class="pg-chip" data-page="19">页19</span><span class="pg-chip" data-page="15">页15</span></h3>
+<h3 id="s43766189">2.5 objdump 反汇编观察堆栈框架<span class="pg-chip" data-page="15">页15</span><span class="pg-chip" data-page="16">页16</span><span class="pg-chip" data-page="17">页17</span><span class="pg-chip" data-page="18">页18</span><span class="pg-chip" data-page="19">页19</span><span class="pg-chip" data-page="15">页15</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>objdump 是"透视镜"，能把看不见的栈框架翻译成看得见的汇编指令。用它对着理论验证一遍，比死记硬背强十倍。</div>
 
 <p><span class="exp">Hook：怎么证明书上画的栈帧是真的？不看源码，看机器码——objdump 会把编译器偷偷做的事全打印出来。</span></p>
 
@@ -519,7 +533,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-key">重点</span></p>
 
-<h3 id="s72511178">2.6 堆栈传参、eax 返回值与局部变量存储<span class="pg-chip" data-page="20">页20</span><span class="pg-chip" data-page="21">页21</span><span class="pg-chip" data-page="22">页22</span><span class="pg-chip" data-page="23">页23</span><span class="pg-chip" data-page="24">页24</span><span class="pg-chip" data-page="25">页25</span><span class="pg-chip" data-page="26">页26</span><span class="pg-chip" data-page="27">页27</span><span class="pg-chip" data-page="28">页28</span><span class="pg-chip" data-page="20">页20</span></h3>
+<h3 id="s35354328">2.6 堆栈传参、eax 返回值与局部变量存储<span class="pg-chip" data-page="20">页20</span><span class="pg-chip" data-page="21">页21</span><span class="pg-chip" data-page="22">页22</span><span class="pg-chip" data-page="23">页23</span><span class="pg-chip" data-page="24">页24</span><span class="pg-chip" data-page="25">页25</span><span class="pg-chip" data-page="26">页26</span><span class="pg-chip" data-page="27">页27</span><span class="pg-chip" data-page="28">页28</span><span class="pg-chip" data-page="20">页20</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>函数调用的"物流系统"：<em>参数用栈往里送、返回值用 EAX 带出来、局部变量放 EBP 下面</em>。三件事各走各的路，互不干扰。</div>
 
 <p><span class="exp">Hook：一句 <code>z = p2(x, y);</code> 编译出来是五行汇编，其中一行的作用是「把栈擦干净」。谁擦的、为什么擦，直接关系到参数由谁负责回收。</span></p>
 
@@ -550,7 +565,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s65501840">2.7 多函数调用 main/p1/p2 堆栈演练<span class="pg-chip" data-page="29">页29</span><span class="pg-chip" data-page="30">页30</span><span class="pg-chip" data-page="31">页31</span><span class="pg-chip" data-page="32">页32</span><span class="pg-chip" data-page="33">页33</span><span class="pg-chip" data-page="34">页34</span><span class="pg-chip" data-page="29">页29</span></h3>
+<h3 id="s69218307">2.7 多函数调用 main/p1/p2 堆栈演练<span class="pg-chip" data-page="29">页29</span><span class="pg-chip" data-page="30">页30</span><span class="pg-chip" data-page="31">页31</span><span class="pg-chip" data-page="32">页32</span><span class="pg-chip" data-page="33">页33</span><span class="pg-chip" data-page="34">页34</span><span class="pg-chip" data-page="29">页29</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>函数一层套一层，栈就像叠罗汉：<b>最上面永远压着最里层的那个函数</b>。谁最后进去谁先出来，这叫"后进先出"。</div>
 
 <p><span class="exp">Hook：代码段里 main、p1、p2 三个函数各占一块固定位置，而堆栈里会同时出现三份栈帧——同一个程序，两种「空间」。</span></p>
 
@@ -566,7 +582,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-key">重点</span></p>
 
-<h3 id="s94343454">2.8 C 内嵌汇编语法与 gcc -m32 编译<span class="pg-chip" data-page="35">页35</span><span class="pg-chip" data-page="36">页36</span><span class="pg-chip" data-page="37">页37</span><span class="pg-chip" data-page="35">页35</span></h3>
+<h3 id="s26168394">2.8 C 内嵌汇编语法与 gcc -m32 编译<span class="pg-chip" data-page="35">页35</span><span class="pg-chip" data-page="36">页36</span><span class="pg-chip" data-page="37">页37</span><span class="pg-chip" data-page="35">页35</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>在 C 里插汇编写底层操作，用<b>约束符和编译器签合同</b>：告诉它哪个变量是输入、哪个是输出、放寄存器还是内存。</div>
 
 <p><span class="exp">Hook：想验证「寄存器到底怎么被用」，最直接的办法是把汇编直接写进 C 代码里——让编译器别管这一段，你说了算。</span></p>
 

@@ -7,8 +7,8 @@
 <script>
 MathJax = {
   tex: {
-    inlineMath: [['$', '$'], ['\(', '\)']],
-    displayMath: [['$$', '$$'], ['\[', '\]']]
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']]
   }
 };
 </script>
@@ -165,6 +165,15 @@ div.toc li { margin: 3px 0; font-size: 0.95em; }
 @media (max-width: 400px) {
   body { padding: 8px 6px 32px; font-size: 10.5pt; }
 }
+
+/* ── 速通逻辑讲解块（每个知识点前的一句话底层逻辑） ── */
+.logic {
+  background: #eef7f0; border: 1px solid #cfe6d6; border-left: 5px solid #3f8f5c;
+  border-radius: 0 8px 8px 0; padding: 11px 15px; margin: 4px 0 12px;
+  font-size: 0.93em; line-height: 1.75; color: #24503a;
+}
+.logic b { color: #1f5c3a; }
+.logic em { color: #8a4b1f; font-style: normal; font-weight: 600; }
 
 /* === Interactive Test Styles === */
 
@@ -403,15 +412,16 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 <div class="toc">
 <h2>目录</h2>
 <ul>
-<li><a href="#s25098567">第3讲 硬件基础</a></li>
-  <li><a href="#s22664217">3.1 X86 与 ARM64 架构差异</a></li>
-  <li><a href="#s36084432">3.2 存储层次与总线结构</a></li>
-  <li><a href="#s12893832">3.3 总线设备、设备寄存器与内存映射 I/O 及端口 I/O</a></li>
+<li><a href="#s72962201">第3讲 硬件基础</a></li>
+  <li><a href="#s74166049">3.1 X86 与 ARM64 架构差异</a></li>
+  <li><a href="#s13449098">3.2 存储层次与总线结构</a></li>
+  <li><a href="#s24148802">3.3 总线设备、设备寄存器与内存映射 I/O 及端口 I/O</a></li>
 </ul>
 </div>
-<h2 id="s25098567">第3讲 硬件基础</h2>
+<h2 id="s72962201">第3讲 硬件基础</h2>
 
-<h3 id="s22664217">3.1 X86 与 ARM64 架构差异<span class="pg-chip" data-page="1">页1</span><span class="pg-chip" data-page="2">页2</span><span class="pg-chip" data-page="3">页3</span><span class="pg-chip" data-page="1">页1</span></h3>
+<h3 id="s74166049">3.1 X86 与 ARM64 架构差异<span class="pg-chip" data-page="1">页1</span><span class="pg-chip" data-page="2">页2</span><span class="pg-chip" data-page="3">页3</span><span class="pg-chip" data-page="1">页1</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>x86 和 ARM64 是两个门派：<em>x86 指令长短不一、灵活但复杂（电脑用）；ARM64 指令整齐划一、简单省电（手机用）</em>。理解差异才懂为什么程序不能跨平台直接跑。</div>
 
 <p><span class="exp">Hook：同样一句 C 语言的函数调用，在笔记本上和在手机上编译出的机器码完全不同。两大指令集的分歧点，其实只有三个。</span></p>
 
@@ -435,7 +445,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s36084432">3.2 存储层次与总线结构<span class="pg-chip" data-page="4">页4</span><span class="pg-chip" data-page="5">页5</span><span class="pg-chip" data-page="6">页6</span><span class="pg-chip" data-page="7">页7</span><span class="pg-chip" data-page="8">页8</span><span class="pg-chip" data-page="4">页4</span></h3>
+<h3 id="s13449098">3.2 存储层次与总线结构<span class="pg-chip" data-page="4">页4</span><span class="pg-chip" data-page="5">页5</span><span class="pg-chip" data-page="6">页6</span><span class="pg-chip" data-page="7">页7</span><span class="pg-chip" data-page="8">页8</span><span class="pg-chip" data-page="4">页4</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>存储像三层书架：<b>手边抽屉(寄存器，快而贵) → 旁边书架(内存，中等) → 远处图书馆(硬盘，大而慢)</b>。越近越快越贵，所以要一层层缓存。</div>
 
 <p><span class="exp">Hook：CPU 主频几个 GHz，内存却要几十纳秒才回一次数据。这么慢的搭档，怎么没把 CPU 拖死？答案藏在一条从寄存器到硬盘的「金字塔」里。</span></p>
 
@@ -451,7 +462,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-key">重点</span></p>
 
-<h3 id="s12893832">3.3 总线设备、设备寄存器与内存映射 I/O 及端口 I/O<span class="pg-chip" data-page="9">页9</span><span class="pg-chip" data-page="10">页10</span><span class="pg-chip" data-page="11">页11</span><span class="pg-chip" data-page="9">页9</span></h3>
+<h3 id="s24148802">3.3 总线设备、设备寄存器与内存映射 I/O 及端口 I/O<span class="pg-chip" data-page="9">页9</span><span class="pg-chip" data-page="10">页10</span><span class="pg-chip" data-page="11">页11</span><span class="pg-chip" data-page="9">页9</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>CPU 怎么和外设说话？两种方式：<em>给设备编个"内存地址"，像访问内存一样访问它（内存映射 I/O，ARM 用）；或单独编"端口号"（端口 I/O，x86 特有）</em>。</div>
 
 <p><span class="exp">Hook：你往一个地址写了个 1，内存里什么也没变，但风扇突然转快了。为什么「写内存」能控制硬件？</span></p>
 

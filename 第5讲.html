@@ -7,8 +7,8 @@
 <script>
 MathJax = {
   tex: {
-    inlineMath: [['$', '$'], ['\(', '\)']],
-    displayMath: [['$$', '$$'], ['\[', '\]']]
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']]
   }
 };
 </script>
@@ -165,6 +165,15 @@ div.toc li { margin: 3px 0; font-size: 0.95em; }
 @media (max-width: 400px) {
   body { padding: 8px 6px 32px; font-size: 10.5pt; }
 }
+
+/* ── 速通逻辑讲解块（每个知识点前的一句话底层逻辑） ── */
+.logic {
+  background: #eef7f0; border: 1px solid #cfe6d6; border-left: 5px solid #3f8f5c;
+  border-radius: 0 8px 8px 0; padding: 11px 15px; margin: 4px 0 12px;
+  font-size: 0.93em; line-height: 1.75; color: #24503a;
+}
+.logic b { color: #1f5c3a; }
+.logic em { color: #8a4b1f; font-style: normal; font-weight: 600; }
 
 /* === Interactive Test Styles === */
 
@@ -403,19 +412,20 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 <div class="toc">
 <h2>目录</h2>
 <ul>
-<li><a href="#s22294907">第5讲 系统调用与嵌入式汇编</a></li>
-  <li><a href="#s87821514">5.1 系统调用要点回顾</a></li>
-  <li><a href="#s19616589">5.2 库函数 API 触发系统调用案例</a></li>
-  <li><a href="#s44092525">5.3 嵌入式汇编语法与常用限定符</a></li>
-  <li><a href="#s39365526">5.4 嵌入式汇编触发 time 系统调用</a></li>
-  <li><a href="#s27287894">5.5 嵌入式汇编触发 rename 双参数系统调用</a></li>
-  <li><a href="#s53414001">5.6 libc 提供的 syscall() 函数</a></li>
-  <li><a href="#s69076115">5.7 系统调用三层机制 xyz-system_call-sys_xyz</a></li>
+<li><a href="#s38525687">第5讲 系统调用与嵌入式汇编</a></li>
+  <li><a href="#s76068725">5.1 系统调用要点回顾</a></li>
+  <li><a href="#s19117373">5.2 库函数 API 触发系统调用案例</a></li>
+  <li><a href="#s32786236">5.3 嵌入式汇编语法与常用限定符</a></li>
+  <li><a href="#s13574128">5.4 嵌入式汇编触发 time 系统调用</a></li>
+  <li><a href="#s48779388">5.5 嵌入式汇编触发 rename 双参数系统调用</a></li>
+  <li><a href="#s83264252">5.6 libc 提供的 syscall() 函数</a></li>
+  <li><a href="#s71119286">5.7 系统调用三层机制 xyz-system_call-sys_xyz</a></li>
 </ul>
 </div>
-<h2 id="s22294907">第5讲 系统调用与嵌入式汇编</h2>
+<h2 id="s38525687">第5讲 系统调用与嵌入式汇编</h2>
 
-<h3 id="s87821514">5.1 系统调用要点回顾<span class="pg-chip" data-page="1">页1</span><span class="pg-chip" data-page="2">页2</span></h3>
+<h3 id="s76068725">5.1 系统调用要点回顾<span class="pg-chip" data-page="1">页1</span><span class="pg-chip" data-page="2">页2</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>先把上一讲的用户态/内核态、中断、系统调用串一遍——这些是后面所有内容的地基，串起来才不散。</div>
 
 <p><span class="exp">Hook：上一讲讲了那么多机制，如果只能带走六句话，应该是哪六句？</span></p>
 
@@ -431,7 +441,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-info">了解</span></p>
 
-<h3 id="s19616589">5.2 库函数 API 触发系统调用案例<span class="pg-chip" data-page="3">页3</span><span class="pg-chip" data-page="3">页3</span></h3>
+<h3 id="s19117373">5.2 库函数 API 触发系统调用案例<span class="pg-chip" data-page="3">页3</span><span class="pg-chip" data-page="3">页3</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>time()、localtime() 这些你随手用的库函数，背后都是系统调用。<b>API 是壳，系统调用是核</b>。</div>
 
 <p><span class="exp">Hook：一段只用 time、localtime、printf 三个标准函数的十几行程序，凭什么能作为整个汇编实验的对照基准？</span></p>
 
@@ -458,7 +469,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-key">重点</span></p>
 
-<h3 id="s44092525">5.3 嵌入式汇编语法与常用限定符<span class="pg-chip" data-page="4">页4</span><span class="pg-chip" data-page="5">页5</span><span class="pg-chip" data-page="6">页6</span><span class="pg-chip" data-page="7">页7</span><span class="pg-chip" data-page="8">页8</span><span class="pg-chip" data-page="9">页9</span><span class="pg-chip" data-page="4">页4</span></h3>
+<h3 id="s32786236">5.3 嵌入式汇编语法与常用限定符<span class="pg-chip" data-page="4">页4</span><span class="pg-chip" data-page="5">页5</span><span class="pg-chip" data-page="6">页6</span><span class="pg-chip" data-page="7">页7</span><span class="pg-chip" data-page="8">页8</span><span class="pg-chip" data-page="9">页9</span><span class="pg-chip" data-page="4">页4</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>约束符还是那份"合同"：<code>"=m"</code> 输出放内存、<code>"r"</code> 放寄存器、<code>"g"</code> 随便。把汇编要用的变量和编译器约定清楚。</div>
 
 <p><span class="exp">Hook：C 代码里嵌一段汇编，编译器怎么知道哪些变量该进 EAX、哪些变量写回内存、哪些寄存器会被你改坏？答案全在冒号后面的那几个字母里。</span></p>
 
@@ -474,7 +486,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s39365526">5.4 嵌入式汇编触发 time 系统调用<span class="pg-chip" data-page="10">页10</span><span class="pg-chip" data-page="10">页10</span></h3>
+<h3 id="s13574128">5.4 嵌入式汇编触发 time 系统调用<span class="pg-chip" data-page="10">页10</span><span class="pg-chip" data-page="10">页10</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>直接写汇编去"按服务铃"，看清 <code>mov $0xd,%eax; int $0x80</code> 触发 time 系统调用的全过程——比调库函数更接近本质。</div>
 
 <p><span class="exp">Hook：不用 time() 函数，只写四行汇编，能不能拿到和 time(NULL) 一模一样的时间戳？</span></p>
 
@@ -507,7 +520,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s27287894">5.5 嵌入式汇编触发 rename 双参数系统调用<span class="pg-chip" data-page="11">页11</span><span class="pg-chip" data-page="12">页12</span><span class="pg-chip" data-page="13">页13</span><span class="pg-chip" data-page="11">页11</span></h3>
+<h3 id="s48779388">5.5 嵌入式汇编触发 rename 双参数系统调用<span class="pg-chip" data-page="11">页11</span><span class="pg-chip" data-page="12">页12</span><span class="pg-chip" data-page="13">页13</span><span class="pg-chip" data-page="11">页11</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>传两个参数怎么办？<b>EBX 放旧文件名、ECX 放新文件名、EAX 放编号 0x26</b>。多个参数就是按顺序塞进不同寄存器。</div>
 
 <p><span class="exp">Hook：time 没有参数，所以只要一个 EAX。现在要重命名文件，两个字符串指针往哪儿放？</span></p>
 
@@ -541,7 +555,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s53414001">5.6 libc 提供的 syscall() 函数<span class="pg-chip" data-page="14">页14</span><span class="pg-chip" data-page="14">页14</span></h3>
+<h3 id="s83264252">5.6 libc 提供的 syscall() 函数<span class="pg-chip" data-page="14">页14</span><span class="pg-chip" data-page="14">页14</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>有些系统调用没有现成的库函数封装，就用通用的 <code>syscall(编号, 参数...)</code> 直接调——它是所有系统调用的"万能钥匙"。</div>
 
 <p><span class="exp">Hook：如果某个系统调用太新，连 libc 都还没来得及为它写封装函数，你就只能干等吗？</span></p>
 
@@ -557,7 +572,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-key">重点</span></p>
 
-<h3 id="s69076115">5.7 系统调用三层机制 xyz-system_call-sys_xyz<span class="pg-chip" data-page="15">页15</span><span class="pg-chip" data-page="16">页16</span><span class="pg-chip" data-page="15">页15</span></h3>
+<h3 id="s71119286">5.7 系统调用三层机制 xyz-system_call-sys_xyz<span class="pg-chip" data-page="15">页15</span><span class="pg-chip" data-page="16">页16</span><span class="pg-chip" data-page="15">页15</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>系统调用三层就是"政务办事"：<em>API 层(xyz)=窗口领表、system_call=安检登记、sys_xyz=具体科室办理</em>。用户永远只能递申请，碰不到内核代码。</div>
 
 <p><span class="exp">Hook：从你写下 time() 到内核里 sys_time 真正执行，中间到底经过了几层？这三层各自负责什么、又各自属于谁？</span></p>
 

@@ -7,8 +7,8 @@
 <script>
 MathJax = {
   tex: {
-    inlineMath: [['$', '$'], ['\(', '\)']],
-    displayMath: [['$$', '$$'], ['\[', '\]']]
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']]
   }
 };
 </script>
@@ -165,6 +165,15 @@ div.toc li { margin: 3px 0; font-size: 0.95em; }
 @media (max-width: 400px) {
   body { padding: 8px 6px 32px; font-size: 10.5pt; }
 }
+
+/* ── 速通逻辑讲解块（每个知识点前的一句话底层逻辑） ── */
+.logic {
+  background: #eef7f0; border: 1px solid #cfe6d6; border-left: 5px solid #3f8f5c;
+  border-radius: 0 8px 8px 0; padding: 11px 15px; margin: 4px 0 12px;
+  font-size: 0.93em; line-height: 1.75; color: #24503a;
+}
+.logic b { color: #1f5c3a; }
+.logic em { color: #8a4b1f; font-style: normal; font-weight: 600; }
 
 /* === Interactive Test Styles === */
 
@@ -403,23 +412,24 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 <div class="toc">
 <h2>目录</h2>
 <ul>
-<li><a href="#s52517493">第8讲 用户管理</a></li>
-  <li><a href="#s37403319">8.1 多用户系统与管理员职责</a></li>
-  <li><a href="#s51601766">8.2 useradd、passwd、su 用户创建实操</a></li>
-  <li><a href="#s13886486">8.3 userdel 与 usermod 删除及属性修改</a></li>
-  <li><a href="#s30157510">8.4 /etc/passwd 七字段结构与默认权限</a></li>
-  <li><a href="#s23139074">8.5 /etc/shadow 九字段结构与默认权限</a></li>
-  <li><a href="#s36186376">8.6 密码复杂度与 pwquality.conf 配置</a></li>
-  <li><a href="#s86415341">8.7 John the Ripper 弱密码检测</a></li>
-  <li><a href="#s18355308">8.8 su 与 sudo 特权管理配置</a></li>
-  <li><a href="#s26333173">8.9 history 时间戳与 HISTTIMEFORMAT</a></li>
-  <li><a href="#s72654353">8.10 openssl 与 pwgen 生成复杂密码</a></li>
-  <li><a href="#s38677515">8.11 关键环境变量与只读设置</a></li>
+<li><a href="#s13575617">第8讲 用户管理</a></li>
+  <li><a href="#s36568247">8.1 多用户系统与管理员职责</a></li>
+  <li><a href="#s71177521">8.2 useradd、passwd、su 用户创建实操</a></li>
+  <li><a href="#s71721871">8.3 userdel 与 usermod 删除及属性修改</a></li>
+  <li><a href="#s41709392">8.4 /etc/passwd 七字段结构与默认权限</a></li>
+  <li><a href="#s49124900">8.5 /etc/shadow 九字段结构与默认权限</a></li>
+  <li><a href="#s52235760">8.6 密码复杂度与 pwquality.conf 配置</a></li>
+  <li><a href="#s40278335">8.7 John the Ripper 弱密码检测</a></li>
+  <li><a href="#s74780435">8.8 su 与 sudo 特权管理配置</a></li>
+  <li><a href="#s58742143">8.9 history 时间戳与 HISTTIMEFORMAT</a></li>
+  <li><a href="#s27585214">8.10 openssl 与 pwgen 生成复杂密码</a></li>
+  <li><a href="#s51834259">8.11 关键环境变量与只读设置</a></li>
 </ul>
 </div>
-<h2 id="s52517493">第8讲 用户管理</h2>
+<h2 id="s13575617">第8讲 用户管理</h2>
 
-<h3 id="s37403319">8.1 多用户系统与管理员职责<span class="pg-chip" data-page="1">页1</span><span class="pg-chip" data-page="2">页2</span><span class="pg-chip" data-page="3">页3</span><span class="pg-chip" data-page="4">页4</span><span class="pg-chip" data-page="5">页5</span><span class="pg-chip" data-page="1">页1</span></h3>
+<h3 id="s36568247">8.1 多用户系统与管理员职责<span class="pg-chip" data-page="1">页1</span><span class="pg-chip" data-page="2">页2</span><span class="pg-chip" data-page="3">页3</span><span class="pg-chip" data-page="4">页4</span><span class="pg-chip" data-page="5">页5</span><span class="pg-chip" data-page="1">页1</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>Linux 天生就是<b>多人共用的系统</b>，所以管理员的核心工作就是管好"谁是谁、谁能干什么"。</div>
 
 <p><span class="exp">Hook：服务器上的一个普通用户，凭什么不能直接删掉别人的文件、改掉系统时间？答案藏在 Linux「多用户」这个设计前提里——权限不是天生的，而是被分配出来的。</span></p>
 
@@ -435,7 +445,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-key">重点</span></p>
 
-<h3 id="s51601766">8.2 useradd、passwd、su 用户创建实操<span class="pg-chip" data-page="6">页6</span><span class="pg-chip" data-page="7">页7</span><span class="pg-chip" data-page="8">页8</span><span class="pg-chip" data-page="9">页9</span><span class="pg-chip" data-page="10">页10</span><span class="pg-chip" data-page="11">页11</span><span class="pg-chip" data-page="12">页12</span><span class="pg-chip" data-page="13">页13</span><span class="pg-chip" data-page="14">页14</span><span class="pg-chip" data-page="6">页6</span></h3>
+<h3 id="s71177521">8.2 useradd、passwd、su 用户创建实操<span class="pg-chip" data-page="6">页6</span><span class="pg-chip" data-page="7">页7</span><span class="pg-chip" data-page="8">页8</span><span class="pg-chip" data-page="9">页9</span><span class="pg-chip" data-page="10">页10</span><span class="pg-chip" data-page="11">页11</span><span class="pg-chip" data-page="12">页12</span><span class="pg-chip" data-page="13">页13</span><span class="pg-chip" data-page="14">页14</span><span class="pg-chip" data-page="6">页6</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>建号三步走：<code>useradd</code> 建账号（有身份）→ <code>passwd</code> 设密码（能进门）→ <code>su</code> 切换过去（用这个身份干活）。</div>
 
 <p><span class="exp">Hook：新同事入职，你要在服务器上给他开一个账号。三步之内必须完成：建用户、给密码、验证能登录——这三步分别对应哪几条命令？</span></p>
 
@@ -462,7 +473,8 @@ passwd: all authentication tokens updated successfully
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s13886486">8.3 userdel 与 usermod 删除及属性修改<span class="pg-chip" data-page="15">页15</span><span class="pg-chip" data-page="16">页16</span><span class="pg-chip" data-page="17">页17</span><span class="pg-chip" data-page="18">页18</span><span class="pg-chip" data-page="19">页19</span><span class="pg-chip" data-page="20">页20</span><span class="pg-chip" data-page="21">页21</span><span class="pg-chip" data-page="15">页15</span></h3>
+<h3 id="s71721871">8.3 userdel 与 usermod 删除及属性修改<span class="pg-chip" data-page="15">页15</span><span class="pg-chip" data-page="16">页16</span><span class="pg-chip" data-page="17">页17</span><span class="pg-chip" data-page="18">页18</span><span class="pg-chip" data-page="19">页19</span><span class="pg-chip" data-page="20">页20</span><span class="pg-chip" data-page="21">页21</span><span class="pg-chip" data-page="15">页15</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b><code>userdel -r</code> 删号连家一起删（-r 删家目录），<code>usermod</code> 改属性（改描述 -c、锁号 -L、解锁 -U）。</div>
 
 <p><span class="exp">Hook：员工离职，你敲了 userdel 把他删了，第二天发现 /home 里他的目录还在、磁盘还占着几个 G——这是命令用错了，还是本来就这样？</span></p>
 
@@ -490,7 +502,8 @@ wendyNum1:x:1001:1001:old name is wendy.:/home/wendy:/bin/bash</code></pre>
 
 <p><span class="tag-key">重点</span></p>
 
-<h3 id="s30157510">8.4 /etc/passwd 七字段结构与默认权限<span class="pg-chip" data-page="22">页22</span><span class="pg-chip" data-page="23">页23</span><span class="pg-chip" data-page="24">页24</span><span class="pg-chip" data-page="25">页25</span><span class="pg-chip" data-page="26">页26</span><span class="pg-chip" data-page="27">页27</span><span class="pg-chip" data-page="28">页28</span><span class="pg-chip" data-page="22">页22</span></h3>
+<h3 id="s41709392">8.4 /etc/passwd 七字段结构与默认权限<span class="pg-chip" data-page="22">页22</span><span class="pg-chip" data-page="23">页23</span><span class="pg-chip" data-page="24">页24</span><span class="pg-chip" data-page="25">页25</span><span class="pg-chip" data-page="26">页26</span><span class="pg-chip" data-page="27">页27</span><span class="pg-chip" data-page="28">页28</span><span class="pg-chip" data-page="22">页22</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b><code>/etc/passwd</code> 是<b>身份公开卡</b>：UID、主目录、登录 shell 都在这，所有程序都要读，所以人人可读（0644）。</div>
 
 <p><span class="exp">Hook：登录时系统怎么知道你输入的「wendy」对应哪个数字身份？答案就在一个所有用户都能读的文本文件里，一行七段，用冒号隔开。</span></p>
 
@@ -514,7 +527,8 @@ Context: system_u:object_r:passwd_file_t:s0</code></pre>
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s23139074">8.5 /etc/shadow 九字段结构与默认权限<span class="pg-chip" data-page="29">页29</span><span class="pg-chip" data-page="30">页30</span><span class="pg-chip" data-page="31">页31</span><span class="pg-chip" data-page="32">页32</span><span class="pg-chip" data-page="33">页33</span><span class="pg-chip" data-page="34">页34</span><span class="pg-chip" data-page="35">页35</span><span class="pg-chip" data-page="29">页29</span></h3>
+<h3 id="s49124900">8.5 /etc/shadow 九字段结构与默认权限<span class="pg-chip" data-page="29">页29</span><span class="pg-chip" data-page="30">页30</span><span class="pg-chip" data-page="31">页31</span><span class="pg-chip" data-page="32">页32</span><span class="pg-chip" data-page="33">页33</span><span class="pg-chip" data-page="34">页34</span><span class="pg-chip" data-page="35">页35</span><span class="pg-chip" data-page="29">页29</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b><code>/etc/shadow</code> 是<b>密码保险柜</b>：只存密码哈希，绝不能让人读走拿去爆破，所以只有 root 能读（0000）。身份公开、密码保密——这就是两个文件分家的逻辑。</div>
 
 <p><span class="exp">Hook：既然 /etc/passwd 谁都能读，密码密文放在那里不就等于把保险箱摆在门口？Linux 的答案是：把密文搬到另一个只有 root 能看的文件里。</span></p>
 
@@ -535,7 +549,8 @@ Access: (0000/----------)  Uid: ( 0/ root)   Gid: ( 0/ root)</code></pre>
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s36186376">8.6 密码复杂度与 pwquality.conf 配置<span class="pg-chip" data-page="36">页36</span><span class="pg-chip" data-page="37">页37</span><span class="pg-chip" data-page="38">页38</span><span class="pg-chip" data-page="39">页39</span><span class="pg-chip" data-page="40">页40</span><span class="pg-chip" data-page="41">页41</span><span class="pg-chip" data-page="42">页42</span><span class="pg-chip" data-page="36">页36</span></h3>
+<h3 id="s52235760">8.6 密码复杂度与 pwquality.conf 配置<span class="pg-chip" data-page="36">页36</span><span class="pg-chip" data-page="37">页37</span><span class="pg-chip" data-page="38">页38</span><span class="pg-chip" data-page="39">页39</span><span class="pg-chip" data-page="40">页40</span><span class="pg-chip" data-page="41">页41</span><span class="pg-chip" data-page="42">页42</span><span class="pg-chip" data-page="36">页36</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>密码复杂度策略就是<b>强制密码够难猜</b>：minlen 定最短长度、minclass 定要有几类字符、maxrepeat 定不许连续重复——直接堵死弱密码。</div>
 
 <p><span class="exp">Hook：在发生的系统安全事件中，很多都与密码有关。那么问题来了：你能不能强制全公司的人都不许用 123456？Linux 给出的答案是——写进配置文件，让系统替你拒绝。</span></p>
 
@@ -563,7 +578,8 @@ Retype new password:</code></pre>
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s86415341">8.7 John the Ripper 弱密码检测<span class="pg-chip" data-page="43">页43</span><span class="pg-chip" data-page="44">页44</span><span class="pg-chip" data-page="45">页45</span><span class="pg-chip" data-page="46">页46</span><span class="pg-chip" data-page="47">页47</span><span class="pg-chip" data-page="48">页48</span><span class="pg-chip" data-page="43">页43</span></h3>
+<h3 id="s40278335">8.7 John the Ripper 弱密码检测<span class="pg-chip" data-page="43">页43</span><span class="pg-chip" data-page="44">页44</span><span class="pg-chip" data-page="45">页45</span><span class="pg-chip" data-page="46">页46</span><span class="pg-chip" data-page="47">页47</span><span class="pg-chip" data-page="48">页48</span><span class="pg-chip" data-page="43">页43</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>John the Ripper 是"用黑客的工具自查"：<em>把自己的 shadow 拿来爆破，谁能被轻易爆出来，就说明谁该改密码了</em>。</div>
 
 <p><span class="exp">Hook：规则写得再漂亮，也没法保证历史遗留账号里没有 1234。想知道自己的系统里到底躺着多少个弱口令，只能主动去「破」一遍——这就是弱密码检查。</span></p>
 
@@ -594,7 +610,8 @@ papi:1234:1004:1006::/home/papi:/bin/bash
 
 <p><span class="tag-key">重点</span></p>
 
-<h3 id="s18355308">8.8 su 与 sudo 特权管理配置<span class="pg-chip" data-page="49">页49</span><span class="pg-chip" data-page="50">页50</span><span class="pg-chip" data-page="51">页51</span><span class="pg-chip" data-page="52">页52</span><span class="pg-chip" data-page="53">页53</span><span class="pg-chip" data-page="54">页54</span><span class="pg-chip" data-page="49">页49</span></h3>
+<h3 id="s74780435">8.8 su 与 sudo 特权管理配置<span class="pg-chip" data-page="49">页49</span><span class="pg-chip" data-page="50">页50</span><span class="pg-chip" data-page="51">页51</span><span class="pg-chip" data-page="52">页52</span><span class="pg-chip" data-page="53">页53</span><span class="pg-chip" data-page="54">页54</span><span class="pg-chip" data-page="49">页49</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b><code>su</code> 是"整个人换成别人"（要对方密码），<code>sudo</code> 是"借别人权限做一件事"（有日志、更可控）——生产环境更推荐 sudo。</div>
 
 <p><span class="exp">Hook：root 密码一旦被半个运维团队知道，就等于人人都是 root。能不能做到「既能干管理员的活，又不把 root 密码发出去」？su 与 sudo 给出了两种不同答案。</span></p>
 
@@ -617,7 +634,8 @@ Xiaomingl     ALL=(ALL:ALL) ALL</code></pre>
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s26333173">8.9 history 时间戳与 HISTTIMEFORMAT<span class="pg-chip" data-page="55">页55</span><span class="pg-chip" data-page="56">页56</span><span class="pg-chip" data-page="57">页57</span><span class="pg-chip" data-page="58">页58</span><span class="pg-chip" data-page="59">页59</span><span class="pg-chip" data-page="60">页60</span></h3>
+<h3 id="s58742143">8.9 history 时间戳与 HISTTIMEFORMAT<span class="pg-chip" data-page="55">页55</span><span class="pg-chip" data-page="56">页56</span><span class="pg-chip" data-page="57">页57</span><span class="pg-chip" data-page="58">页58</span><span class="pg-chip" data-page="59">页59</span><span class="pg-chip" data-page="60">页60</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>给命令历史加上时间戳（HISTTIMEFORMAT），<b>出了事能追溯"谁在什么时候干了什么"</b>，这是审计的基本功。</div>
 
 <p><span class="exp">Hook：系统半夜被人动过，你敲 history 看到一串命令，却完全不知道它们是什么时候执行的——这条线索等于废了。能不能让每条历史命令自带时间？</span></p>
 
@@ -646,7 +664,8 @@ export HISTTIMEFORMAT="%F %T "
 
 <p><span class="tag-freq">高频</span></p>
 
-<h3 id="s72654353">8.10 openssl 与 pwgen 生成复杂密码<span class="pg-chip" data-page="61">页61</span><span class="pg-chip" data-page="62">页62</span><span class="pg-chip" data-page="63">页63</span><span class="pg-chip" data-page="64">页64</span><span class="pg-chip" data-page="65">页65</span><span class="pg-chip" data-page="66">页66</span><span class="pg-chip" data-page="67">页67</span><span class="pg-chip" data-page="68">页68</span><span class="pg-chip" data-page="61">页61</span></h3>
+<h3 id="s27585214">8.10 openssl 与 pwgen 生成复杂密码<span class="pg-chip" data-page="61">页61</span><span class="pg-chip" data-page="62">页62</span><span class="pg-chip" data-page="63">页63</span><span class="pg-chip" data-page="64">页64</span><span class="pg-chip" data-page="65">页65</span><span class="pg-chip" data-page="66">页66</span><span class="pg-chip" data-page="67">页67</span><span class="pg-chip" data-page="68">页68</span><span class="pg-chip" data-page="61">页61</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>openssl、pwgen 这类工具帮你<b>生成随机强密码</b>——人脑想的密码往往有规律，机器随机生成才够安全。</div>
 
 <p><span class="exp">Hook：让你一次给 30 个账号设 14 位含大小写、数字、特殊字符的密码，还要各不相同——手打是不可能的，得让机器生成。</span></p>
 
@@ -674,7 +693,8 @@ ya[i2ookoh3Oph EiPha&lt;o4Thu4Qu Ohya&gt;t6equ1ien</code></pre>
 
 <p><span class="tag-key">重点</span></p>
 
-<h3 id="s38677515">8.11 关键环境变量与只读设置<span class="pg-chip" data-page="69">页69</span><span class="pg-chip" data-page="70">页70</span><span class="pg-chip" data-page="71">页71</span><span class="pg-chip" data-page="72">页72</span><span class="pg-chip" data-page="73">页73</span><span class="pg-chip" data-page="74">页74</span><span class="pg-chip" data-page="69">页69</span></h3>
+<h3 id="s51834259">8.11 关键环境变量与只读设置<span class="pg-chip" data-page="69">页69</span><span class="pg-chip" data-page="70">页70</span><span class="pg-chip" data-page="71">页71</span><span class="pg-chip" data-page="72">页72</span><span class="pg-chip" data-page="73">页73</span><span class="pg-chip" data-page="74">页74</span><span class="pg-chip" data-page="69">页69</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>把关键环境变量设成只读，<b>防止被恶意程序或误操作改掉</b>——比如防止 shell 路径被偷偷替换成木马。</div>
 
 <p><span class="exp">Hook：用户清空了自己的命令历史，你的审计线索就断了。有没有办法让「清历史」这个动作本身也做不了？有——把环境变量设成只读。</span></p>
 

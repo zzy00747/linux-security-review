@@ -7,8 +7,8 @@
 <script>
 MathJax = {
   tex: {
-    inlineMath: [['$', '$'], ['\(', '\)']],
-    displayMath: [['$$', '$$'], ['\[', '\]']]
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']]
   }
 };
 </script>
@@ -165,6 +165,15 @@ div.toc li { margin: 3px 0; font-size: 0.95em; }
 @media (max-width: 400px) {
   body { padding: 8px 6px 32px; font-size: 10.5pt; }
 }
+
+/* ── 速通逻辑讲解块（每个知识点前的一句话底层逻辑） ── */
+.logic {
+  background: #eef7f0; border: 1px solid #cfe6d6; border-left: 5px solid #3f8f5c;
+  border-radius: 0 8px 8px 0; padding: 11px 15px; margin: 4px 0 12px;
+  font-size: 0.93em; line-height: 1.75; color: #24503a;
+}
+.logic b { color: #1f5c3a; }
+.logic em { color: #8a4b1f; font-style: normal; font-weight: 600; }
 
 /* === Interactive Test Styles === */
 
@@ -403,21 +412,22 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 <div class="toc">
 <h2>目录</h2>
 <ul>
-<li><a href="#s42375004">第1讲 How the Computer Works 计算机如何工作</a></li>
-  <li><a href="#s83707664">1.1 课程信息与考核办法</a></li>
-  <li><a href="#s52997646">1.2 存储程序计算机与冯·诺依曼原理</a></li>
-  <li><a href="#s15726273">1.3 ABI 与汇编指令编码</a></li>
-  <li><a href="#s10539893">1.4 X86 指令执行与 EIP 机制</a></li>
-  <li><a href="#s52662662">1.5 通用寄存器、段寄存器与 EFLAGS</a></li>
-  <li><a href="#s28034947">1.6 内存访问指令与 b/w/l/q 操作数尺寸</a></li>
-  <li><a href="#s25853817">1.7 堆栈内存与 push/pop 操作画栈</a></li>
-  <li><a href="#s44421846">1.8 从 C 到可运行程序的汇编映射</a></li>
-  <li><a href="#s32770685">1.9 GCC 多阶段编译与 32 位环境实操</a></li>
+<li><a href="#s54939604">第1讲 How the Computer Works 计算机如何工作</a></li>
+  <li><a href="#s64921499">1.1 课程信息与考核办法</a></li>
+  <li><a href="#s12008939">1.2 存储程序计算机与冯·诺依曼原理</a></li>
+  <li><a href="#s66102526">1.3 ABI 与汇编指令编码</a></li>
+  <li><a href="#s12317172">1.4 X86 指令执行与 EIP 机制</a></li>
+  <li><a href="#s14780774">1.5 通用寄存器、段寄存器与 EFLAGS</a></li>
+  <li><a href="#s16088714">1.6 内存访问指令与 b/w/l/q 操作数尺寸</a></li>
+  <li><a href="#s63103288">1.7 堆栈内存与 push/pop 操作画栈</a></li>
+  <li><a href="#s69049018">1.8 从 C 到可运行程序的汇编映射</a></li>
+  <li><a href="#s15970658">1.9 GCC 多阶段编译与 32 位环境实操</a></li>
 </ul>
 </div>
-<h2 id="s42375004">第1讲 How the Computer Works 计算机如何工作</h2>
+<h2 id="s54939604">第1讲 How the Computer Works 计算机如何工作</h2>
 
-<h3 id="s83707664">1.1 课程信息与考核办法<span class="pg-chip" data-page="1">页1</span><span class="pg-chip" data-page="2">页2</span><span class="pg-chip" data-page="3">页3</span></h3>
+<h3 id="s64921499">1.1 课程信息与考核办法<span class="pg-chip" data-page="1">页1</span><span class="pg-chip" data-page="2">页2</span><span class="pg-chip" data-page="3">页3</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>这门课先看「分数怎么算」是聪明的：<em>考试占 60%、实验占 30%</em>，等于告诉你精力该往理论理解上压。先搞懂游戏规则，再决定怎么打。</div>
 
 <p><span class="exp">Hook：一门讲内核与系统安全的课，为什么要先把「分数怎么算」摊在桌面上？因为这门课的分数结构，直接决定了你后面八周该把时间花在实验室还是自习室。</span></p>
 
@@ -433,7 +443,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-info">了解</span></p>
 
-<h3 id="s52997646">1.2 存储程序计算机与冯·诺依曼原理<span class="pg-chip" data-page="4">页4</span><span class="pg-chip" data-page="5">页5</span><span class="pg-chip" data-page="6">页6</span><span class="pg-chip" data-page="4">页4</span></h3>
+<h3 id="s12008939">1.2 存储程序计算机与冯·诺依曼原理<span class="pg-chip" data-page="4">页4</span><span class="pg-chip" data-page="5">页5</span><span class="pg-chip" data-page="6">页6</span><span class="pg-chip" data-page="4">页4</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>电脑为什么"存起来就能自动跑"？关键在<b>指令和数据混存在同一个内存里</b>，CPU 按地址一条条取指令来执行——这就是「存储程序」的全部本质。</div>
 
 <p><span class="exp">Hook：计算机凭什么能「自动」算题？它并不知道自己在算什么，它只是在不停地重复一件极笨的事——取下一条指令、执行它。</span></p>
 
@@ -449,7 +460,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s15726273">1.3 ABI 与汇编指令编码<span class="pg-chip" data-page="7">页7</span><span class="pg-chip" data-page="7">页7</span></h3>
+<h3 id="s66102526">1.3 ABI 与汇编指令编码<span class="pg-chip" data-page="7">页7</span><span class="pg-chip" data-page="7">页7</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>程序要和 CPU 打交道得有份"合同"，ABI 就是这份合同：规定函数怎么调、参数怎么传、指令怎么编码。所以同一种 .o 只能在同一种 CPU 上跑，因为合同是硬件专属的。</div>
 
 <p><span class="exp">Hook：你写的 C 函数能调用别人编译好的库函数，双方从没见过面，凭什么参数就能对上号？靠的是一份「二进制层面的握手协议」。</span></p>
 
@@ -465,7 +477,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s10539893">1.4 X86 指令执行与 EIP 机制<span class="pg-chip" data-page="8">页8</span><span class="pg-chip" data-page="8">页8</span></h3>
+<h3 id="s12317172">1.4 X86 指令执行与 EIP 机制<span class="pg-chip" data-page="8">页8</span><span class="pg-chip" data-page="8">页8</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>CPU 怎么知道下一句在哪？<b>EIP 像个自动前进的书签</b>，每执行一条指令就往后挪一点；只有遇到 call/jmp 这种跳转，书签才被手动改。</div>
 
 <p><span class="exp">Hook：一个程序的执行顺序，其实只由一个寄存器里的数字决定。谁改了这个数字，谁就控制了程序——这正是栈溢出攻击的靶心。</span></p>
 
@@ -481,7 +494,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s52662662">1.5 通用寄存器、段寄存器与 EFLAGS<span class="pg-chip" data-page="9">页9</span><span class="pg-chip" data-page="10">页10</span><span class="pg-chip" data-page="11">页11</span><span class="pg-chip" data-page="12">页12</span><span class="pg-chip" data-page="9">页9</span></h3>
+<h3 id="s14780774">1.5 通用寄存器、段寄存器与 EFLAGS<span class="pg-chip" data-page="9">页9</span><span class="pg-chip" data-page="10">页10</span><span class="pg-chip" data-page="11">页11</span><span class="pg-chip" data-page="12">页12</span><span class="pg-chip" data-page="9">页9</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>寄存器是 <b>CPU 手边的工作台</b>：内存虽大但远(慢)，寄存器小但在手边(快)。EAX 管算术、ECX 管数数、ESP/EBP 管栈、EIP 指着下一条指令——各有专长，分工才快。</div>
 
 <p><span class="exp">Hook：CPU 里就那么十几个小格子，却能装下整个程序的运行状态。它们各自的分工，是被约定死的还是天生的？</span></p>
 
@@ -507,7 +521,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s28034947">1.6 内存访问指令与 b/w/l/q 操作数尺寸<span class="pg-chip" data-page="13">页13</span></h3>
+<h3 id="s16088714">1.6 内存访问指令与 b/w/l/q 操作数尺寸<span class="pg-chip" data-page="13">页13</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>后缀 b/w/l/q 就是「这次搬多少字节」：<em>b 搬 1 字节、w 搬 2、l 搬 4、q 搬 8</em>。像搬砖时说"要一块"还是"要一排"，说清楚才不会搬错。</div>
 
 <p><span class="exp">Hook：同一条 <code>mov</code> 指令，搬 1 个字节还是 8 个字节，CPU 怎么知道？答案就藏在指令名后缀那个小写字母里。</span></p>
 
@@ -531,7 +546,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-freq">高频</span></p>
 
-<h3 id="s25853817">1.7 堆栈内存与 push/pop 操作画栈<span class="pg-chip" data-page="14">页14</span><span class="pg-chip" data-page="15">页15</span><span class="pg-chip" data-page="16">页16</span><span class="pg-chip" data-page="17">页17</span><span class="pg-chip" data-page="18">页18</span><span class="pg-chip" data-page="19">页19</span><span class="pg-chip" data-page="20">页20</span><span class="pg-chip" data-page="21">页21</span><span class="pg-chip" data-page="22">页22</span><span class="pg-chip" data-page="23">页23</span><span class="pg-chip" data-page="24">页24</span><span class="pg-chip" data-page="25">页25</span><span class="pg-chip" data-page="14">页14</span></h3>
+<h3 id="s63103288">1.7 堆栈内存与 push/pop 操作画栈<span class="pg-chip" data-page="14">页14</span><span class="pg-chip" data-page="15">页15</span><span class="pg-chip" data-page="16">页16</span><span class="pg-chip" data-page="17">页17</span><span class="pg-chip" data-page="18">页18</span><span class="pg-chip" data-page="19">页19</span><span class="pg-chip" data-page="20">页20</span><span class="pg-chip" data-page="21">页21</span><span class="pg-chip" data-page="22">页22</span><span class="pg-chip" data-page="23">页23</span><span class="pg-chip" data-page="24">页24</span><span class="pg-chip" data-page="25">页25</span><span class="pg-chip" data-page="14">页14</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>栈是<b>从天花板往下堆的箱子堆</b>：栈顶在上方，越堆越低（所以叫"向低地址增长"）。push 放箱子先挪位置再放，pop 拿箱子先拿再挪位置。</div>
 
 <p><span class="exp">Hook：给你四行汇编，让你画出内存里那几格数字——这是本课程最经典的送分题，也是最容易翻车的题。翻车点只有一个：栈到底往哪个方向长。</span></p>
 
@@ -560,7 +576,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s44421846">1.8 从 C 到可运行程序的汇编映射<span class="pg-chip" data-page="26">页26</span><span class="pg-chip" data-page="27">页27</span><span class="pg-chip" data-page="26">页26</span></h3>
+<h3 id="s69049018">1.8 从 C 到可运行程序的汇编映射<span class="pg-chip" data-page="26">页26</span><span class="pg-chip" data-page="27">页27</span><span class="pg-chip" data-page="26">页26</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>C 的每句话，最后都会被翻译成几条汇编。<b>看懂 C→汇编的映射，就懂了程序在底层到底怎么一步步跑</b>——这是内核分析的基本功。</div>
 
 <p><span class="exp">Hook：三行 C 代码，函数互相调用，编译器把它变成了三段几乎一模一样的骨架。看懂这个骨架，你就能反推出任何 C 函数的栈帧。</span></p>
 
@@ -579,7 +596,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s32770685">1.9 GCC 多阶段编译与 32 位环境实操<span class="pg-chip" data-page="28">页28</span><span class="pg-chip" data-page="29">页29</span><span class="pg-chip" data-page="28">页28</span></h3>
+<h3 id="s15970658">1.9 GCC 多阶段编译与 32 位环境实操<span class="pg-chip" data-page="28">页28</span><span class="pg-chip" data-page="29">页29</span><span class="pg-chip" data-page="28">页28</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>你敲的一条 <code>gcc</code> 命令，背后其实是预处理→编译→汇编→链接四道工序。知道每一步产什么文件，才看得懂编译报错出在哪一步。</div>
 
 <p><span class="exp">Hook：作业要求你生成 .cpp、.s、.o 和 ELF 可执行文件四个中间产物——为什么非要四步？因为每一步都揭示了「程序如何变成机器能跑的东西」的一层。</span></p>
 

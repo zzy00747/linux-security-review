@@ -7,8 +7,8 @@
 <script>
 MathJax = {
   tex: {
-    inlineMath: [['$', '$'], ['\(', '\)']],
-    displayMath: [['$$', '$$'], ['\[', '\]']]
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']]
   }
 };
 </script>
@@ -165,6 +165,15 @@ div.toc li { margin: 3px 0; font-size: 0.95em; }
 @media (max-width: 400px) {
   body { padding: 8px 6px 32px; font-size: 10.5pt; }
 }
+
+/* ── 速通逻辑讲解块（每个知识点前的一句话底层逻辑） ── */
+.logic {
+  background: #eef7f0; border: 1px solid #cfe6d6; border-left: 5px solid #3f8f5c;
+  border-radius: 0 8px 8px 0; padding: 11px 15px; margin: 4px 0 12px;
+  font-size: 0.93em; line-height: 1.75; color: #24503a;
+}
+.logic b { color: #1f5c3a; }
+.logic em { color: #8a4b1f; font-style: normal; font-weight: 600; }
 
 /* === Interactive Test Styles === */
 
@@ -403,23 +412,24 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 <div class="toc">
 <h2>目录</h2>
 <ul>
-<li><a href="#s73326014">第4讲 系统调用</a></li>
-  <li><a href="#s15849939">4.1 系统调用与库函数封装背景</a></li>
-  <li><a href="#s12861891">4.2 用户态与内核态权限划分</a></li>
-  <li><a href="#s12393748">4.3 Intel Ring 分级与 ARM64 异常级别</a></li>
-  <li><a href="#s46903402">4.4 32/64 位 Linux 进程地址空间划分</a></li>
-  <li><a href="#s85252430">4.5 逻辑地址、线性地址与物理地址</a></li>
-  <li><a href="#s46419192">4.6 中断分类与系统调用即陷阱</a></li>
-  <li><a href="#s41153047">4.7 系统调用上下文切换与现场保护恢复</a></li>
-  <li><a href="#s10781807">4.8 系统调用的意义与三大特性</a></li>
-  <li><a href="#s57744350">4.9 系统调用号与寄存器传参规则</a></li>
-  <li><a href="#s62508075">4.10 time 案例反汇编追踪系统调用</a></li>
-  <li><a href="#s55525576">4.11 int0x80/sysenter/syscall 演进与系统调用表</a></li>
+<li><a href="#s90063933">第4讲 系统调用</a></li>
+  <li><a href="#s27042584">4.1 系统调用与库函数封装背景</a></li>
+  <li><a href="#s14298282">4.2 用户态与内核态权限划分</a></li>
+  <li><a href="#s76359962">4.3 Intel Ring 分级与 ARM64 异常级别</a></li>
+  <li><a href="#s75429411">4.4 32/64 位 Linux 进程地址空间划分</a></li>
+  <li><a href="#s30445331">4.5 逻辑地址、线性地址与物理地址</a></li>
+  <li><a href="#s73452352">4.6 中断分类与系统调用即陷阱</a></li>
+  <li><a href="#s44163028">4.7 系统调用上下文切换与现场保护恢复</a></li>
+  <li><a href="#s32617314">4.8 系统调用的意义与三大特性</a></li>
+  <li><a href="#s60991196">4.9 系统调用号与寄存器传参规则</a></li>
+  <li><a href="#s61944689">4.10 time 案例反汇编追踪系统调用</a></li>
+  <li><a href="#s71817795">4.11 int0x80/sysenter/syscall 演进与系统调用表</a></li>
 </ul>
 </div>
-<h2 id="s73326014">第4讲 系统调用</h2>
+<h2 id="s90063933">第4讲 系统调用</h2>
 
-<h3 id="s15849939">4.1 系统调用与库函数封装背景<span class="pg-chip" data-page="1">页1</span><span class="pg-chip" data-page="2">页2</span><span class="pg-chip" data-page="1">页1</span></h3>
+<h3 id="s27042584">4.1 系统调用与库函数封装背景<span class="pg-chip" data-page="1">页1</span><span class="pg-chip" data-page="2">页2</span><span class="pg-chip" data-page="1">页1</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>用户程序想碰硬件、碰内核，不能直接动手——得有"中间人"（库函数）代为申请。这就是系统调用和库函数封装存在的理由：<b>把危险操作关在门外，只能递申请</b>。</div>
 
 <p><span class="exp">Hook：你写下的每一个 printf、每一行 fopen，最后到底是谁在替你跟硬件说话？为什么程序员几乎从不直接「命令」硬盘和网卡？</span></p>
 
@@ -435,7 +445,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s12861891">4.2 用户态与内核态权限划分<span class="pg-chip" data-page="3">页3</span><span class="pg-chip" data-page="4">页4</span><span class="pg-chip" data-page="5">页5</span><span class="pg-chip" data-page="3">页3</span></h3>
+<h3 id="s14298282">4.2 用户态与内核态权限划分<span class="pg-chip" data-page="3">页3</span><span class="pg-chip" data-page="4">页4</span><span class="pg-chip" data-page="5">页5</span><span class="pg-chip" data-page="3">页3</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>为什么分用户态和内核态？<em>怕用户程序乱来把系统搞崩</em>。核心代码锁进内核态（最高权限），普通程序关在外面（低权限）——就像银行金库和营业厅隔开。</div>
 
 <p><span class="exp">Hook：如果任何一个写得糟糕的小程序都能随手执行特权指令、随意改别人的内存，你的电脑还能开机超过五分钟吗？</span></p>
 
@@ -451,7 +462,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s12393748">4.3 Intel Ring 分级与 ARM64 异常级别<span class="pg-chip" data-page="6">页6</span><span class="pg-chip" data-page="7">页7</span><span class="pg-chip" data-page="8">页8</span><span class="pg-chip" data-page="6">页6</span></h3>
+<h3 id="s76359962">4.3 Intel Ring 分级与 ARM64 异常级别<span class="pg-chip" data-page="6">页6</span><span class="pg-chip" data-page="7">页7</span><span class="pg-chip" data-page="8">页8</span><span class="pg-chip" data-page="6">页6</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>权限像楼层：Intel 分 Ring0~3（Ring0 内核、Ring3 用户），ARM 叫 EL0~EL3。名字不同，道理一样——<b>数字越小权限越高</b>。</div>
 
 <p><span class="exp">Hook：课本图上画着四个同心圆环，可真实的 Linux 只用到了其中两个——另外两个环去哪了？</span></p>
 
@@ -467,7 +479,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s46903402">4.4 32/64 位 Linux 进程地址空间划分<span class="pg-chip" data-page="9">页9</span><span class="pg-chip" data-page="10">页10</span><span class="pg-chip" data-page="11">页11</span><span class="pg-chip" data-page="9">页9</span></h3>
+<h3 id="s75429411">4.4 32/64 位 Linux 进程地址空间划分<span class="pg-chip" data-page="9">页9</span><span class="pg-chip" data-page="10">页10</span><span class="pg-chip" data-page="11">页11</span><span class="pg-chip" data-page="9">页9</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>每个进程都以为自己独占了整个地址空间（虚拟地址），其实是<b>内核画给它的"饼"</b>。真用到哪页才分配哪页，所以 4GB 的饼不一定要 4GB 内存。</div>
 
 <p><span class="exp">Hook：不用看任何标志位，只看一个寄存器里的数值，就能判断当前 CPU 处在用户态还是内核态——这个寄存器是哪个？</span></p>
 
@@ -483,7 +496,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s85252430">4.5 逻辑地址、线性地址与物理地址<span class="pg-chip" data-page="12">页12</span><span class="pg-chip" data-page="13">页13</span><span class="pg-chip" data-page="12">页12</span></h3>
+<h3 id="s30445331">4.5 逻辑地址、线性地址与物理地址<span class="pg-chip" data-page="12">页12</span><span class="pg-chip" data-page="13">页13</span><span class="pg-chip" data-page="12">页12</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>地址的三段旅程：<b>你写的地址(逻辑) → 段页转换(线性) → 内存条上的真实位置(物理)</b>。像寄信：写收件人→邮局按邮编分拣→投进具体信箱。</div>
 
 <p><span class="exp">Hook：C 语言里 &amp;x 取到的那个值，是内存条上真实的门牌号吗？如果不是，它凭什么能最终落到正确的物理单元上？</span></p>
 
@@ -499,7 +513,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-key">重点</span></p>
 
-<h3 id="s46419192">4.6 中断分类与系统调用即陷阱<span class="pg-chip" data-page="14">页14</span><span class="pg-chip" data-page="15">页15</span><span class="pg-chip" data-page="16">页16</span><span class="pg-chip" data-page="17">页17</span><span class="pg-chip" data-page="18">页18</span><span class="pg-chip" data-page="14">页14</span></h3>
+<h3 id="s73452352">4.6 中断分类与系统调用即陷阱<span class="pg-chip" data-page="14">页14</span><span class="pg-chip" data-page="15">页15</span><span class="pg-chip" data-page="16">页16</span><span class="pg-chip" data-page="17">页17</span><span class="pg-chip" data-page="18">页18</span><span class="pg-chip" data-page="14">页14</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>系统调用本质是<b>故意制造一个异常（trap）主动叫内核来处理</b>。就像你按服务铃——不是出事了，而是你主动求助。</div>
 
 <p><span class="exp">Hook：系统调用既不是函数调用也不是硬件中断，它凭什么能让 CPU 心甘情愿地从用户态掉进内核态？</span></p>
 
@@ -515,7 +530,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s41153047">4.7 系统调用上下文切换与现场保护恢复<span class="pg-chip" data-page="19">页19</span><span class="pg-chip" data-page="20">页20</span><span class="pg-chip" data-page="21">页21</span><span class="pg-chip" data-page="27">页27</span><span class="pg-chip" data-page="28">页28</span><span class="pg-chip" data-page="29">页29</span><span class="pg-chip" data-page="30">页30</span><span class="pg-chip" data-page="19">页19</span></h3>
+<h3 id="s44163028">4.7 系统调用上下文切换与现场保护恢复<span class="pg-chip" data-page="19">页19</span><span class="pg-chip" data-page="20">页20</span><span class="pg-chip" data-page="21">页21</span><span class="pg-chip" data-page="27">页27</span><span class="pg-chip" data-page="28">页28</span><span class="pg-chip" data-page="29">页29</span><span class="pg-chip" data-page="30">页30</span><span class="pg-chip" data-page="19">页19</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>进内核前必须把寄存器"存档"（保存现场），出内核时再"读档"（恢复现场），不然回来时寄存器全乱了，程序就跑飞了。</div>
 
 <p><span class="exp">Hook：用户态跑到一半被拽进内核，回来时凭什么还能接着往下跑、变量一个都没乱？</span></p>
 
@@ -531,7 +547,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s10781807">4.8 系统调用的意义与三大特性<span class="pg-chip" data-page="22">页22</span><span class="pg-chip" data-page="22">页22</span></h3>
+<h3 id="s32617314">4.8 系统调用的意义与三大特性<span class="pg-chip" data-page="22">页22</span><span class="pg-chip" data-page="22">页22</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>系统调用有三大好处：<em>隔离保护（用户碰不到硬件）、安全（内核把关）、可移植（换硬件不用重写程序）</em>。</div>
 
 <p><span class="exp">Hook：如果每个程序都自己写驱动去操作网卡，你的电脑上装十个浏览器就要写十份硬件代码——这显然不现实。系统调用解决的正是这件事。</span></p>
 
@@ -547,7 +564,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-key">重点</span></p>
 
-<h3 id="s57744350">4.9 系统调用号与寄存器传参规则<span class="pg-chip" data-page="23">页23</span><span class="pg-chip" data-page="24">页24</span><span class="pg-chip" data-page="25">页25</span><span class="pg-chip" data-page="26">页26</span><span class="pg-chip" data-page="23">页23</span></h3>
+<h3 id="s60991196">4.9 系统调用号与寄存器传参规则<span class="pg-chip" data-page="23">页23</span><span class="pg-chip" data-page="24">页24</span><span class="pg-chip" data-page="25">页25</span><span class="pg-chip" data-page="26">页26</span><span class="pg-chip" data-page="23">页23</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>内核怎么知道你要办哪件事？靠 <b>EAX 里的"业务编号"（系统调用号）</b>，参数按顺序放 EBX/ECX/EDX...。就像填表：先写办什么业务，再填各项内容。</div>
 
 <p><span class="exp">Hook：内核里有 200 多个系统调用，你只说了一句 time()，内核凭什么知道你要的是哪一个？</span></p>
 
@@ -563,7 +581,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-must">必考</span></p>
 
-<h3 id="s62508075">4.10 time 案例反汇编追踪系统调用<span class="pg-chip" data-page="33">页33</span><span class="pg-chip" data-page="34">页34</span><span class="pg-chip" data-page="35">页35</span><span class="pg-chip" data-page="33">页33</span></h3>
+<h3 id="s61944689">4.10 time 案例反汇编追踪系统调用<span class="pg-chip" data-page="33">页33</span><span class="pg-chip" data-page="34">页34</span><span class="pg-chip" data-page="35">页35</span><span class="pg-chip" data-page="33">页33</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>拿真实的 <code>time()</code> 开刀，反汇编追一遍，看它怎么从一句 C 代码变成 <code>int 0x80</code> 陷入内核——理论立刻落地。</div>
 
 <p><span class="exp">Hook：课本说 time() 最终会触发系统调用，可源代码里一个 int 指令都看不见。怎么证明它真的陷进去了？</span></p>
 
@@ -579,7 +598,8 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
 
 <p><span class="tag-key">重点</span></p>
 
-<h3 id="s55525576">4.11 int0x80/sysenter/syscall 演进与系统调用表<span class="pg-chip" data-page="31">页31</span><span class="pg-chip" data-page="32">页32</span><span class="pg-chip" data-page="36">页36</span><span class="pg-chip" data-page="37">页37</span><span class="pg-chip" data-page="38">页38</span><span class="pg-chip" data-page="39">页39</span><span class="pg-chip" data-page="40">页40</span><span class="pg-chip" data-page="41">页41</span><span class="pg-chip" data-page="42">页42</span><span class="pg-chip" data-page="31">页31</span></h3>
+<h3 id="s71817795">4.11 int0x80/sysenter/syscall 演进与系统调用表<span class="pg-chip" data-page="31">页31</span><span class="pg-chip" data-page="32">页32</span><span class="pg-chip" data-page="36">页36</span><span class="pg-chip" data-page="37">页37</span><span class="pg-chip" data-page="38">页38</span><span class="pg-chip" data-page="39">页39</span><span class="pg-chip" data-page="40">页40</span><span class="pg-chip" data-page="41">页41</span><span class="pg-chip" data-page="42">页42</span><span class="pg-chip" data-page="31">页31</span></h3>
+<div class="logic"><b>💡 一句话逻辑：</b>叫内核的方式越来越快：<b>老的 int 0x80（软中断，慢）→ sysenter（Intel 专用）→ syscall（现代通用，最快）</b>。这是硬件演进的结果。</div>
 
 <p><span class="exp">Hook：同一条「进内核」的路，Intel 和 AMD 各修了一条高速通道，最后又合并成一条——这三代指令到底在优化什么？</span></p>
 
