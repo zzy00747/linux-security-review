@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>程序分析题 · 专项练习（5 道）</title>
+<style>
+:root{--paper:#faf8f3;--card:#fff;--ink:#242019;--ink2:#5d5648;--line:#e4dccb;--acc:#8a5a2b;--acc2:#b8863f;--must:#c0392b;--key:#c47f17;--freq:#2d7a4f;--code-bg:#2b2b2b;--code-fg:#e8e6df;--logic-bg:#eef7f0;--logic-bd:#3f8f5c;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.78;font-size:15px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:900px;margin:0 auto;padding:34px 20px 80px}
+h1{font-size:1.6em;margin:0 0 6px;background:linear-gradient(100deg,#8a5a2b,#c9974a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.meta{color:var(--ink2);font-size:.9em;margin:0 0 18px}
+h2{font-size:1.12em;margin:30px 0 8px;padding:9px 14px;border-radius:8px;background:linear-gradient(90deg,#8a5a2b,#a9743a);color:#fff;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+h2 .pts{font-size:.8em;background:rgba(255,255,255,.25);padding:2px 10px;border-radius:10px;font-weight:600}
+p{margin:7px 0}
+table{border-collapse:collapse;width:100%;margin:9px 0;font-size:.9em;background:#fff}
+th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+th{background:#f3ece0;font-weight:700;color:#6b4420}
+tr:nth-child(even) td{background:#fdfbf7}
+code{background:#efe9dd;padding:1px 5px;border-radius:3px;font-family:Consolas,Monaco,monospace;font-size:.9em;color:#8a4b1f}
+pre{background:var(--code-bg);color:var(--code-fg);padding:12px 14px;border-radius:8px;overflow-x:auto;font-family:Consolas,Monaco,monospace;font-size:.85em;line-height:1.6;margin:10px 0}
+pre code{background:none;color:inherit;padding:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px 20px 16px;margin:12px 0;box-shadow:0 2px 10px rgba(90,70,40,.07)}
+.tip{background:#fdf6ec;border-left:4px solid var(--key);padding:9px 14px;border-radius:0 6px 6px 0;margin:9px 0;font-size:.91em}
+.warn{background:#fdf1ef;border-left:4px solid var(--must);padding:9px 14px;border-radius:0 6px 6px 0;margin:9px 0;font-size:.91em}
+.good{background:#eef7f1;border-left:4px solid var(--freq);padding:9px 14px;border-radius:0 6px 6px 0;margin:9px 0;font-size:.91em}
+.logic{background:var(--logic-bg);border:1px solid #cfe6d6;border-left:5px solid var(--logic-bd);border-radius:0 9px 9px 0;padding:12px 16px;margin:8px 0 14px;font-size:.94em;line-height:1.8}
+.logic .lt{font-weight:700;color:#2f7048;display:block;margin-bottom:4px}
+.logic b{color:#1f5c3a}
+details.ans{margin:12px 0 4px;border:1px solid #cfe6d6;border-radius:9px;overflow:hidden;background:#fbfdfb}
+details.ans>summary{cursor:pointer;padding:11px 16px;background:#eef7f1;color:#2f7048;font-weight:700;font-size:.94em;list-style:none;user-select:none}
+details.ans>summary::before{content:'▶ ';font-size:.8em}
+details.ans[open]>summary::before{content:'▼ '}
+details.ans>summary::-webkit-details-marker{display:none}
+details.ans .inner{padding:6px 18px 14px}
+.steps{counter-reset:s;list-style:none;padding:0;margin:8px 0}
+.steps>li{counter-increment:s;position:relative;padding:6px 0 6px 40px;border-bottom:1px dashed var(--line)}
+.steps>li:last-child{border-bottom:none}
+.steps>li::before{content:counter(s);position:absolute;left:0;top:6px;width:26px;height:26px;background:var(--acc);color:#fff;border-radius:50%;text-align:center;line-height:26px;font-weight:700;font-size:.85em}
+.big{color:var(--must);font-weight:700}
+@media(max-width:640px){.wrap{padding:18px 12px 60px}h1{font-size:1.28em}h2{font-size:1em;padding:8px 11px}table{font-size:.82em}th,td{padding:4px 6px}pre{font-size:.75em}.steps>li{padding-left:34px}}
+@media print{body{background:#fff}h2{background:#8a5a2b !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}details.ans{break-inside:avoid}details.ans>summary{display:none}details.ans[open] .inner{display:block}details.ans .inner{padding-top:10px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>程序分析题 · 专项练习（5 道）</h1>
+<p class="meta">对齐老师黑板「程序分析 15′×3」题型 · 每题先自己做，点开看答案 · 数字与指令均为新编</p>
+
+<div class="logic"><span class="lt">💡 做题前先记住三套口诀</span>
+<b>堆栈画图</b>：push 先减后写、pop 先读后加；<code>addl $N,%esp</code> 只抬栈顶不清数据。<br>
+<b>汇编转 C</b>：参数看 <code>8(%ebp)</code>、运算看 <code>add</code> 立即数、调用看 <code>call</code> 前后。<br>
+<b>内嵌汇编</b>：每行说"语义"不是翻译助记符；<code>%0</code>是输出、<code>%1</code>起是输入。</div>
+
+<!-- ========== 题1 内嵌汇编 ========== -->
+<h2>第 1 题 · 内嵌汇编分析 <span class="pts">15 分</span></h2>
+<div class="card">
+<p>如下所示为 Linux 下运行的某个内嵌汇编代码，请回答后面的问题：</p>
+<pre><code>int main() {
+    unsigned long val1 = 5;
+    unsigned long val2 = 3;
+    unsigned long val3 = 0;
+    printf("val1:%ld,val2:%ld,val3:%ld\n", val1, val2, val3);
+    asm volatile(
+        "movq $0,%%rax\n\t"
+        "addq %1,%%rax\n\t"
+        "subq %2,%%rax\n\t"
+        "movq %%rax,%0\n\t"
+        : "=m"(val3)
+        : "g"(val1), "g"(val2));
+    printf("val1:%ld-val2:%ld=val3:%ld\n", val1, val2, val3);
+    return 0;
+}</code></pre>
+<p>（1）请写出蓝色部分（四条汇编指令）每一行代码的作用。（8 分）<br>
+（2）说明约束符 <code>"=m"</code> 的含义。（3 分）<br>
+（3）请给出该段程序最后在控制台打印的全部内容。（4 分）</p>
+
+<details class="ans"><summary>点击查看参考答案</summary><div class="inner">
+<p><b>（1）四条指令的作用（每行 2 分）</b></p>
+<ol class="steps">
+<li><code>movq $0,%%rax</code>：把立即数 0 送入 64 位寄存器 rax，<b>清零累加器</b>（<code>%%</code> 是内嵌汇编转义，编译后即 <code>%rax</code>）。</li>
+<li><code>addq %1,%%rax</code>：把第 1 个输入操作数（val1）加到 rax，<b>累加 val1</b>。</li>
+<li><code>subq %2,%%rax</code>：把第 2 个输入操作数（val2）从 rax 减掉，<b>减去 val2</b>。</li>
+<li><code>movq %%rax,%0</code>：把 rax 的结果写回第 0 个操作数（输出 val3），<b>写回结果</b>。</li>
+</ol>
+<p><b>（2）"=m" 的含义（3 分）</b>：<code>=</code> 表示该操作数是<b>只写的输出</b>（汇编执行后它的值被覆盖）；<code>m</code> 表示该操作数位于<b>内存</b>，编译器直接把 val3 的内存地址交给汇编代码，不经寄存器中转。</p>
+<p><b>（3）控制台打印内容（4 分，每行 2 分）</b></p>
+<pre><code>val1:5,val2:3,val3:0
+val1:5-val2:3=val3:2</code></pre>
+<p>因为 val3 = 0 + 5 − 3 = <b>2</b>（先加 val1 再减 val2），val1、val2 未被修改。</p>
+<div class="warn">⚠ 易错：把 <code>subq</code> 记成加法（那就是 8 不是 2）；把 <code>%%rax</code> 当成两个寄存器；漏看 <code>movq $0</code> 的清零作用。</div>
+</div></details>
+</div>
+
+<!-- ========== 题2 汇编转C ========== -->
+<h2>第 2 题 · 汇编转 C <span class="pts">15 分</span></h2>
+<div class="card">
+<p>如下所示为某段 32 位汇编代码，请回答问题：</p>
+<pre><code>h:
+    pushl %ebp
+    movl  %esp, %ebp
+    movl  8(%ebp), %eax
+    subl  12(%ebp), %eax
+    popl  %ebp
+    ret
+
+main:
+    pushl %ebp
+    movl  %esp, %ebp
+    subl  $8, %esp
+    movl  $10, (%esp)
+    movl  $4, 4(%esp)
+    call  h
+    addl  $2, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret</code></pre>
+<p>（1）请写出 h 和 main 各自对应的 C 语言代码（函数名保持 h、main，变量名自拟）。（9 分）<br>
+（2）说明 h 中取第 2 个参数为什么用 <code>12(%ebp)</code>。（3 分）<br>
+（3）该程序 main 最终的返回值是多少？（3 分）</p>
+
+<details class="ans"><summary>点击查看参考答案</summary><div class="inner">
+<p><b>（1）对应的 C 代码（每函数 4.5 分）</b></p>
+<pre><code>int h(int x, int y) {
+    return x - y;
+}
+
+int main(void) {
+    return h(10, 4) + 2;
+}</code></pre>
+<p>推导：h 中 <code>movl 8(%ebp),%eax</code> 取第 1 个参数 x，<code>subl 12(%ebp),%eax</code> 减去第 2 个参数 y，<code>ret</code> 返回 eax → <code>x - y</code>。main 中先给栈顶放 10、下一个放 4（即传入 h(10,4)），<code>call h</code> 后 <code>addl $2,%eax</code> 再加 2。</p>
+<p><b>（2）为什么是 12(%ebp)（3 分）</b>：栈布局从 EBP 往高地址依次是 <code>0(%ebp)=旧EBP</code>、<code>4(%ebp)=返回地址</code>、<code>8(%ebp)=第1个参数</code>、<code>12(%ebp)=第2个参数</code>。每个参数占 4 字节，所以第 2 个参数在 12(%ebp)。</p>
+<p><b>（3）返回值（3 分）</b>：h(10,4) = 10 − 4 = 6，再 +2 = <b>8</b>。</p>
+<div class="warn">⚠ 易错：把第 2 个参数写成 <code>8(%ebp)</code>（那是第 1 个）；把 <code>subl 12(%ebp)</code> 的方向搞反（应该是 eax − 参数，即 x − y）；漏掉 main 里的 <code>addl $2</code>。</div>
+</div></details>
+</div>
+
+<!-- ========== 题3 堆栈画图 ========== -->
+<h2>第 3 题 · 堆栈画图 <span class="pts">15 分</span></h2>
+<div class="card">
+<p>如下所示为某段 32 位汇编代码，设执行前 <b>ESP = 0x2000，EBP = 0x3000</b>，栈向低地址增长，每次 push/pop 操作 4 字节：</p>
+<pre><code>pushl  $16
+movl   %esp, %ebp
+pushl  %ebp
+pushl  $16
+addl   $8, %esp
+popl   %ebp</code></pre>
+<p>（1）请逐条写出每条指令执行后 ESP 的值。（8 分）<br>
+（2）画出执行完毕后的堆栈状态（标明每个单元的地址与内容）。（4 分）<br>
+（3）写出最终 ESP 和 EBP 的值，并说明 EBP 里装的是什么。（3 分）</p>
+
+<details class="ans"><summary>点击查看参考答案</summary><div class="inner">
+<p><b>（1）逐条 ESP（每条约 1.3 分）</b></p>
+<table>
+<tr><th>指令</th><th>ESP</th><th>内存动作</th></tr>
+<tr><td>初始</td><td>0x2000</td><td>—</td></tr>
+<tr><td>pushl $16</td><td><b>0x1FFC</b></td><td>[0x1FFC] = 16</td></tr>
+<tr><td>movl %esp,%ebp</td><td>0x1FFC</td><td>EBP = 0x1FFC（覆盖原 0x3000）</td></tr>
+<tr><td>pushl %ebp</td><td><b>0x1FF8</b></td><td>[0x1FF8] = 0x1FFC</td></tr>
+<tr><td>pushl $16</td><td><b>0x1FF4</b></td><td>[0x1FF4] = 16</td></tr>
+<tr><td>addl $8,%esp</td><td><b>0x1FFC</b></td><td>只抬栈顶，数据残留</td></tr>
+<tr><td>popl %ebp</td><td><b>0x2000</b></td><td>EBP = [0x1FFC] = 16</td></tr>
+</table>
+<p><b>（2）最终堆栈状态（4 分）</b></p>
+<pre><code>地址        内容          说明
+0x1FF4      16            已被 addl $8 移出栈顶，数据残留
+0x1FF8      0x1FFC        已被 addl $8 越过，数据残留
+0x1FFC      16            ← popl 从这里读出 16 给 EBP</code></pre>
+<p><b>（3）最终值（3 分）</b>：<span class="big">ESP = 0x2000，EBP = 16</span>。EBP 里装的是 <b>16</b>（不是 0x1FFC！）——因为 <code>addl $8,%esp</code> 把栈顶从 0x1FF4 跳过 0x1FF8 拉回到 0x1FFC，<code>popl %ebp</code> 读的是当前 ESP 指向的 [0x1FFC] 处的值，即最初 <code>pushl $16</code> 压进去的 16。</p>
+<div class="warn">⚠ 这是本题最大的坑：如果以为 popl 读 [0x1FF8]，就会答 EBP=0x1FFC（错）。<b>popl 读的是"当前 ESP 指向的单元"，addl $8 已经让 ESP 越过了 0x1FF8。</b></div>
+</div></details>
+</div>
+
+<!-- ========== 题4 fork进程树 ========== -->
+<h2>第 4 题 · fork 进程分析 <span class="pts">15 分</span></h2>
+<div class="card">
+<p>阅读下面的 C 代码并回答问题：</p>
+<pre><code>int main() {
+    pid_t pid;
+    printf("A\n");
+    pid = fork();
+    if (pid == 0) {
+        printf("B\n");
+    } else {
+        pid = fork();
+        if (pid == 0)
+            printf("C\n");
+        else
+            printf("D\n");
+    }
+    printf("E\n");
+    return 0;
+}</code></pre>
+<p>（1）写出把该代码编译为可执行程序的命令。（2 分）<br>
+（2）程序运行后，A、B、C、D、E 各打印几次？（7 分）<br>
+（3）画出父子进程关系图，并标明各进程打印的内容。（6 分）</p>
+
+<details class="ans"><summary>点击查看参考答案</summary><div class="inner">
+<p><b>（1）编译命令（2 分）</b>：<code>gcc -o fork_demo fork_demo.c</code>（三要素：gcc、源文件、-o 输出）。</p>
+<p><b>（2）各打印次数（7 分）</b></p>
+<table>
+<tr><th>字符</th><th>次数</th><th>哪些进程打印</th></tr>
+<tr><td>A</td><td><b>1 次</b></td><td>只有最初的 P0（在第一次 fork 之前）</td></tr>
+<tr><td>B</td><td><b>1 次</b></td><td>P1（第一次 fork 的子进程，pid==0）</td></tr>
+<tr><td>C</td><td><b>1 次</b></td><td>P2（P0 第二次 fork 的子进程）</td></tr>
+<tr><td>D</td><td><b>1 次</b></td><td>P0（第二次 fork 的父进程）</td></tr>
+<tr><td><b>E</b></td><td><b>3 次</b></td><td>P0、P1、P2 三个进程最后都会走到 printf("E")</td></tr>
+</table>
+<p><b>（3）父子进程关系图（6 分）</b></p>
+<pre><code>        P0（打印 A）
+        ├── fork#1 ──→ P1（子,pid=0）  打印 B，再打印 E
+        └── fork#2 ──→ P0（父,pid>0）  打印 D，再打印 E
+                        └──→ P2（子,pid=0） 打印 C，再打印 E</code></pre>
+<p>共产生 <b>3 个进程</b>：P0、P1、P2。P1 走 if 分支打印 B；P0 走 else 再 fork 一次，P0 打印 D、新子进程 P2 打印 C；三者最后都执行到最后一句 printf("E")。</p>
+<div class="warn">⚠ 易错：① 以为 fork 后只有子进程继续（漏掉父进程也走 else）；② 数不清进程个数（两次 fork → 3 个进程）；③ 漏算 E（三个进程都会打印 E）；④ 混淆 if(pid==0) 是<b>子进程</b>分支。</div>
+</div></details>
+</div>
+
+<!-- ========== 题5 内嵌汇编触发系统调用 ========== -->
+<h2>第 5 题 · 内嵌汇编触发系统调用 <span class="pts">15 分</span></h2>
+<div class="card">
+<p>如下代码用内嵌汇编直接触发 time 系统调用，请回答问题：</p>
+<pre><code>int main(void) {
+    time_t tt;
+    asm volatile(
+        "mov $0, %%eax\n\t"
+        "mov $0xd, %%eax\n\t"
+        "int $0x80\n\t"
+        "mov %%eax, %0\n\t"
+        : "=m"(tt));
+    printf("time=%ld\n", tt);
+    return 0;
+}</code></pre>
+<p>（1）逐行说明四条汇编指令的作用。（8 分）<br>
+（2）这段代码调用的是哪个系统调用？系统调用号是多少？为什么？（4 分）<br>
+（3）如果要改成触发 rename 系统调用（把 hello.c 改名为 newhello.c），系统调用号和参数应如何设置？（3 分）</p>
+
+<details class="ans"><summary>点击查看参考答案</summary><div class="inner">
+<p><b>（1）四条指令作用（每行 2 分）</b></p>
+<ol class="steps">
+<li><code>mov $0, %%eax</code>：先把 eax 清零（清空残留值，保证干净）。</li>
+<li><code>mov $0xd, %%eax</code>：把系统调用号 <b>0xd（十进制 13）</b> 放入 eax——即告诉内核"我要调 time"。</li>
+<li><code>int $0x80</code>：执行陷入指令，<b>从用户态切换到内核态</b>，内核按 eax 中的调用号执行 time 服务。</li>
+<li><code>mov %%eax, %0</code>：内核把返回值（当前时间）放在 eax 中，这条把 eax 写回输出操作数 tt。</li>
+</ol>
+<p><b>（2）调用的系统调用（4 分）</b>：调用的是 <b>time 系统调用</b>，系统调用号 <b>0xd（13）</b>。判断依据是 <code>mov $0xd,%eax</code> 把 13 放进了 eax（系统调用号寄存器）。32 位 x86 Linux 中 time 的调用号就是 13（64 位是 201/0xc9）。</p>
+<p><b>（3）改成 rename（3 分）</b>：rename 的系统调用号是 <b>0x26（38）</b>；需要传两个参数——<b>旧文件名放 ebx、新文件名放 ecx</b>：
+<pre><code>movl $0x26, %%eax   /* rename 系统调用号 */
+movl oldname, %%ebx  /* 旧文件名指针 hello.c */
+movl newname, %%ecx  /* 新文件名指针 newhello.c */
+int  $0x80</code></pre>
+返回值 0 表示成功。</p>
+<div class="warn">⚠ 易错：把系统调用号放错寄存器（必须是 <b>eax</b>，32 位）；忘记参数要放 ebx/ecx（不是压栈）；记错 rename 号（0x26）。</div>
+</div></details>
+</div>
+
+<div class="tip" style="margin-top:20px">
+<b>练习建议</b>：先不看答案独立做完 5 道，再对照解析。第 3 题（堆栈）和第 4 题（fork）是最容易丢分的，重点核对 popl 到底读了哪个单元、fork 后到底几个进程。做完这套，老师那三类程序分析题基本就稳了。
+</div>
+
+<p style="text-align:center;color:var(--ink2);font-size:.84em;margin-top:26px">基于第1/2/5讲 PPT 题型改编 · 数字与指令为练习新编</p>
+</div>
+</body>
+</html>
